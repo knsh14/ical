@@ -5,9 +5,9 @@ import "unicode"
 // Lexer converts source code to tokens
 type Lexer struct {
 	input        []rune
-	position     int  // current position in input (points to current char)
-	readPosition int  // current reading position in input ( after current char)
-	ch           rune // current char under examination
+	position     int
+	readPosition int
+	ch           rune
 
 	checkFunc func(rune) bool
 }

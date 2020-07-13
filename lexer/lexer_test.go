@@ -116,6 +116,49 @@ func TestLexer(t *testing.T) {
 				{Type: EOF, Value: ""},
 			},
 		},
+		{
+			input: "EX@MPLE:DDDD,EEEE,FFFF",
+			expect: []Token{
+				{Type: IDENT, Value: "EX"},
+				{Type: ILLEGAL, Value: "@"},
+				{Type: IDENT, Value: "MPLE"},
+				{Type: COLON, Value: ":"},
+				{Type: IDENT, Value: "DDDD"},
+				{Type: COMMA, Value: ","},
+				{Type: IDENT, Value: "EEEE"},
+				{Type: COMMA, Value: ","},
+				{Type: IDENT, Value: "FFFF"},
+				{Type: EOF, Value: ""},
+			},
+		},
+		{
+			input: "DTSTART;VA`UE=DATE:20200301",
+			expect: []Token{
+				{Type: IDENT, Value: "DTSTART"},
+				{Type: SEMICOLON, Value: ";"},
+				{Type: IDENT, Value: "VA"},
+				{Type: ILLEGAL, Value: "`"},
+				{Type: IDENT, Value: "UE"},
+				{Type: ASSIGN, Value: "="},
+				{Type: IDENT, Value: "DATE"},
+				{Type: COLON, Value: ":"},
+				{Type: IDENT, Value: "20200301"},
+				{Type: EOF, Value: ""},
+			},
+		},
+		{
+			input: "DTSTART;VALUE=D@TE:20200301",
+			expect: []Token{
+				{Type: IDENT, Value: "DTSTART"},
+				{Type: SEMICOLON, Value: ";"},
+				{Type: IDENT, Value: "VALUE"},
+				{Type: ASSIGN, Value: "="},
+				{Type: IDENT, Value: "D@TE"},
+				{Type: COLON, Value: ":"},
+				{Type: IDENT, Value: "20200301"},
+				{Type: EOF, Value: ""},
+			},
+		},
 	}
 
 	for i, tt := range tests {
