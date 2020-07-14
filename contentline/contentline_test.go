@@ -1,10 +1,11 @@
-package lexer
+package contentline
 
 import (
 	"fmt"
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
+	"github.com/knsh14/ical/lexer"
 )
 
 func TestContentLine(t *testing.T) {
@@ -142,7 +143,7 @@ func TestContentLine(t *testing.T) {
 
 	for i, tt := range tests {
 		t.Run(fmt.Sprint(i), func(t *testing.T) {
-			lexer := New(tt.input)
+			lexer := lexer.New(tt.input)
 			cl, err := ConvertContentLine(lexer)
 			if err != nil {
 				if tt.expectError == nil {
