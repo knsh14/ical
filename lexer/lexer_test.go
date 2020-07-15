@@ -6,6 +6,7 @@ import (
 )
 
 func TestLexer(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		input  string
 		expect []Token
@@ -163,6 +164,7 @@ func TestLexer(t *testing.T) {
 
 	for i, tt := range tests {
 		t.Run(fmt.Sprint(i), func(t *testing.T) {
+			t.Parallel()
 			lexer := New(tt.input)
 			for i := range tt.expect {
 				tok := lexer.NextToken()

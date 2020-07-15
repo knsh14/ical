@@ -9,6 +9,7 @@ import (
 )
 
 func TestContentLine(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		input       string
 		expectValue *ContentLine
@@ -143,6 +144,7 @@ func TestContentLine(t *testing.T) {
 
 	for i, tt := range tests {
 		t.Run(fmt.Sprint(i), func(t *testing.T) {
+			t.Parallel()
 			lexer := lexer.New(tt.input)
 			cl, err := ConvertContentLine(lexer)
 			if err != nil {
