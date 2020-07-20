@@ -17,9 +17,9 @@ func rebuildContentLines(raw []string) []string {
 	for _, l := range raw {
 		switch {
 		case strings.HasPrefix(l, " "):
-			res[len(res)-1] += strings.TrimPrefix(l, " ")
+			res[len(res)-1] += "\n" + strings.TrimPrefix(l, " ")
 		case strings.HasPrefix(l, "\t"):
-			res[len(res)-1] += strings.TrimPrefix(l, "\t")
+			res[len(res)-1] += "\n" + strings.TrimPrefix(l, "\t")
 			continue
 		default:
 			res = append(res, l)

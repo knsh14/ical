@@ -160,9 +160,21 @@ func TestLexer(t *testing.T) {
 				{Type: EOF, Value: ""},
 			},
 		},
+		{
+			input: `DESCRIPTION:hello world
+this is test`,
+			expect: []Token{
+				{Type: IDENT, Value: "DESCRIPTION"},
+				{Type: COLON, Value: ":"},
+				{Type: IDENT, Value: `hello world
+this is test`},
+				{Type: EOF, Value: ""},
+			},
+		},
 	}
 
 	for i, tt := range tests {
+		tt := tt
 		t.Run(fmt.Sprint(i), func(t *testing.T) {
 			t.Parallel()
 			lexer := New(tt.input)

@@ -130,7 +130,7 @@ func isParamValue(ch rune) bool {
 
 func isValue(ch rune) bool {
 	if unicode.IsControl(ch) {
-		return ch == rune('\t')
+		return ch == rune('\t') || ch == rune('\n') || ch == rune('\r')
 	}
 	if ch == rune(',') {
 		return false

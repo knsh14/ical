@@ -140,9 +140,26 @@ func TestContentLine(t *testing.T) {
 			},
 			expectError: nil,
 		},
+		{
+			input: `DTSTART;VALUE=DATE:hello world
+this is test`,
+			expectValue: &ContentLine{
+				Name: "DTSTART",
+				Parameters: []Parameter{
+					{
+						Name:   "VALUE",
+						Values: []string{"DATE"},
+					},
+				},
+				Values: []string{`hello world
+this is test`},
+			},
+			expectError: nil,
+		},
 	}
 
 	for i, tt := range tests {
+		tt := tt
 		t.Run(fmt.Sprint(i), func(t *testing.T) {
 			t.Parallel()
 			lexer := lexer.New(tt.input)
