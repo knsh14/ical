@@ -5,6 +5,7 @@ import (
 
 	"github.com/knsh14/ical"
 	"github.com/knsh14/ical/component"
+	"github.com/knsh14/ical/token"
 	"github.com/knsh14/ical/types"
 )
 
@@ -59,13 +60,24 @@ func (p *Parser) parseCalender() (*ical.Calender, error) {
 				return nil, fmt.Errorf("failed to set value to VCALENDER.VERSION: %w", err)
 			}
 		case "BEGIN":
+			if len(l.Values) != 1 {
+			}
+			switch component.ComponentType(l.Values[0]) {
+			case component.ComponentTypeEvent:
+			case component.ComponentTypeTODO:
+			case component.ComponentTypeJournal:
+			case component.ComponentTypeFreeBusy:
+			case component.ComponentTypeTimezone:
+			default:
+			}
 		case "END":
 			if p.isEndComponent(component.ComponentTypeCalender) {
 				return c, nil
 			}
+			return nil, fmt.Errorf("Invalid END")
 		default:
-			// if isXProp {
-			// }
+			if token.IsXName(l.Name) {
+			}
 			// if isIANAProp {
 			// }
 			return nil, fmt.Errorf("no property matched,LINE:%d %v", p.CurrentIndex+1, l)
