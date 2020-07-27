@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	"github.com/knsh14/ical"
+	"github.com/knsh14/ical/component"
 	"github.com/knsh14/ical/contentline"
 )
 
@@ -28,9 +29,17 @@ func rebuildContentLines(raw []string) []string {
 	return res
 }
 
+func NewParser(cls []*contentline.ContentLine) *Parser {
+	return &Parser{
+		Lines: cls,
+	}
+}
+
 type Parser struct {
-	Lines        []*contentline.ContentLine
-	CurrentIndex int
+	Lines                []*contentline.ContentLine
+	CurrentIndex         int
+	currentComponentType component.ComponentType
+	errors               []error
 }
 
 func (p *Parser) getCurrentLine() *contentline.ContentLine {
@@ -55,8 +64,8 @@ func (p *Parser) Parse() (*ical.Calender, error) {
 
 func (p *Parser) parse() (*ical.Calender, error) {
 	l := p.getCurrentLine()
-	if !p.isBeginComponent(ical.ComponentTypeCalender) {
-		return nil, fmt.Errorf("not %s:%s, got %v", "BEGIN", ical.ComponentTypeCalender, l)
+	if !p.isBeginComponent(component.ComponentTypeCalender) {
+		return nil, fmt.Errorf("not %s:%s, got %v", "BEGIN", component.ComponentTypeCalender, l)
 	}
 	p.nextLine()
 	c, err := p.parseCalender()
@@ -66,22 +75,22 @@ func (p *Parser) parse() (*ical.Calender, error) {
 	return c, nil
 }
 
-func (p *Parser) isBeginComponent(component ical.ComponentType) bool {
+func (p *Parser) isBeginComponent(c component.ComponentType) bool {
 	if p.getCurrentLine().Name != "BEGIN" {
 		return false
 	}
 	if len(p.getCurrentLine().Values) != 1 {
 		return false
 	}
-	return ical.ComponentType(p.getCurrentLine().Values[0]) == component
+	return component.ComponentType(p.getCurrentLine().Values[0]) == c
 }
 
-func (p *Parser) isEndComponent(cl *contentline.ContentLine, component ical.ComponentType) bool {
+func (p *Parser) isEndComponent(c component.ComponentType) bool {
 	if p.getCurrentLine().Name != "END" {
 		return false
 	}
 	if len(p.getCurrentLine().Values) != 1 {
 		return false
 	}
-	return ical.ComponentType(p.getCurrentLine().Values[0]) == component
+	return component.ComponentType(p.getCurrentLine().Values[0]) == c
 }

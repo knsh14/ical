@@ -4,57 +4,73 @@ import (
 	"fmt"
 
 	"github.com/knsh14/ical"
-	"github.com/knsh14/ical/contentline"
+	"github.com/knsh14/ical/component"
+	"github.com/knsh14/ical/types"
 )
 
 func (p *Parser) parseCalender() (*ical.Calender, error) {
+	p.currentComponentType = component.ComponentTypeCalender
 	c := &ical.Calender{}
-	for l := p.getCurrentLine(); !isEndComponent(l, ical.ComponentTypeCalender) || l != nil; {
+
+	for l := p.getCurrentLine(); l != nil; l = p.getCurrentLine() {
+		_, err := p.parseParameter(l)
+		if err != nil {
+			return nil, fmt.Errorf("parse parameter: %w", err)
+		}
 		switch l.Name {
 		case "CALSCALE":
-			t, err := contentline.NewText(l)
+			params, err := p.parseParameter(l)
 			if err != nil {
-				return nil, fmt.Errorf("failed to parse value for VCALENDER.CALSCALE: %w", err)
+				p.errors = append(p.errors, err)
 			}
-			err = c.SetCalScale(t)
+			t := types.NewText(l.Values[0])
+			err = c.SetCalScale(params, t)
 			if err != nil {
 				return nil, fmt.Errorf("failed to set value to VCALENDER.CALSCALE: %w", err)
 			}
 		case "METHOD":
-			t, err := contentline.NewText(l)
+			params, err := p.parseParameter(l)
 			if err != nil {
-				return nil, fmt.Errorf("failed to parse value for VCALENDER.METHOD: %w", err)
+				p.errors = append(p.errors, err)
 			}
-			err = c.SetMethod(t)
+			t := types.NewText(l.Values[0])
+			err = c.SetMethod(params, t)
 			if err != nil {
 				return nil, fmt.Errorf("failed to set value to VCALENDER.METHOD: %w", err)
 			}
 		case "PRODID":
-			t, err := contentline.NewText(l)
+			params, err := p.parseParameter(l)
 			if err != nil {
-				return nil, fmt.Errorf("failed to parse value for VCALENDER.PRODID: %w", err)
+				p.errors = append(p.errors, err)
 			}
-			err = c.SetMethod(t)
+			t := types.NewText(l.Values[0])
+			err = c.SetMethod(params, t)
 			if err != nil {
 				return nil, fmt.Errorf("failed to set value to VCALENDER.METHOD: %w", err)
 			}
 		case "VERSION":
-			t, err := contentline.NewText(l)
+			params, err := p.parseParameter(l)
 			if err != nil {
-				return nil, fmt.Errorf("failed to parse value for VCALENDER.VERSION: %w", err)
+				p.errors = append(p.errors, err)
 			}
-			err = c.SetVersion(t)
+			t := types.NewText(l.Values[0])
+			err = c.SetVersion(params, t)
 			if err != nil {
 				return nil, fmt.Errorf("failed to set value to VCALENDER.VERSION: %w", err)
 			}
 		case "BEGIN":
+		case "END":
+			if p.isEndComponent(component.ComponentTypeCalender) {
+				return c, nil
+			}
 		default:
 			// if isXProp {
 			// }
 			// if isIANAProp {
 			// }
-			return nil, fmt.Errorf("no property matched,LINE:%d %v", p.CurrentIndex, l)
+			return nil, fmt.Errorf("no property matched,LINE:%d %v", p.CurrentIndex+1, l)
 		}
+		p.nextLine()
 	}
-	return c, nil
+	return nil, fmt.Errorf("finished withour end")
 }

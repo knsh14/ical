@@ -7,13 +7,13 @@ type Method string
 
 const (
 	PUBLISH        Method = "PUBLISH "
-	REQUEST               = "REQUEST"
-	REPLY                 = "REPLY"
-	ADD                   = "ADD"
-	CANCEL                = "CANCEL"
-	REFRESH               = "REFRESH"
-	COUNTER               = "COUNTER"
-	DECLINECOUNTER        = "DECLINECOUNTER"
+	REQUEST        Method = "REQUEST"
+	REPLY          Method = "REPLY"
+	ADD            Method = "ADD"
+	CANCEL         Method = "CANCEL"
+	REFRESH        Method = "REFRESH"
+	COUNTER        Method = "COUNTER"
+	DECLINECOUNTER Method = "DECLINECOUNTER"
 )
 
 func isMethod(m string) bool {
