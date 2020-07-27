@@ -6,5 +6,5 @@ const (
 	RelationshipTypeKindParent  RelationshipTypeKind = "PARENT"
 	RelationshipTypeKindChild   RelationshipTypeKind = "CHILD"
 	RelationshipTypeKindSibling RelationshipTypeKind = "SIBLING"
-	RelationshipTypeKindXToken  RelationshipTypeKind = "XToken"
+	RelationshipTypeKindXName   RelationshipTypeKind = "X-NAME"
 )

@@ -7,16 +7,18 @@ import (
 	"unicode"
 
 	"github.com/knsh14/ical/component"
+	"github.com/knsh14/ical/mime"
+	"github.com/knsh14/ical/token"
 	"github.com/knsh14/ical/types"
 	"golang.org/x/text/language"
 )
 
 func NewAlternateTextRepresentation(value string) (*AlternateTextRepresentation, error) {
-	v, err := strconv.Unquote(value)
-	if err != nil {
-		return nil, fmt.Errorf("unquote input: %w", err)
-	}
-	uri, err := types.NewURI(v)
+	// v, err := strconv.Unquote(value)
+	// if err != nil {
+	// 	return nil, fmt.Errorf("unquote input: %w", err)
+	// }
+	uri, err := types.NewURI(value)
 	if err != nil {
 		return nil, fmt.Errorf("parse input to uri: %w", err)
 	}
@@ -54,8 +56,9 @@ func NewCalenderUserType(value string) (*CalenderUserType, error) {
 		CalenderUserTypeKindUnknown:
 		return &CalenderUserType{Type: v}, nil
 	default:
-		// if Xtoken
-		// return &CalenderUserType{Type: CalenderUserTypeKindXToken, Value: value}, nil
+		if token.IsXName(value) {
+			return &CalenderUserType{Type: CalenderUserTypeKindXToken, Value: value}, nil
+		}
 		return nil, fmt.Errorf("undefined CalenderUserType %s", value)
 	}
 }
@@ -71,13 +74,13 @@ func (cut *CalenderUserType) implementParameter() {}
 func NewDelegator(values []string) (*Delegator, error) {
 	var addresses []types.CalenderUserAddress
 	for _, value := range values {
-		v, err := strconv.Unquote(value)
+		//v, err := strconv.Unquote(value)
+		//if err != nil {
+		//	return nil, fmt.Errorf("unquote input[%s]: %w", value, err)
+		//}
+		a, err := types.NewCalenderUserAddress(value)
 		if err != nil {
-			return nil, fmt.Errorf("unquote input[%s]: %w", value, err)
-		}
-		a, err := types.NewCalenderUserAddress(v)
-		if err != nil {
-			return nil, fmt.Errorf("convert value[%s] to CALENDER-USER-ADDRESS: %w", v, err)
+			return nil, fmt.Errorf("convert value[%s] to CALENDER-USER-ADDRESS: %w", value, err)
 		}
 		addresses = append(addresses, a)
 	}
@@ -93,13 +96,13 @@ func (d *Delegator) implementParameter() {}
 func NewDelegatee(values []string) (*Delegatee, error) {
 	var addresses []types.CalenderUserAddress
 	for _, value := range values {
-		v, err := strconv.Unquote(value)
+		// v, err := strconv.Unquote(value)
+		// if err != nil {
+		// 	return nil, fmt.Errorf("unquote input[%s]: %w", value, err)
+		// }
+		a, err := types.NewCalenderUserAddress(value)
 		if err != nil {
-			return nil, fmt.Errorf("unquote input[%s]: %w", value, err)
-		}
-		a, err := types.NewCalenderUserAddress(v)
-		if err != nil {
-			return nil, fmt.Errorf("convert value[%s] to CALENDER-USER-ADDRESS: %w", v, err)
+			return nil, fmt.Errorf("convert value[%s] to CALENDER-USER-ADDRESS: %w", value, err)
 		}
 		addresses = append(addresses, a)
 	}
@@ -113,11 +116,11 @@ type Delegatee struct {
 func (d *Delegatee) implementParameter() {}
 
 func NewDirectoryEntry(value string) (*DirectoryEntry, error) {
-	v, err := strconv.Unquote(value)
-	if err != nil {
-		return nil, fmt.Errorf("unquote input: %w", err)
-	}
-	uri, err := types.NewURI(v)
+	// v, err := strconv.Unquote(value)
+	// if err != nil {
+	// 	return nil, fmt.Errorf("unquote input: %w", err)
+	// }
+	uri, err := types.NewURI(value)
 	if err != nil {
 		return nil, fmt.Errorf("parse input to uri: %w", err)
 	}
@@ -133,20 +136,31 @@ func (de *DirectoryEntry) implementParameter() {}
 func NewInlineEncoding(value string) (*InlineEncoding, error) {
 	switch v := InlineEncodingType(value); v {
 	case InlineEncodingType8BIT, InlineEncodingTypeBASE64:
-		return &InlineEncoding{Type: v}, nil
+		return &InlineEncoding{Type: v, Value: value}, nil
 	default:
-		// TODO if Xtoken
+		if token.IsXName(value) {
+			return &InlineEncoding{Type: InlineEncodingTypeXName, Value: value}, nil
+		}
 		return nil, fmt.Errorf("undefined InlineEncodingType %s", value)
 	}
 }
 
 type InlineEncoding struct {
-	Type InlineEncodingType
+	Type  InlineEncodingType
+	Value string // for x-name
 }
 
 func (ie *InlineEncoding) implementParameter() {}
 
+func NewFormatType(value string) (*FormatType, error) {
+	if mime.IsMIMEType(value) {
+		return &FormatType{Value: types.NewText(value)}, nil
+	}
+	return nil, fmt.Errorf("invalid format type %s", value)
+}
+
 type FormatType struct {
+	Value types.Text
 }
 
 func (ft *FormatType) implementParameter() {}
@@ -159,7 +173,9 @@ func NewFreeBusyTimeType(value string) (*FreeBusyTimeType, error) {
 		FreeBusyTimeTypeKindBusyTentative:
 		return &FreeBusyTimeType{Type: v}, nil
 	default:
-		// TODO check xtoken
+		if token.IsXName(value) {
+			return &FreeBusyTimeType{Type: FreeBusyTimeTypeKindXName, Value: value}, nil
+		}
 		return nil, fmt.Errorf("invalid FreeBusyTimeType %s", v)
 	}
 }
@@ -167,7 +183,7 @@ func NewFreeBusyTimeType(value string) (*FreeBusyTimeType, error) {
 // FreeBusyTimeType is definded in https://tools.ietf.org/html/rfc5545#section-3.2.9
 type FreeBusyTimeType struct {
 	Type  FreeBusyTimeTypeKind
-	Value string // for X-Token
+	Value string // for X-NAME
 }
 
 func (fbtt *FreeBusyTimeType) implementParameter() {}
@@ -187,15 +203,15 @@ type Language struct {
 func (l *Language) implementParameter() {}
 
 func NewMembership(values []string) (*Membership, error) {
-	var l []types.URI
+	var l []types.CalenderUserAddress
 	for _, value := range values {
-		v, err := strconv.Unquote(value)
+		// v, err := strconv.Unquote(value)
+		// if err != nil {
+		// 	return nil, fmt.Errorf("unquote input: %w", err)
+		// }
+		uri, err := types.NewCalenderUserAddress(value)
 		if err != nil {
-			return nil, fmt.Errorf("unquote input: %w", err)
-		}
-		uri, err := types.NewURI(v)
-		if err != nil {
-			return nil, fmt.Errorf("parse input to uri: %w", err)
+			return nil, fmt.Errorf("parse %s to uri: %w", value, err)
 		}
 		l = append(l, uri)
 	}
@@ -203,14 +219,14 @@ func NewMembership(values []string) (*Membership, error) {
 }
 
 type Membership struct {
-	URIs []types.URI
+	URIs []types.CalenderUserAddress
 }
 
 func (m *Membership) implementParameter() {}
 
-func NewParticipationStatus(value, kind string) (*ParticipationStatus, error) {
+func NewParticipationStatus(value string, kind component.ComponentType) (*ParticipationStatus, error) {
 	var list map[ParticipationStatusType]struct{}
-	switch component.ComponentType(kind) {
+	switch kind {
 	case component.ComponentTypeEvent:
 		list = map[ParticipationStatusType]struct{}{
 			ParticipationStatusTypeNeedsAction: {},
@@ -241,11 +257,13 @@ func NewParticipationStatus(value, kind string) (*ParticipationStatus, error) {
 		return nil, fmt.Errorf("invalid kind type %s, must be VEVENT, VTODO or VJOURNAL", kind)
 	}
 	t := ParticipationStatusType(value)
-	// check is XTOKEN
+	if token.IsXName(value) {
+		t = ParticipationStatusTypeXToken
+	}
 	if _, ok := list[t]; ok {
 		return &ParticipationStatus{
-			Kind:  component.ComponentType(kind),
-			Type:  ParticipationStatusType(value),
+			Kind:  kind,
+			Type:  t,
 			Value: value,
 		}, nil
 	}
@@ -261,7 +279,7 @@ type ParticipationStatus struct {
 func (ps *ParticipationStatus) implementParameter() {}
 
 func NewRecurrenceIDRange(value string) (*RecurrenceIDRange, error) {
-	if value != "THISANDFUTURE" {
+	if strings.ToUpper(value) != "THISANDFUTURE" {
 		return nil, fmt.Errorf("value must be THISANDFUTURE, but %s", value)
 	}
 	return &RecurrenceIDRange{}, nil
@@ -295,9 +313,9 @@ func NewRelationshipType(value string) (*RelationshipType, error) {
 		RelationshipTypeKindSibling:
 		return &RelationshipType{Type: t}, nil
 	default:
-		//if isToken {
-		// return &RelationshipType{Type: ical.RelationshipTypeXToken, Value: value}, nil
-		//}
+		if token.IsXName(value) {
+			return &RelationshipType{Type: RelationshipTypeKindXName, Value: value}, nil
+		}
 		return nil, fmt.Errorf("invalid RelationshipType %s", value)
 	}
 }
@@ -317,10 +335,9 @@ func NewParticipationRole(value string) (*ParticipationRole, error) {
 		ParticipationRoleTypeNonParticipant:
 		return &ParticipationRole{Type: t}, nil
 	default:
-		// TODO
-		//if isToken {
-		// return &ParticipationRole{Type: ical.ParticipationRoleTypeXToken, Value: value}, nil
-		//}
+		if token.IsXName(value) {
+			return &ParticipationRole{Type: ParticipationRoleTypeXName, Value: value}, nil
+		}
 		return nil, fmt.Errorf("invalid ParticipationRoleType %s", value)
 	}
 }

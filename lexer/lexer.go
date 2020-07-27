@@ -1,6 +1,10 @@
 package lexer
 
-import "unicode"
+import (
+	"unicode"
+
+	"github.com/knsh14/ical/token"
+)
 
 // Lexer converts source code to tokens
 type Lexer struct {
@@ -38,36 +42,36 @@ func (l *Lexer) peekChar() rune {
 	}
 }
 
-func (l *Lexer) NextToken() Token {
-	var tok Token
+func (l *Lexer) NextToken() token.Token {
+	var tok token.Token
 
 	l.skipWhitespace()
 
 	switch l.ch {
 	case '=':
-		tok = newToken(ASSIGN, l.ch)
+		tok = newToken(token.ASSIGN, l.ch)
 		l.checkFunc = isParamValue
 	case ';':
-		tok = newToken(SEMICOLON, l.ch)
+		tok = newToken(token.SEMICOLON, l.ch)
 		l.checkFunc = isParamName
 	case ',':
-		tok = newToken(COMMA, l.ch)
+		tok = newToken(token.COMMA, l.ch)
 	case '"':
-		tok.Type = STRING
+		tok.Type = token.STRING
 		tok.Value = l.readString()
 	case ':':
-		tok = newToken(COLON, l.ch)
+		tok = newToken(token.COLON, l.ch)
 		l.checkFunc = isValue
 	case 0:
 		tok.Value = ""
-		tok.Type = EOF
+		tok.Type = token.EOF
 	default:
 		if l.checkFunc(l.ch) {
 			tok.Value = l.readIdentifier()
-			tok.Type = IDENT
+			tok.Type = token.IDENT
 			return tok
 		} else {
-			tok = newToken(ILLEGAL, l.ch)
+			tok = newToken(token.ILLEGAL, l.ch)
 		}
 	}
 
@@ -75,8 +79,8 @@ func (l *Lexer) NextToken() Token {
 	return tok
 }
 
-func newToken(tokenType TokenType, ch rune) Token {
-	return Token{Type: tokenType, Value: string(ch)}
+func newToken(tokenType token.TokenType, ch rune) token.Token {
+	return token.Token{Type: tokenType, Value: string(ch)}
 }
 
 func (l *Lexer) readIdentifier() string {

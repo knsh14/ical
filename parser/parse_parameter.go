@@ -12,7 +12,7 @@ func (p *Parser) parseParameter(cl *contentline.ContentLine) (map[parameter.Type
 	for _, v := range cl.Parameters {
 		switch t := parameter.TypeName(v.Name); t {
 		case parameter.TypeNameAlternateTextRepresentation:
-			if len(v.Values) > 1 {
+			if len(v.Values) != 1 {
 				return nil, fmt.Errorf("value for %s must be 1, but %d", t, len(v.Values))
 			}
 			p, err := parameter.NewAlternateTextRepresentation(v.Values[0])
@@ -21,13 +21,13 @@ func (p *Parser) parseParameter(cl *contentline.ContentLine) (map[parameter.Type
 			}
 			params[t] = append(params[t], p)
 		case parameter.TypeNameCommonName:
-			if len(v.Values) > 1 {
+			if len(v.Values) != 1 {
 				return nil, fmt.Errorf("value for %s must be 1, but %d", t, len(v.Values))
 			}
 			p := parameter.NewCommonName(v.Values[0])
 			params[t] = append(params[t], p)
 		case parameter.TypeNameCalenderUserType:
-			if len(v.Values) > 1 {
+			if len(v.Values) != 1 {
 				return nil, fmt.Errorf("value for %s must be 1, but %d", t, len(v.Values))
 			}
 			p, err := parameter.NewCalenderUserType(v.Values[0])
@@ -48,7 +48,7 @@ func (p *Parser) parseParameter(cl *contentline.ContentLine) (map[parameter.Type
 			}
 			params[t] = append(params[t], p)
 		case parameter.TypeNameDirectoryEntry:
-			if len(v.Values) > 1 {
+			if len(v.Values) != 1 {
 				return nil, fmt.Errorf("value for %s must be 1, but %d", t, len(v.Values))
 			}
 			p, err := parameter.NewDirectoryEntry(v.Values[0])
@@ -57,7 +57,7 @@ func (p *Parser) parseParameter(cl *contentline.ContentLine) (map[parameter.Type
 			}
 			params[t] = append(params[t], p)
 		case parameter.TypeNameInlineEncoding:
-			if len(v.Values) > 1 {
+			if len(v.Values) != 1 {
 				return nil, fmt.Errorf("value for %s must be 1, but %d", t, len(v.Values))
 			}
 			p, err := parameter.NewInlineEncoding(v.Values[0])
@@ -66,9 +66,16 @@ func (p *Parser) parseParameter(cl *contentline.ContentLine) (map[parameter.Type
 			}
 			params[t] = append(params[t], p)
 		case parameter.TypeNameFormatType:
-			// TODO implement
+			if len(v.Values) != 1 {
+				return nil, fmt.Errorf("value for %s must be 1, but %d", t, len(v.Values))
+			}
+			p, err := parameter.NewFormatType(v.Values[0])
+			if err != nil {
+				return nil, fmt.Errorf("parse %s: %w", t, err)
+			}
+			params[t] = append(params[t], p)
 		case parameter.TypeNameFreeBusyTimeType:
-			if len(v.Values) > 1 {
+			if len(v.Values) != 1 {
 				return nil, fmt.Errorf("value for %s must be 1, but %d", t, len(v.Values))
 			}
 			p, err := parameter.NewFreeBusyTimeType(v.Values[0])
@@ -96,7 +103,7 @@ func (p *Parser) parseParameter(cl *contentline.ContentLine) (map[parameter.Type
 				return nil, fmt.Errorf("value for %s must be 1, but %d", t, len(v.Values))
 			}
 			// TODO get current component type
-			p, err := parameter.NewParticipationStatus(v.Values[0], "")
+			p, err := parameter.NewParticipationStatus(v.Values[0], p.currentComponentType)
 			if err != nil {
 				return nil, fmt.Errorf("parse %s: %w", t, err)
 			}

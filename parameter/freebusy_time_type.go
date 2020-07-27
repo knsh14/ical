@@ -7,4 +7,5 @@ const (
 	FreeBusyTimeTypeKindBusy            FreeBusyTimeTypeKind = "BUSY"
 	FreeBusyTimeTypeKindBusyUnavailable FreeBusyTimeTypeKind = "BUSY-UNAVAILABLE"
 	FreeBusyTimeTypeKindBusyTentative   FreeBusyTimeTypeKind = "BUSY-TENTATIVE"
+	FreeBusyTimeTypeKindXName           FreeBusyTimeTypeKind = "X-NAME"
 )

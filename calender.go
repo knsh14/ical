@@ -59,7 +59,7 @@ type Calender struct {
 // spec is https://tools.ietf.org/html/rfc5545#section-3.7.1
 func (c *Calender) SetCalScale(params parameter.Container, t types.Text) error {
 	if t == "" {
-		return fmt.Errorf("input is nil")
+		return ErrInputIsEmpty
 	}
 	if string(t) != "GREGORIAN" {
 		return fmt.Errorf("Invalid CALSCALE Value %s, allow only GREGORIAN", string(t))
@@ -73,7 +73,7 @@ func (c *Calender) SetCalScale(params parameter.Container, t types.Text) error {
 // spec is https://tools.ietf.org/html/rfc5545#section-3.7.2
 func (c *Calender) SetMethod(params parameter.Container, t types.Text) error {
 	if t == "" {
-		return fmt.Errorf("input is nil")
+		return ErrInputIsEmpty
 	}
 	if isMethod(string(t)) {
 		c.Method.Param = params
@@ -87,7 +87,7 @@ func (c *Calender) SetMethod(params parameter.Container, t types.Text) error {
 // spec is https://tools.ietf.org/html/rfc5545#section-3.7.3
 func (c *Calender) SetProdID(params parameter.Container, t types.Text) error {
 	if t == "" {
-		return fmt.Errorf("input is nil")
+		return ErrInputIsEmpty
 	}
 	c.ProdID.Param = params
 	c.ProdID.Value = t
@@ -98,7 +98,7 @@ func (c *Calender) SetProdID(params parameter.Container, t types.Text) error {
 // spec is https://tools.ietf.org/html/rfc5545#section-3.7.4
 func (c *Calender) SetVersion(params parameter.Container, t types.Text) error {
 	if t == "" {
-		return fmt.Errorf("input is nil")
+		return ErrInputIsEmpty
 	}
 	isMatch, err := regexp.MatchString(`^\d+.\d+$`, string(t))
 	if err != nil {

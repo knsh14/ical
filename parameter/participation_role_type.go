@@ -7,5 +7,5 @@ const (
 	ParticipationRoleTypeRequestedParticipant ParticipationRoleType = "REQ-PARTICIPANT"
 	ParticipationRoleTypeOptionalParticipant  ParticipationRoleType = "OPT-PARTICIPANT"
 	ParticipationRoleTypeNonParticipant       ParticipationRoleType = "NON-PARTICIPANT"
-	ParticipationRoleTypeXToken               ParticipationRoleType = "X-TOKEN"
+	ParticipationRoleTypeXName                ParticipationRoleType = "X-NAME"
 )
