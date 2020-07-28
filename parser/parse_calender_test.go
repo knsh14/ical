@@ -87,6 +87,49 @@ func TestParseCalender(t *testing.T) {
 			},
 			expectedError: nil,
 		},
+		"calender X-TOKEN": {
+			input: []*contentline.ContentLine{
+				{
+					Name:   "BEGIN",
+					Values: []string{string(component.ComponentTypeCalender)},
+				},
+				{
+					Name:   "X-WR-TIMEZONE",
+					Values: []string{"UTC"},
+				},
+				{
+					Name:   "END",
+					Values: []string{string(component.ComponentTypeCalender)},
+				},
+			},
+			expected: &ical.Calender{
+				XProperty: map[string]struct {
+					Name   string
+					Param  parameter.Container
+					Values []types.Text
+				}{
+					"X-WR-TIMEZONE": {
+						Name:   "X-WR-TIMEZONE",
+						Values: []types.Text{"UTC"},
+					},
+				},
+			},
+			expectedError: nil,
+		},
+		"no end": {
+			input: []*contentline.ContentLine{
+				{
+					Name:   "BEGIN",
+					Values: []string{string(component.ComponentTypeCalender)},
+				},
+				{
+					Name:   "VERSION",
+					Values: []string{"1.2;2.0"},
+				},
+			},
+			expected:      nil,
+			expectedError: NoEndError(component.ComponentTypeCalender),
+		},
 	}
 
 	for title, tc := range testcases {

@@ -123,6 +123,31 @@ func (c *Calender) SetVersion(params parameter.Container, t types.Text) error {
 	return nil
 }
 
+// SetXProp sets experimental property to calender.
+// schema defined in https://tools.ietf.org/html/rfc5545#section-3.8.8.2
+func (c *Calender) SetXProp(name string, params parameter.Container, values []types.Text) error {
+	if c.XProperty == nil {
+		c.XProperty = make(map[string]struct {
+			Name   string
+			Param  parameter.Container
+			Values []types.Text
+		})
+	}
+	if _, ok := c.XProperty[name]; ok {
+		return fmt.Errorf("Property %s is already defined", name)
+	}
+	c.XProperty[name] = struct {
+		Name   string
+		Param  parameter.Container
+		Values []types.Text
+	}{
+		Name:   name,
+		Param:  params,
+		Values: values,
+	}
+	return nil
+}
+
 func (c *Calender) Validate() error {
 	return nil
 }

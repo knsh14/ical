@@ -11,7 +11,7 @@ import (
 
 func (p *Parser) parseCalender() (*ical.Calender, error) {
 	p.currentComponentType = component.ComponentTypeCalender
-	c := &ical.Calender{}
+	c := ical.NewCalender()
 
 	for l := p.getCurrentLine(); l != nil; l = p.getCurrentLine() {
 		_, err := p.parseParameter(l)
@@ -77,6 +77,21 @@ func (p *Parser) parseCalender() (*ical.Calender, error) {
 			return nil, fmt.Errorf("Invalid END")
 		default:
 			if token.IsXName(l.Name) {
+				params, err := p.parseParameter(l)
+				if err != nil {
+					p.errors = append(p.errors, err)
+					break
+				}
+				var values []types.Text
+				for _, v := range l.Values {
+					values = append(values, types.Text(v))
+				}
+				err = c.SetXProp(l.Name, params, values)
+				if err != nil {
+					p.errors = append(p.errors, err)
+					break
+				}
+				break
 			}
 			// if isIANAProp {
 			// }
@@ -84,5 +99,5 @@ func (p *Parser) parseCalender() (*ical.Calender, error) {
 		}
 		p.nextLine()
 	}
-	return nil, fmt.Errorf("finished withour end")
+	return nil, NoEndError(component.ComponentTypeCalender)
 }

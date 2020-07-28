@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/knsh14/ical/lexer"
+	"github.com/knsh14/ical/token"
 )
 
 type ContentLine struct {
@@ -27,7 +28,7 @@ func ConvertContentLine(l *lexer.Lexer) (*ContentLine, error) {
 	cl.Name = n
 
 	// get parameters until get colon
-	for t.Type == lexer.SEMICOLON {
+	for t.Type == token.SEMICOLON {
 		p, token, err := getParameter(l)
 		if err != nil {
 			return nil, fmt.Errorf("failed to get parameter: %w", err)
@@ -37,10 +38,10 @@ func ConvertContentLine(l *lexer.Lexer) (*ContentLine, error) {
 	}
 
 	// get values until illegal or eof
-	if t.Type != lexer.COLON {
+	if t.Type != token.COLON {
 		return nil, fmt.Errorf("expected \":\" but got %s[%s]", t.Type, t.Value)
 	}
-	for t.Type != lexer.EOF && t.Type != lexer.ILLEGAL {
+	for t.Type != token.EOF && t.Type != token.ILLEGAL {
 		v, token, err := getValue(l)
 		if err != nil {
 			return nil, fmt.Errorf("failed to get value: %w", err)
@@ -48,20 +49,20 @@ func ConvertContentLine(l *lexer.Lexer) (*ContentLine, error) {
 		t = token
 		cl.Values = append(cl.Values, v)
 	}
-	if t.Type == lexer.ILLEGAL {
+	if t.Type == token.ILLEGAL {
 		return nil, fmt.Errorf("received ILLEGAL %v", t.Value)
 	}
 	return &cl, nil
 }
 
-func getName(l *lexer.Lexer) (string, lexer.Token, error) {
+func getName(l *lexer.Lexer) (string, token.Token, error) {
 	var n string
 	for {
 		t := l.NextToken()
 		switch t.Type {
-		case lexer.IDENT:
+		case token.IDENT:
 			n += t.Value
-		case lexer.SEMICOLON, lexer.COLON:
+		case token.SEMICOLON, token.COLON:
 			return n, t, nil
 		default:
 			return "", t, fmt.Errorf("invalid token %s", t.Value)
@@ -69,15 +70,15 @@ func getName(l *lexer.Lexer) (string, lexer.Token, error) {
 	}
 }
 
-func getParameter(l *lexer.Lexer) (Parameter, lexer.Token, error) {
+func getParameter(l *lexer.Lexer) (Parameter, token.Token, error) {
 	var p Parameter
 name:
 	for {
 		t := l.NextToken()
 		switch t.Type {
-		case lexer.IDENT:
+		case token.IDENT:
 			p.Name += t.Value
-		case lexer.ASSIGN:
+		case token.ASSIGN:
 			break name
 		default:
 			return Parameter{}, t, fmt.Errorf("invalid token %s", t.Value)
@@ -87,12 +88,12 @@ name:
 	for {
 		t := l.NextToken()
 		switch t.Type {
-		case lexer.IDENT, lexer.STRING:
+		case token.IDENT, token.STRING:
 			val += t.Value
-		case lexer.COMMA:
+		case token.COMMA:
 			p.Values = append(p.Values, val)
 			val = ""
-		case lexer.COLON, lexer.SEMICOLON:
+		case token.COLON, token.SEMICOLON:
 			p.Values = append(p.Values, val)
 			return p, t, nil
 		default:
@@ -101,14 +102,14 @@ name:
 	}
 }
 
-func getValue(l *lexer.Lexer) (string, lexer.Token, error) {
+func getValue(l *lexer.Lexer) (string, token.Token, error) {
 	var val string
 	for {
 		t := l.NextToken()
 		switch t.Type {
-		case lexer.IDENT, lexer.STRING:
+		case token.IDENT, token.STRING:
 			val += t.Value
-		case lexer.COMMA, lexer.EOF:
+		case token.COMMA, token.EOF:
 			return val, t, nil
 		default:
 			return "", t, fmt.Errorf("invalid token %s", t.Value)
