@@ -50,6 +50,8 @@ func NewCalenderUserAddress(v string) (CalenderUserAddress, error) {
 // Date is defined in https://tools.ietf.org/html/rfc5545#section-3.3.4
 type Date time.Time
 
+func (d Date) isTime() {}
+
 func NewDate(v string) (Date, error) {
 	t, err := time.Parse("20060102", v)
 	if err != nil {
@@ -60,6 +62,8 @@ func NewDate(v string) (Date, error) {
 
 // DateTime is defined in https://tools.ietf.org/html/rfc5545#section-3.3.5
 type DateTime time.Time
+
+func (dt DateTime) isTime() {}
 
 func NewDateTime(v, tz string) (DateTime, error) {
 	loc := time.Local
