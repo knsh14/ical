@@ -79,6 +79,7 @@ func (rs *RequestStatus) Update(params parameter.Container, code, desc, exdata t
 		return fmt.Errorf("too many language parameter, %d", len(params[parameter.TypeNameLanguage]))
 	}
 
+	// consider to check by defined status
 	found, err := regexp.MatchString(`^\d\.\d{1,2}$`, string(code))
 	if err != nil {
 		return fmt.Errorf("find version strings: %w", err)
