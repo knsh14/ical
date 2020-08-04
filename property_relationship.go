@@ -82,7 +82,6 @@ type RecurrenceID struct {
 
 // TODO: implement
 func (rid RecurrenceID) SetReccuenceID(params parameter.Container, value types.TimeType) error {
-
 	rid.Parameter = params
 	rid.Value = value
 	return nil
@@ -95,6 +94,15 @@ type RelatedTo struct {
 	Value     types.Text
 }
 
+func (rt *RelatedTo) SetRelatedTo(params parameter.Container, value types.Text) error {
+	if len(params[parameter.TypeNameRelationshipType]) > 1 {
+		return fmt.Errorf("too much values for parameter %s", parameter.TypeNameLanguage)
+	}
+	rt.Parameter = params
+	rt.Value = value
+	return nil
+}
+
 // URL is URL
 // maybe name will be changed to UniformResourceLocator
 // https://tools.ietf.org/html/rfc5545#section-3.8.4.6
@@ -103,9 +111,21 @@ type URL struct {
 	Value     types.URI
 }
 
+func (url *URL) SetURL(params parameter.Container, value types.URI) error {
+	url.Parameter = params
+	url.Value = value
+	return nil
+}
+
 // UID is UID
 // https://tools.ietf.org/html/rfc5545#section-3.8.4.7
 type UID struct {
 	Parameter parameter.Container
 	Value     types.Text
+}
+
+func (uid *UID) SetUID(params parameter.Container, value types.Text) error {
+	uid.Parameter = params
+	uid.Value = value
+	return nil
 }

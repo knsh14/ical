@@ -57,7 +57,7 @@ func (tzofrom *TimezoneOffsetFrom) SetTimezoneOffsetFrom(params parameter.Contai
 	return nil
 }
 
-// TimezoneOffsetFrom is TZOFFSETTO
+// TimezoneOffsetTo is TZOFFSETTO
 // https://tools.ietf.org/html/rfc5545#section-3.8.3.4
 type TimezoneOffsetTo struct {
 	Parameter parameter.Container

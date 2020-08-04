@@ -10,7 +10,7 @@ import (
 
 // https://tools.ietf.org/html/rfc5545#section-3.8.2
 
-// DateTimeCompleted is ...
+// DateTimeCompleted is COMPLETED
 // https://tools.ietf.org/html/rfc5545#section-3.8.2.1
 type DateTimeCompleted struct {
 	Parameter parameter.Container
@@ -29,7 +29,7 @@ func (dtc *DateTimeCompleted) SetCompleted(params parameter.Container, value typ
 	return nil
 }
 
-// DateTimeEnd is ...
+// DateTimeEnd is DTEND
 // https://tools.ietf.org/html/rfc5545#section-3.8.2.2
 type DateTimeEnd struct {
 	Parameter parameter.Container
@@ -84,7 +84,7 @@ func (dte *DateTimeEnd) SetEnd(params parameter.Container, value interface{}) er
 	return nil
 }
 
-// DateTimeDue is ...
+// DateTimeDue is DUE
 // https://tools.ietf.org/html/rfc5545#section-3.8.2.3
 type DateTimeDue struct {
 	Parameter parameter.Container
@@ -137,7 +137,7 @@ func (dtd *DateTimeDue) SetDue(params parameter.Container, value interface{}) er
 	return nil
 }
 
-// DateTimeStart is ...
+// DateTimeStart is DTSTART
 // https://tools.ietf.org/html/rfc5545#section-3.8.2.4
 type DateTimeStart struct {
 	Parameter parameter.Container
@@ -190,7 +190,7 @@ func (dts *DateTimeStart) SetStart(params parameter.Container, value interface{}
 	return nil
 }
 
-// Duration is ...
+// Duration is DURATION
 // https://tools.ietf.org/html/rfc5545#section-3.8.2.5
 type Duration struct {
 	Parameter parameter.Container
@@ -203,7 +203,7 @@ func (d *Duration) SetDuration(params parameter.Container, value types.Duration)
 	return nil
 }
 
-// FreeBusyTime is ...
+// FreeBusyTime is FREEBUSY
 // https://tools.ietf.org/html/rfc5545#section-3.8.2.6
 type FreeBusyTime struct {
 	Parameter parameter.Container
@@ -222,7 +222,7 @@ func (fbt *FreeBusyTime) SetFreeBusyTime(params parameter.Container, values []ty
 	return nil
 }
 
-// TimeTransparency is ...
+// TimeTransparency is TRANSP
 // https://tools.ietf.org/html/rfc5545#section-3.8.2.7
 type TimeTransparency struct {
 	Parameter parameter.Container

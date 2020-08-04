@@ -2,6 +2,7 @@ package ical
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/knsh14/ical/component"
 	"github.com/knsh14/ical/parameter"
@@ -12,7 +13,8 @@ import (
 // defines Properties
 // https://tools.ietf.org/html/rfc5545#section-3.8
 
-// Attachment is https://tools.ietf.org/html/rfc5545#section-3.8.1.1
+// Attachment is ATTACH
+// https://tools.ietf.org/html/rfc5545#section-3.8.1.1
 type Attachment struct {
 	Parameters parameter.Container
 	Value      interface{} // TODO limit Binary or URI
@@ -60,6 +62,8 @@ func (a *Attachment) SetAttachment(params parameter.Container, value interface{}
 	return nil
 }
 
+// Categories is CATEGORIES
+// https://tools.ietf.org/html/rfc5545#section-3.8.1.2
 type Categories struct {
 	Parameters parameter.Container
 	Values     []types.Text
@@ -79,7 +83,7 @@ func (c *Categories) SetCategories(params parameter.Container, values []types.Te
 	return nil
 }
 
-// Class is optional property for components
+// Class is CLASS, optional property for components
 // specification https://tools.ietf.org/html/rfc5545#section-3.8.1.3
 type Class struct {
 	Parameter parameter.Container
@@ -102,13 +106,14 @@ func (c *Class) SetClass(params parameter.Container, value types.Text) error {
 	}
 }
 
-// Comment COMMENT
+// Comment is COMMENT
+// https://tools.ietf.org/html/rfc5545#section-3.8.1.4
 type Comment struct {
 	Parameter parameter.Container
 	Value     types.Text
 }
 
-// specification https://tools.ietf.org/html/rfc5545#section-3.8.1.4
+// SetComment updates property value
 func (c *Comment) SetComment(params parameter.Container, value types.Text) error {
 	if len(value) == 0 {
 		return fmt.Errorf("")
@@ -167,8 +172,27 @@ func (g *Geo) SetGeo(params parameter.Container, latitude, longitude types.Float
 	return nil
 }
 
-// Locaiton is location of component
-// specification https://tools.ietf.org/html/rfc5545#section-3.8.1.7
+func (g *Geo) SetGeoWithText(params parameter.Container, value types.Text) error {
+	var lat, log types.Float
+	var err error
+	v := strings.SplitN(string(value), ";", 2)
+	if len(v) != 2 {
+		return fmt.Errorf("input %s cannot split with ;", value)
+	}
+	lat, err = types.NewFloat(v[0])
+	if err != nil {
+		return fmt.Errorf("convert %s to float: %w", v[0], err)
+	}
+	log, err = types.NewFloat(v[1])
+	if err != nil {
+		return fmt.Errorf("convert %s to float: %w", v[1], err)
+	}
+	return g.SetGeo(params, lat, log)
+}
+
+// Locaiton is LOCATION
+// location of component
+// https://tools.ietf.org/html/rfc5545#section-3.8.1.7
 type Location struct {
 	Parameter parameter.Container
 	Value     types.Text
@@ -189,7 +213,8 @@ func (l *Location) SetLocation(params parameter.Container, value types.Text) err
 	return nil
 }
 
-// PercentComplete is property for ToDo
+// PercentComplete is PERCENT-COMPLETE
+// property for ToDo
 // https://tools.ietf.org/html/rfc5545#section-3.8.1.8
 type PercentComplete struct {
 	Parameter parameter.Container
@@ -205,7 +230,8 @@ func (pc *PercentComplete) SetPercentComplete(params parameter.Container, value 
 	return nil
 }
 
-// Priority is used for ToDo or Event
+// Priority is PRIORITY
+// used for ToDo or Event
 // https://tools.ietf.org/html/rfc5545#section-3.8.1.9
 type Priority struct {
 	Parameter parameter.Container
@@ -221,7 +247,7 @@ func (p *Priority) SetPriority(params parameter.Container, value types.Integer) 
 	return nil
 }
 
-// Resources is ...
+// Resources is RESOURCES
 // https://tools.ietf.org/html/rfc5545#section-3.8.1.10
 type Resources struct {
 	Parameter parameter.Container
@@ -243,7 +269,7 @@ func (r *Resources) SetResources(params parameter.Container, values []types.Text
 	return nil
 }
 
-// Status is ...
+// Status is STATUS
 // https://tools.ietf.org/html/rfc5545#section-3.8.1.11
 type Status struct {
 	Parameter parameter.Container
@@ -285,7 +311,7 @@ func (s *Status) SetStatus(params parameter.Container, value types.Text, kind co
 	}
 }
 
-// Summary is ...
+// Summary is SUMMARY
 // used for "VEVENT", "VTODO", "VJOURNAL", or "VALARM"
 // https://tools.ietf.org/html/rfc5545#section-3.8.1.12
 type Summary struct {
