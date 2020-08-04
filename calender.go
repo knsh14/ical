@@ -5,6 +5,7 @@ import (
 	"regexp"
 	"strings"
 
+	"github.com/Masterminds/semver/v3"
 	"github.com/knsh14/ical/parameter"
 	"github.com/knsh14/ical/types"
 )
@@ -117,8 +118,23 @@ func (c *Calender) SetVersion(params parameter.Container, t types.Text) error {
 		return fmt.Errorf("not required format, allow X.Y or W.X;Y.Z")
 	}
 	v := strings.SplitN(string(t), ";", 2)
-	c.Version.Min = types.NewText(v[0])
-	c.Version.Max = types.NewText(v[1])
+	return c.UpdateVersion(params, types.NewText(v[0]), types.NewText(v[1]))
+}
+
+func (c *Calender) UpdateVersion(params parameter.Container, min, max types.Text) error {
+	a, err := semver.NewVersion(string(min))
+	if err != nil {
+		return fmt.Errorf("convert %s to semvar: %w", min, err)
+	}
+	b, err := semver.NewVersion(string(min))
+	if err != nil {
+		return fmt.Errorf("convert %s to semvar: %w", max, err)
+	}
+	if a.GreaterThan(b) {
+		return fmt.Errorf("min version %s is greater than max version %s", min, max)
+	}
+	c.Version.Min = min
+	c.Version.Max = max
 	c.Version.Param = params
 	return nil
 }

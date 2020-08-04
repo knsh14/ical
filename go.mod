@@ -4,6 +4,7 @@ go 1.14
 
 require (
 	github.com/Djarvur/go-err113 v0.1.0 // indirect
+	github.com/Masterminds/semver/v3 v3.1.0
 	github.com/fsnotify/fsnotify v1.4.9 // indirect
 	github.com/gogo/protobuf v1.3.1 // indirect
 	github.com/golangci/golangci-lint v1.29.0 // indirect
