@@ -194,3 +194,160 @@ func TestNewDuration(t *testing.T) {
 		})
 	}
 }
+
+func TestRecurrenceRule(t *testing.T) {
+	t.Parallel()
+	testcases := map[string]struct {
+		input       string
+		expected    RecurrenceRule
+		expectError func(*testing.T, error)
+	}{
+		"empty": {
+			input:    "",
+			expected: RecurrenceRule{},
+			expectError: func(t *testing.T, err error) {
+				if !errors.Is(err, ErrEmpty) {
+					t.Fatalf("expect:%v\nactual:%v", ErrEmpty, err)
+				}
+			},
+		},
+		"FREQ": {
+			input: "FREQ=DAILY",
+			expected: RecurrenceRule{
+				Frequency: FrequencyPatternDaily,
+			},
+			expectError: func(t *testing.T, err error) {
+				if err != nil {
+					t.Fatalf("expect:%v\nactual:%v", nil, err)
+				}
+			},
+		},
+		"FREQ_fail": {
+			input:    "FREQ=INVALID_PATTERN",
+			expected: RecurrenceRule{},
+			expectError: func(t *testing.T, err error) {
+				expect := fmt.Errorf("%s is invalid Frequency pattern", "INVALID_PATTERN")
+				if err == nil {
+					t.Fatal("err expected but nil")
+				}
+				if err.Error() != expect.Error() {
+					t.Fatalf("expect:%v\nactual:%v", expect, err)
+				}
+			},
+		},
+		"WKST": {
+			input: "WKST=SU",
+			expected: RecurrenceRule{
+				WeekDay: WeekDayPatternSunday,
+			},
+			expectError: func(t *testing.T, err error) {
+				if err != nil {
+					t.Fatalf("expect:%v\nactual:%v", nil, err)
+				}
+			},
+		},
+		"WKST_fail": {
+			input:    "WKST=INVALID_PATTERN",
+			expected: RecurrenceRule{},
+			expectError: func(t *testing.T, err error) {
+				expect := fmt.Errorf("%s is invalid WeekDay pattern", "INVALID_PATTERN")
+				if err == nil {
+					t.Fatal("err expected but nil")
+				}
+				if err.Error() != expect.Error() {
+					t.Fatalf("expect:%v\nactual:%v", expect, err)
+				}
+			},
+		},
+		"BYWEEKNO": {
+			input: "BYWEEKNO=32",
+			expected: RecurrenceRule{
+				ByWeekNo: []int64{32},
+			},
+			expectError: func(t *testing.T, err error) {
+				if err != nil {
+					t.Fatalf("expect:%v\nactual:%v", nil, err)
+				}
+			},
+		},
+		"BYWEEKNO_negative": {
+			input: "BYWEEKNO=-32",
+			expected: RecurrenceRule{
+				ByWeekNo: []int64{-32},
+			},
+			expectError: func(t *testing.T, err error) {
+				if err != nil {
+					t.Fatalf("expect:%v\nactual:%v", nil, err)
+				}
+			},
+		},
+		"BYWEEKNO_out_of_range": {
+			input:    "BYWEEKNO=0",
+			expected: RecurrenceRule{},
+			expectError: func(t *testing.T, err error) {
+				expect := fmt.Errorf("convert %s to by week no list: %w", "0", fmt.Errorf("%d is out of range", 0))
+				if err == nil {
+					t.Fatal("err expected but nil")
+				}
+				if err.Error() != expect.Error() {
+					t.Fatalf("expect:%v\nactual:%v", expect, err)
+				}
+			},
+		},
+		"BYDAY": {
+			input: "BYDAY=14SU",
+			expected: RecurrenceRule{
+				ByDay: []WeekDay{
+					{
+						Week: 14,
+						Day:  WeekDayPatternSunday,
+					},
+				},
+			},
+			expectError: func(t *testing.T, err error) {
+				if err != nil {
+					t.Fatalf("expect:%v\nactual:%v", nil, err)
+				}
+			},
+		},
+		"BYDAY_negative": {
+			input: "BYDAY=-14SU",
+			expected: RecurrenceRule{
+				ByDay: []WeekDay{
+					{
+						Week: -14,
+						Day:  WeekDayPatternSunday,
+					},
+				},
+			},
+			expectError: func(t *testing.T, err error) {
+				if err != nil {
+					t.Fatalf("expect:%v\nactual:%v", nil, err)
+				}
+			},
+		},
+		"BYMONTH_multi": {
+			input: "BYMONTH=1,3,5,7",
+			expected: RecurrenceRule{
+				ByMonth: []int64{1, 3, 5, 7},
+			},
+			expectError: func(t *testing.T, err error) {
+				if err != nil {
+					t.Fatalf("expect:%v\nactual:%v", nil, err)
+				}
+			},
+		},
+	}
+
+	for title, tt := range testcases {
+		t.Run(title, func(t *testing.T) {
+			tt := tt
+			t.Parallel()
+			v, err := NewRecurrenceRule(tt.input)
+			tt.expectError(t, err)
+			if diff := cmp.Diff(tt.expected, v); diff != "" {
+				t.Errorf("(-got, +want)\n%s", diff)
+			}
+		})
+	}
+}
