@@ -81,7 +81,7 @@ type RecurrenceID struct {
 }
 
 // TODO: implement
-func (rid RecurrenceID) SetReccuenceID(params parameter.Container, value types.TimeType) error {
+func (rid RecurrenceID) SetRecurrenceID(params parameter.Container, value types.TimeType) error {
 	rid.Parameter = params
 	rid.Value = value
 	return nil

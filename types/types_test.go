@@ -326,6 +326,24 @@ func TestRecurrenceRule(t *testing.T) {
 				}
 			},
 		},
+		"BYDAY_only_weekday": {
+			input: "BYDAY=SU,MO",
+			expected: RecurrenceRule{
+				ByDay: []WeekDay{
+					{
+						Day: WeekDayPatternSunday,
+					},
+					{
+						Day: WeekDayPatternMonday,
+					},
+				},
+			},
+			expectError: func(t *testing.T, err error) {
+				if err != nil {
+					t.Fatalf("expect:%v\nactual:%v", nil, err)
+				}
+			},
+		},
 		"BYMONTH_multi": {
 			input: "BYMONTH=1,3,5,7",
 			expected: RecurrenceRule{

@@ -7,8 +7,8 @@ import (
 	"github.com/knsh14/ical/parameter"
 )
 
-func (p *Parser) parseParameter(cl *contentline.ContentLine) (map[parameter.TypeName][]parameter.Base, error) {
-	var params map[parameter.TypeName][]parameter.Base
+func (p *Parser) parseParameter(cl *contentline.ContentLine) (parameter.Container, error) {
+	var params parameter.Container
 	for _, v := range cl.Parameters {
 		switch t := parameter.TypeName(v.Name); t {
 		case parameter.TypeNameAlternateTextRepresentation:

@@ -44,26 +44,71 @@ func (edt *ExceptionDateTimes) SetExceptionDateTimes(params parameter.Container,
 }
 
 // RecurrenceDateTimes is RDATE
-// TODO implement
 // https://tools.ietf.org/html/rfc5545#section-3.8.5.2
 type RecurrenceDateTimes struct {
 	Parameter parameter.Container
-	Values    []interface{} // default is DateTime, Date or Period are fine.
+	Values    []types.RecurrenceDateTime // default is DateTime, Date or Period are fine.
 }
 
-func (rdt *RecurrenceDateTimes) SetRecurrenceDateTimes(params parameter.Container, values []interface{}) error {
+func NewRecurrenceDateTime(params parameter.Container, s string) (types.RecurrenceDateTime, error) {
+	value, ok := params[parameter.TypeNameValueType]
+	if !ok {
+		return nil, fmt.Errorf("no value type")
+	}
+	if len(value) == 1 {
+		return nil, fmt.Errorf("no value type")
+	}
+	vt, ok := value[0].(*parameter.ValueType)
+	if !ok {
+		return nil, fmt.Errorf("not VALUE, but %T", value[0])
+	}
+	var tz string
+	if tzid, ok := params[parameter.TypeNameReferenceTimezone]; ok {
+		t, ok := tzid[0].(*parameter.ReferenceTimezone)
+		if ok {
+			tz = t.Value
+		}
+	}
+
+	switch vt.Value {
+	case "DATE-TIME":
+		dt, err := types.NewDateTime(s, tz)
+		if err != nil {
+			return nil, fmt.Errorf("convert %s to DATE-TIME: %w", s, err)
+		}
+		return dt, nil
+	case "DATE":
+		d, err := types.NewDate(s)
+		if err != nil {
+			return nil, fmt.Errorf("convert %s to DATE: %w", s, err)
+		}
+		return d, nil
+	case "RERIOD":
+		p, err := types.NewPeriod(s)
+		if err != nil {
+			return nil, fmt.Errorf("convert %s to PERIOD: %w", s, err)
+		}
+		return p, nil
+	default:
+		return nil, fmt.Errorf("%s is invalid name for VALUE", vt.Value)
+	}
+}
+
+func (rdt *RecurrenceDateTimes) SetRecurrenceDateTimes(params parameter.Container, values []types.RecurrenceDateTime) error {
 	rdt.Parameter = params
 	rdt.Values = values
 	return nil
 }
 
 // RecurrenceRule is RRULE
+// https://tools.ietf.org/html/rfc5545#section-3.8.5.3
 type RecurrenceRule struct {
 	Parameter parameter.Container
-	Values    interface{} // RECUR
+	Value     types.RecurrenceRule
 }
 
-// TODO implement
-func (rrule *RecurrenceRule) SetRecurrenceRule(params parameter.Container, value interface{}) error {
+func (rrule *RecurrenceRule) SetRecurrenceRule(params parameter.Container, value types.RecurrenceRule) error {
+	rrule.Parameter = params
+	rrule.Value = value
 	return nil
 }

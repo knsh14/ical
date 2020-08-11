@@ -44,6 +44,7 @@ const (
 
 	// relationship
 	PropertyNameAttendee     PropertyName = "ATTENDEE"
+	PropertyNameContact      PropertyName = "CONTACT"
 	PropertyNameOrganizer    PropertyName = "ORGANIZER"
 	PropertyNameRecurrenceID PropertyName = "RECURRENCE-ID"
 	PropertyNameRelatedTo    PropertyName = "RELATED-TO"
@@ -60,4 +61,7 @@ const (
 	PropertyNameExceptionDateTimes  PropertyName = "EXDATE"
 	PropertyNameRecurrenceDateTimes PropertyName = "RDATE"
 	PropertyNameRecurrenceRule      PropertyName = "RRULE"
+
+	// Miscellaneous
+	PropertyNameRequestStatus PropertyName = "REQUEST-STATUS"
 )

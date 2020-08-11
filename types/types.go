@@ -18,6 +18,8 @@ type Binary struct {
 	Value string
 }
 
+func (b Binary) attachmentable() {}
+
 func NewBinary(v string) (Binary, error) {
 	if _, err := base64.StdEncoding.DecodeString(v); err != nil {
 		return Binary{}, fmt.Errorf("base64 decode: %w", err)
@@ -52,7 +54,8 @@ func NewCalenderUserAddress(v string) (CalenderUserAddress, error) {
 // Date is defined in https://tools.ietf.org/html/rfc5545#section-3.3.4
 type Date time.Time
 
-func (d Date) isTime() {}
+func (d Date) isTime()                      {}
+func (d Date) implementRecurrenceDateTime() {}
 
 func NewDate(v string) (Date, error) {
 	t, err := time.Parse("20060102", v)
@@ -65,7 +68,8 @@ func NewDate(v string) (Date, error) {
 // DateTime is defined in https://tools.ietf.org/html/rfc5545#section-3.3.5
 type DateTime time.Time
 
-func (dt DateTime) isTime() {}
+func (dt DateTime) isTime()                      {}
+func (dt DateTime) implementRecurrenceDateTime() {}
 
 func NewDateTime(v, tz string) (DateTime, error) {
 	loc := time.Local
@@ -182,6 +186,8 @@ type Period struct {
 	End   DateTime
 	Range Duration
 }
+
+func (p Period) implementRecurrenceDateTime() {}
 
 func NewPeriod(v string) (Period, error) {
 	l := strings.Split(v, "/")
@@ -397,7 +403,7 @@ func getNumberList(v string, check func(int64) bool) ([]int64, error) {
 	return res, nil
 }
 
-var weekDayNumRe = regexp.MustCompile(`([+-]?\d{1,2})([[:upper:]]{2})`)
+var weekDayNumRe = regexp.MustCompile(`([+-]?\d{1,2})?([[:upper:]]{2})`)
 
 func getWeekDayList(v string) ([]WeekDay, error) {
 	var days []WeekDay
@@ -412,14 +418,16 @@ func getWeekDayList(v string) ([]WeekDay, error) {
 			return nil, fmt.Errorf("%s is invalid pattern", v)
 		}
 		matches := res[0]
-		a, err := strconv.Atoi(matches[1])
-		if err != nil {
-			return nil, fmt.Errorf("convert %s into int: %w", v, err)
+		if matches[1] != "" {
+			a, err := strconv.Atoi(matches[1])
+			if err != nil {
+				return nil, fmt.Errorf("convert %s into int: %w", v, err)
+			}
+			w.Week = int64(a)
 		}
-		w.Week = int64(a)
 		w.Day = recurrenceRuleWeekdayPattern(matches[2])
 		if w.Day == WeekDayPatternInvalid {
-			return nil, fmt.Errorf("convert %s into week day: %w", matches[2], err)
+			return nil, fmt.Errorf("convert %s into week day", matches[2])
 		}
 		days = append(days, w)
 	}
@@ -457,14 +465,18 @@ func NewTime(v, tz string) (Time, error) {
 }
 
 // URI is defined in https://tools.ietf.org/html/rfc5545#section-3.3.13
-type URI *url.URL
+type URI struct {
+	*url.URL
+}
+
+func (v URI) attachmentable() {}
 
 func NewURI(v string) (URI, error) {
 	uri, err := url.ParseRequestURI(v)
 	if err != nil {
-		return nil, fmt.Errorf("invalid format for URI: %w", err)
+		return URI{}, fmt.Errorf("invalid format for URI: %w", err)
 	}
-	return URI(uri), nil
+	return URI{uri}, nil
 }
 
 // UTCOffset is defined in https://tools.ietf.org/html/rfc5545#section-3.3.14

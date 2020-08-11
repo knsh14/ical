@@ -54,8 +54,8 @@ type Event struct {
 	*Resources
 	*RecurrenceDateTimes
 
-	XProperties    []NonStandard
-	IANAProperties []IANA
+	XProperties    []*NonStandard
+	IANAProperties []*IANA
 }
 
 func (e *Event) implementCalender() {}
@@ -169,10 +169,10 @@ func (e *Event) SetRecurrenceID(params parameter.Container, value types.TimeType
 	if e.RecurrenceID == nil {
 		e.RecurrenceID = &RecurrenceID{}
 	}
-	return e.RecurrenceID.SetReccuenceID(params, value)
+	return e.RecurrenceID.SetRecurrenceID(params, value)
 }
 
-func (e *Event) SetRecurrenceRule(params parameter.Container, value types.TimeType) error {
+func (e *Event) SetRecurrenceRule(params parameter.Container, value types.RecurrenceRule) error {
 	if e.RecurrenceRule == nil {
 		e.RecurrenceRule = &RecurrenceRule{}
 	}
@@ -193,7 +193,7 @@ func (e *Event) SetDuration(params parameter.Container, value types.Duration) er
 	return e.Duration.SetDuration(params, value)
 }
 
-func (e *Event) SetAttachment(params parameter.Container, value interface{}) error {
+func (e *Event) SetAttachment(params parameter.Container, value types.Attachmentable) error {
 	if e.Attachment == nil {
 		e.Attachment = &Attachment{}
 	}
@@ -256,7 +256,7 @@ func (e *Event) SetResources(params parameter.Container, values []types.Text) er
 	return e.Resources.SetResources(params, values)
 }
 
-func (e *Event) SetRecurrenceDateTimes(params parameter.Container, values []interface{}) error {
+func (e *Event) SetRecurrenceDateTimes(params parameter.Container, values []types.RecurrenceDateTime) error {
 	if e.RecurrenceDateTimes == nil {
 		e.RecurrenceDateTimes = &RecurrenceDateTimes{}
 	}

@@ -130,6 +130,44 @@ func TestParseCalender(t *testing.T) {
 			expected:      nil,
 			expectedError: NoEndError(component.ComponentTypeCalender),
 		},
+		"calender with event": {
+			input: []*contentline.ContentLine{
+				{
+					Name:   "BEGIN",
+					Values: []string{string(component.ComponentTypeCalender)},
+				},
+				{
+					Name:   "VERSION",
+					Values: []string{"1.2;2.0"},
+				},
+				{
+					Name:   "BEGIN",
+					Values: []string{string(component.ComponentTypeEvent)},
+				},
+				{
+					Name:   "END",
+					Values: []string{string(component.ComponentTypeEvent)},
+				},
+				{
+					Name:   "END",
+					Values: []string{string(component.ComponentTypeCalender)},
+				},
+			},
+			expected: &ical.Calender{
+				Component: []ical.CalenderComponent{
+					&ical.Event{},
+				},
+				Version: struct {
+					Param parameter.Container
+					Max   types.Text
+					Min   types.Text
+				}{
+					Min: types.NewText("1.2"),
+					Max: types.NewText("2.0"),
+				},
+			},
+			expectedError: nil,
+		},
 	}
 
 	for title, tc := range testcases {
@@ -144,7 +182,7 @@ func TestParseCalender(t *testing.T) {
 			if tc.expectedError != nil && !errors.Is(err, tc.expectedError) {
 				t.Fatal(err)
 			}
-			if diff := cmp.Diff(tc.expected, cal); diff != "" {
+			if diff := cmp.Diff(tc.expected, cal, cmp.AllowUnexported(types.DateTime{}, types.Date{})); diff != "" {
 				t.Errorf("(-got, +want)\n%s", diff)
 			}
 		})

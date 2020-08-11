@@ -61,20 +61,43 @@ func (p *Parser) parseCalender() (*ical.Calender, error) {
 			}
 		case "BEGIN":
 			if len(l.Values) != 1 {
+				return nil, fmt.Errorf("not expected value length")
 			}
-			switch component.ComponentType(l.Values[0]) {
+			switch ct := component.ComponentType(l.Values[0]); ct {
 			case component.ComponentTypeEvent:
+				e, err := p.parseEvent()
+				if err != nil {
+					return nil, fmt.Errorf("parse event: %w", err)
+				}
+				c.Component = append(c.Component, e)
+				break
 			case component.ComponentTypeTODO:
+				for !p.isEndComponent(ct) {
+					p.nextLine()
+				}
 			case component.ComponentTypeJournal:
+				for !p.isEndComponent(ct) {
+					p.nextLine()
+				}
 			case component.ComponentTypeFreeBusy:
+				for !p.isEndComponent(ct) {
+					p.nextLine()
+				}
 			case component.ComponentTypeTimezone:
+				for !p.isEndComponent(ct) {
+					p.nextLine()
+				}
 			default:
+				return nil, fmt.Errorf("unknown component type %s", ct)
 			}
 		case "END":
-			if p.isEndComponent(component.ComponentTypeCalender) {
-				return c, nil
+			if !p.isEndComponent(component.ComponentTypeCalender) {
+				return nil, fmt.Errorf("Invalid END")
 			}
-			return nil, fmt.Errorf("Invalid END")
+			if err := c.Validate(); err != nil {
+				return nil, fmt.Errorf("validation error: %w", err)
+			}
+			return c, nil
 		default:
 			if token.IsXName(l.Name) {
 				params, err := p.parseParameter(l)

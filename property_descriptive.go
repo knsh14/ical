@@ -17,10 +17,48 @@ import (
 // https://tools.ietf.org/html/rfc5545#section-3.8.1.1
 type Attachment struct {
 	Parameters parameter.Container
-	Value      interface{} // TODO limit Binary or URI
+	Value      types.Attachmentable
 }
 
-func (a *Attachment) SetAttachment(params parameter.Container, value interface{}) error {
+func NewAttachmentValue(params parameter.Container, s string) (types.Attachmentable, error) {
+	if checkAttachmentIsBinary(params) {
+		b, err := types.NewBinary(s)
+		if err != nil {
+			return nil, fmt.Errorf("convert %s to Binary for Attachment: %w", s, err)
+		}
+		return b, nil
+	}
+	uri, err := types.NewURI(s)
+	if err != nil {
+		return nil, fmt.Errorf("convert %s to URL for Attachment: %w", s, err)
+	}
+	return uri, nil
+}
+
+func checkAttachmentIsBinary(params parameter.Container) bool {
+	if len(params) != 2 {
+		return false
+	}
+	enc, encOK := params[parameter.TypeNameInlineEncoding]
+	if !encOK {
+		return false
+	}
+	encoding, ok := enc[0].(*parameter.InlineEncoding)
+	if !(ok && encoding.Type == parameter.InlineEncodingTypeBASE64) {
+		return false
+	}
+	val, valOK := params[parameter.TypeNameValueType]
+	if !valOK {
+		return false
+	}
+	valueType, ok := val[0].(*parameter.ValueType)
+	if !ok || valueType.Value != "BINARY" {
+		return false
+	}
+	return true
+}
+
+func (a *Attachment) SetAttachment(params parameter.Container, value types.Attachmentable) error {
 	enc, encOK := params[parameter.TypeNameInlineEncoding]
 	val, valOK := params[parameter.TypeNameValueType]
 	if encOK && valOK {
