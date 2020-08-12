@@ -1,16 +1,47 @@
 package parser
 
 import (
+	"bufio"
 	"fmt"
+	"os"
 	"strings"
 
 	"github.com/knsh14/ical"
 	"github.com/knsh14/ical/component"
 	"github.com/knsh14/ical/contentline"
+	"github.com/knsh14/ical/lexer"
+	"golang.org/x/sync/errgroup"
 )
 
 func Parse(path string) (*ical.Calender, error) {
-	return nil, nil
+	f, err := os.Open(path)
+	if err != nil {
+		return nil, err
+	}
+	scanner := bufio.NewScanner(f)
+	lines, err := scanLines(scanner)
+	if err != nil {
+		return nil, err
+	}
+	var eg errgroup.Group
+	contentlines := make([]*contentline.ContentLine, len(lines))
+	for i := range lines {
+		i := i
+		eg.Go(func() error {
+			l := lexer.New(lines[i])
+			cl, err := contentline.ConvertContentLine(l)
+			if err != nil {
+				return fmt.Errorf("convert content line in line %d: %w", i, err)
+			}
+			contentlines[i] = cl
+			return nil
+		})
+	}
+	if err := eg.Wait(); err != nil {
+		return nil, err
+	}
+	p := NewParser(contentlines)
+	return p.parse()
 }
 
 func rebuildContentLines(raw []string) []string {
@@ -27,6 +58,26 @@ func rebuildContentLines(raw []string) []string {
 		}
 	}
 	return res
+}
+
+func scanLines(scanner *bufio.Scanner) ([]string, error) {
+	var res []string
+	for scanner.Scan() {
+		l := scanner.Text()
+		switch {
+		case strings.HasPrefix(l, " "):
+			res[len(res)-1] += "\n" + strings.TrimPrefix(l, " ")
+		case strings.HasPrefix(l, "\t"):
+			res[len(res)-1] += "\n" + strings.TrimPrefix(l, "\t")
+			continue
+		default:
+			res = append(res, l)
+		}
+	}
+	if err := scanner.Err(); err != nil {
+		return nil, err
+	}
+	return res, nil
 }
 
 func NewParser(cls []*contentline.ContentLine) *Parser {
@@ -64,8 +115,8 @@ func (p *Parser) Parse() (*ical.Calender, error) {
 
 func (p *Parser) parse() (*ical.Calender, error) {
 	l := p.getCurrentLine()
-	if !p.isBeginComponent(component.ComponentTypeCalender) {
-		return nil, fmt.Errorf("not %s:%s, got %v", "BEGIN", component.ComponentTypeCalender, l)
+	if !p.isBeginComponent(component.ComponentTypeCalendar) {
+		return nil, fmt.Errorf("not %s:%s, got %v", "BEGIN", component.ComponentTypeCalendar, l)
 	}
 	p.nextLine()
 	c, err := p.parseCalender()

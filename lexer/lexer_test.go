@@ -173,6 +173,14 @@ this is test`},
 				{Type: token.EOF, Value: ""},
 			},
 		},
+		{
+			input: `DESCRIPTION:`,
+			expect: []token.Token{
+				{Type: token.IDENT, Value: "DESCRIPTION"},
+				{Type: token.COLON, Value: ":"},
+				{Type: token.EOF, Value: ""},
+			},
+		},
 	}
 
 	for i, tt := range tests {

@@ -156,6 +156,15 @@ this is test`},
 			},
 			expectError: nil,
 		},
+		{
+			input: "DESCRIPTION:",
+			expectValue: &ContentLine{
+				Name:       "DESCRIPTION",
+				Parameters: nil,
+				Values:     []string{""},
+			},
+			expectError: nil,
+		},
 	}
 
 	for i, tt := range tests {

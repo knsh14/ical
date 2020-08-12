@@ -67,7 +67,7 @@ func (e *Event) Validate() error {
 	return nil
 }
 
-func (e *Event) SetDateTimeStart(params parameter.Container, value types.DateTime) error {
+func (e *Event) SetDateTimeStart(params parameter.Container, value types.TimeType) error {
 	if e.DateTimeStart == nil {
 		e.DateTimeStart = &DateTimeStart{}
 	}

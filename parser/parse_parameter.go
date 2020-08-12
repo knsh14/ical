@@ -8,7 +8,7 @@ import (
 )
 
 func (p *Parser) parseParameter(cl *contentline.ContentLine) (parameter.Container, error) {
-	var params parameter.Container
+	params := parameter.Container(map[parameter.TypeName][]parameter.Base{})
 	for _, v := range cl.Parameters {
 		switch t := parameter.TypeName(v.Name); t {
 		case parameter.TypeNameAlternateTextRepresentation:

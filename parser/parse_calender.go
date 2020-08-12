@@ -10,7 +10,7 @@ import (
 )
 
 func (p *Parser) parseCalender() (*ical.Calender, error) {
-	p.currentComponentType = component.ComponentTypeCalender
+	p.currentComponentType = component.ComponentTypeCalendar
 	c := ical.NewCalender()
 
 	for l := p.getCurrentLine(); l != nil; l = p.getCurrentLine() {
@@ -45,9 +45,9 @@ func (p *Parser) parseCalender() (*ical.Calender, error) {
 				p.errors = append(p.errors, err)
 			}
 			t := types.NewText(l.Values[0])
-			err = c.SetMethod(params, t)
+			err = c.SetProdID(params, t)
 			if err != nil {
-				return nil, fmt.Errorf("failed to set value to VCALENDER.METHOD: %w", err)
+				return nil, fmt.Errorf("failed to set value to VCALENDER.ProdID: %w", err)
 			}
 		case "VERSION":
 			params, err := p.parseParameter(l)
@@ -91,7 +91,7 @@ func (p *Parser) parseCalender() (*ical.Calender, error) {
 				return nil, fmt.Errorf("unknown component type %s", ct)
 			}
 		case "END":
-			if !p.isEndComponent(component.ComponentTypeCalender) {
+			if !p.isEndComponent(component.ComponentTypeCalendar) {
 				return nil, fmt.Errorf("Invalid END")
 			}
 			if err := c.Validate(); err != nil {
@@ -122,5 +122,5 @@ func (p *Parser) parseCalender() (*ical.Calender, error) {
 		}
 		p.nextLine()
 	}
-	return nil, NoEndError(component.ComponentTypeCalender)
+	return nil, NoEndError(component.ComponentTypeCalendar)
 }

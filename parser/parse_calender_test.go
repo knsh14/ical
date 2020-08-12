@@ -24,11 +24,11 @@ func TestParseCalender(t *testing.T) {
 			input: []*contentline.ContentLine{
 				{
 					Name:   "BEGIN",
-					Values: []string{string(component.ComponentTypeCalender)},
+					Values: []string{string(component.ComponentTypeCalendar)},
 				},
 				{
 					Name:   "END",
-					Values: []string{string(component.ComponentTypeCalender)},
+					Values: []string{string(component.ComponentTypeCalendar)},
 				},
 			},
 			expected:      &ical.Calender{},
@@ -38,7 +38,7 @@ func TestParseCalender(t *testing.T) {
 			input: []*contentline.ContentLine{
 				{
 					Name:   "BEGIN",
-					Values: []string{string(component.ComponentTypeCalender)},
+					Values: []string{string(component.ComponentTypeCalendar)},
 				},
 				{
 					Name:   "VERSION",
@@ -46,7 +46,7 @@ func TestParseCalender(t *testing.T) {
 				},
 				{
 					Name:   "END",
-					Values: []string{string(component.ComponentTypeCalender)},
+					Values: []string{string(component.ComponentTypeCalendar)},
 				},
 			},
 			expected: &ical.Calender{
@@ -64,7 +64,7 @@ func TestParseCalender(t *testing.T) {
 			input: []*contentline.ContentLine{
 				{
 					Name:   "BEGIN",
-					Values: []string{string(component.ComponentTypeCalender)},
+					Values: []string{string(component.ComponentTypeCalendar)},
 				},
 				{
 					Name:   "VERSION",
@@ -72,7 +72,7 @@ func TestParseCalender(t *testing.T) {
 				},
 				{
 					Name:   "END",
-					Values: []string{string(component.ComponentTypeCalender)},
+					Values: []string{string(component.ComponentTypeCalendar)},
 				},
 			},
 			expected: &ical.Calender{
@@ -91,7 +91,7 @@ func TestParseCalender(t *testing.T) {
 			input: []*contentline.ContentLine{
 				{
 					Name:   "BEGIN",
-					Values: []string{string(component.ComponentTypeCalender)},
+					Values: []string{string(component.ComponentTypeCalendar)},
 				},
 				{
 					Name:   "X-WR-TIMEZONE",
@@ -99,7 +99,7 @@ func TestParseCalender(t *testing.T) {
 				},
 				{
 					Name:   "END",
-					Values: []string{string(component.ComponentTypeCalender)},
+					Values: []string{string(component.ComponentTypeCalendar)},
 				},
 			},
 			expected: &ical.Calender{
@@ -120,7 +120,7 @@ func TestParseCalender(t *testing.T) {
 			input: []*contentline.ContentLine{
 				{
 					Name:   "BEGIN",
-					Values: []string{string(component.ComponentTypeCalender)},
+					Values: []string{string(component.ComponentTypeCalendar)},
 				},
 				{
 					Name:   "VERSION",
@@ -128,13 +128,13 @@ func TestParseCalender(t *testing.T) {
 				},
 			},
 			expected:      nil,
-			expectedError: NoEndError(component.ComponentTypeCalender),
+			expectedError: NoEndError(component.ComponentTypeCalendar),
 		},
 		"calender with event": {
 			input: []*contentline.ContentLine{
 				{
 					Name:   "BEGIN",
-					Values: []string{string(component.ComponentTypeCalender)},
+					Values: []string{string(component.ComponentTypeCalendar)},
 				},
 				{
 					Name:   "VERSION",
@@ -150,7 +150,7 @@ func TestParseCalender(t *testing.T) {
 				},
 				{
 					Name:   "END",
-					Values: []string{string(component.ComponentTypeCalender)},
+					Values: []string{string(component.ComponentTypeCalendar)},
 				},
 			},
 			expected: &ical.Calender{

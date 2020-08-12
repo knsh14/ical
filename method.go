@@ -6,7 +6,7 @@ package ical
 type Method string
 
 const (
-	PUBLISH        Method = "PUBLISH "
+	PUBLISH        Method = "PUBLISH"
 	REQUEST        Method = "REQUEST"
 	REPLY          Method = "REPLY"
 	ADD            Method = "ADD"

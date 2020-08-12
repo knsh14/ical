@@ -175,9 +175,6 @@ type Description struct {
 }
 
 func (d *Description) SetDescription(params parameter.Container, value types.Text) error {
-	if len(value) == 0 {
-		return fmt.Errorf("input is nil")
-	}
 	if len(params[parameter.TypeNameAlternateTextRepresentation]) > 1 {
 		return fmt.Errorf("")
 	}
@@ -237,9 +234,6 @@ type Location struct {
 }
 
 func (l *Location) SetLocation(params parameter.Container, value types.Text) error {
-	if len(value) == 0 {
-		return fmt.Errorf("input is nil")
-	}
 	if len(params[parameter.TypeNameAlternateTextRepresentation]) > 1 {
 		return fmt.Errorf("")
 	}

@@ -52,13 +52,12 @@ func (p *Parser) parseEvent() (*ical.Event, error) {
 				return nil, fmt.Errorf("set value to %s: %w", pname, err)
 			}
 		case ical.PropertyNameDateTimeStart:
-			var tz string
-			if len(params[parameter.TypeNameReferenceTimezone]) == 1 {
-				tz = params[parameter.TypeNameReferenceTimezone][0].(*parameter.ReferenceTimezone).Value
+			if len(l.Values) != 1 {
+				return nil, NewInvalidValueLengthError(1, len(l.Values))
 			}
-			t, err := types.NewDateTime(l.Values[0], tz)
+			t, err := ical.NewTimeType(params, l.Values[0])
 			if err != nil {
-				return nil, fmt.Errorf("convert date time: %w", err)
+				return nil, fmt.Errorf("convert date time for %s: %w", pname, err)
 			}
 			if err := event.SetDateTimeStart(params, t); err != nil {
 				return nil, fmt.Errorf("set value to %s: %w", pname, err)

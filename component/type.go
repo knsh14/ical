@@ -5,7 +5,7 @@ package component
 type ComponentType string
 
 const (
-	ComponentTypeCalender ComponentType = "VCALENDER"
+	ComponentTypeCalendar ComponentType = "VCALENDAR"
 	ComponentTypeEvent    ComponentType = "VEVENT"
 	ComponentTypeTODO     ComponentType = "VTODO"
 	ComponentTypeJournal  ComponentType = "VJOURNAL"

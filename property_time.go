@@ -19,7 +19,7 @@ type DateTimeCompleted struct {
 
 func (dtc *DateTimeCompleted) SetCompleted(params parameter.Container, value types.DateTime) error {
 	if value != types.DateTime(time.Time{}) {
-		return fmt.Errorf("")
+		return ErrInputIsEmpty
 	}
 	if loc := time.Time(value).Location(); loc != time.UTC {
 		return fmt.Errorf("Completed timezone must be UTC, but %s", loc)
@@ -33,54 +33,12 @@ func (dtc *DateTimeCompleted) SetCompleted(params parameter.Container, value typ
 // https://tools.ietf.org/html/rfc5545#section-3.8.2.2
 type DateTimeEnd struct {
 	Parameter parameter.Container
-	Value     time.Time // DateTime or Date
+	Value     types.TimeType // DateTime or Date
 }
 
-func (dte *DateTimeEnd) SetEnd(params parameter.Container, value interface{}) error {
-	dateTime, isDateTime := value.(types.DateTime)
-	date, isDate := value.(types.Date)
-	if !(isDate || isDateTime) {
-		return fmt.Errorf("value must be DateTime or Date, but %T", value)
-	}
-	valueParam, hasValueParam := params[parameter.TypeNameValueType]
-	if hasValueParam && len(valueParam) == 1 {
-		if v, ok := valueParam[0].(*parameter.ValueType); ok {
-			if v.Value == "DATE-TIME" && isDate {
-				return fmt.Errorf("type defined by parameter is DATE-TIME, but value type is DATE")
-			}
-			if v.Value == "DATE" && isDateTime {
-				return fmt.Errorf("type defined by parameter is DATE, but value type is DATE-TIME")
-			}
-		}
-	}
-
-	refTimezone, hasRefTimezone := params[parameter.TypeNameReferenceTimezone]
-	if hasRefTimezone && len(refTimezone) > 1 {
-		return fmt.Errorf("too many value for TZID parameter, has %d", len(params[parameter.TypeNameReferenceTimezone]))
-	}
-	tz := time.UTC
-	if len(refTimezone) == 1 {
-		tzval := string(refTimezone[0].(*parameter.ReferenceTimezone).Value)
-		t, err := time.LoadLocation(tzval)
-		if err != nil {
-			return fmt.Errorf("load timezone %s: %w", tzval, err)
-		}
-		tz = t
-	}
-	var t time.Time
-	if isDateTime {
-		t = time.Time(dateTime)
-	} else if isDate {
-		t = time.Time(date)
-	}
-
-	if t.Location() != tz {
-		return fmt.Errorf("value[%s] and parameter[%s] different timzone", t.Location(), tz)
-	}
-
+func (dte *DateTimeEnd) SetEnd(params parameter.Container, value types.TimeType) error {
 	dte.Parameter = params
-	dte.Value = t
-
+	dte.Value = value
 	return nil
 }
 
@@ -88,52 +46,12 @@ func (dte *DateTimeEnd) SetEnd(params parameter.Container, value interface{}) er
 // https://tools.ietf.org/html/rfc5545#section-3.8.2.3
 type DateTimeDue struct {
 	Parameter parameter.Container
-	Value     time.Time // DateTime or Date
+	Value     types.TimeType // DateTime or Date
 }
 
-func (dtd *DateTimeDue) SetDue(params parameter.Container, value interface{}) error {
-	dateTime, isDateTime := value.(types.DateTime)
-	date, isDate := value.(types.Date)
-	if !(isDate || isDateTime) {
-		return fmt.Errorf("value must be DateTime or Date, but %T", value)
-	}
-	valueParam, hasValueParam := params[parameter.TypeNameValueType]
-	if hasValueParam && len(valueParam) == 1 {
-		if v, ok := valueParam[0].(*parameter.ValueType); ok {
-			if v.Value == "DATE-TIME" && isDate {
-				return fmt.Errorf("type defined by parameter is DATE-TIME, but value type is DATE")
-			}
-			if v.Value == "DATE" && isDateTime {
-				return fmt.Errorf("type defined by parameter is DATE, but value type is DATE-TIME")
-			}
-		}
-	}
-
-	refTimezone, hasRefTimezone := params[parameter.TypeNameReferenceTimezone]
-	if hasRefTimezone && len(refTimezone) > 1 {
-		return fmt.Errorf("too many value for TZID parameter, has %d", len(params[parameter.TypeNameReferenceTimezone]))
-	}
-	tz := time.UTC
-	if len(refTimezone) == 1 {
-		tzval := string(refTimezone[0].(*parameter.ReferenceTimezone).Value)
-		t, err := time.LoadLocation(tzval)
-		if err != nil {
-			return fmt.Errorf("load timezone %s: %w", tzval, err)
-		}
-		tz = t
-	}
-	var t time.Time
-	if isDateTime {
-		t = time.Time(dateTime)
-	} else if isDate {
-		t = time.Time(date)
-	}
-
-	if t.Location() != tz {
-		return fmt.Errorf("value[%s] and parameter[%s] different timzone", t.Location(), tz)
-	}
+func (dtd *DateTimeDue) SetDue(params parameter.Container, value types.TimeType) error {
 	dtd.Parameter = params
-	dtd.Value = t
+	dtd.Value = value
 	return nil
 }
 
@@ -141,52 +59,12 @@ func (dtd *DateTimeDue) SetDue(params parameter.Container, value interface{}) er
 // https://tools.ietf.org/html/rfc5545#section-3.8.2.4
 type DateTimeStart struct {
 	Parameter parameter.Container
-	Value     time.Time // DateTime or Date
+	Value     types.TimeType // DateTime or Date
 }
 
-func (dts *DateTimeStart) SetStart(params parameter.Container, value interface{}) error {
-	dateTime, isDateTime := value.(types.DateTime)
-	date, isDate := value.(types.Date)
-	if !(isDate || isDateTime) {
-		return fmt.Errorf("value must be DateTime or Date, but %T", value)
-	}
-	valueParam, hasValueParam := params[parameter.TypeNameValueType]
-	if hasValueParam && len(valueParam) == 1 {
-		if v, ok := valueParam[0].(*parameter.ValueType); ok {
-			if v.Value == "DATE-TIME" && isDate {
-				return fmt.Errorf("type defined by parameter is DATE-TIME, but value type is DATE")
-			}
-			if v.Value == "DATE" && isDateTime {
-				return fmt.Errorf("type defined by parameter is DATE, but value type is DATE-TIME")
-			}
-		}
-	}
-
-	refTimezone, hasRefTimezone := params[parameter.TypeNameReferenceTimezone]
-	if hasRefTimezone && len(refTimezone) > 1 {
-		return fmt.Errorf("too many value for TZID parameter, has %d", len(params[parameter.TypeNameReferenceTimezone]))
-	}
-	tz := time.UTC
-	if len(refTimezone) == 1 {
-		tzval := string(refTimezone[0].(*parameter.ReferenceTimezone).Value)
-		t, err := time.LoadLocation(tzval)
-		if err != nil {
-			return fmt.Errorf("load timezone %s: %w", tzval, err)
-		}
-		tz = t
-	}
-	var t time.Time
-	if isDateTime {
-		t = time.Time(dateTime)
-	} else if isDate {
-		t = time.Time(date)
-	}
-
-	if t.Location() != tz {
-		return fmt.Errorf("value[%s] and parameter[%s] different timzone", t.Location(), tz)
-	}
+func (dts *DateTimeStart) SetStart(params parameter.Container, value types.TimeType) error {
 	dts.Parameter = params
-	dts.Value = t
+	dts.Value = value
 	return nil
 }
 
