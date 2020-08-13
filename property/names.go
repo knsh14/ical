@@ -1,4 +1,4 @@
-package ical
+package property
 
 type PropertyName string
 
@@ -64,4 +64,10 @@ const (
 
 	// Miscellaneous
 	PropertyNameRequestStatus PropertyName = "REQUEST-STATUS"
+
+	// Calender component
+	PropertyNameCalScale PropertyName = "CALSCALE"
+	PropertyNameMethod   PropertyName = "METHOD"
+	PropertyNameProdID   PropertyName = "PRODID"
+	PropertyNameVersion  PropertyName = "VERSION"
 )

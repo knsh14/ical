@@ -6,6 +6,7 @@ import (
 	"github.com/knsh14/ical"
 	"github.com/knsh14/ical/component"
 	"github.com/knsh14/ical/parameter"
+	"github.com/knsh14/ical/property"
 	"github.com/knsh14/ical/token"
 	"github.com/knsh14/ical/types"
 )
@@ -20,8 +21,8 @@ func (p *Parser) parseTimezone() (*ical.Timezone, error) {
 		if err != nil {
 			return nil, fmt.Errorf("parse parameter: %w", err)
 		}
-		switch pname := ical.PropertyName(l.Name); pname {
-		case ical.PropertyNameEnd:
+		switch pname := property.PropertyName(l.Name); pname {
+		case property.PropertyNameEnd:
 			if !p.isEndComponent(component.ComponentTypeTimezone) {
 				return nil, fmt.Errorf("Invalid END")
 			}
@@ -29,7 +30,7 @@ func (p *Parser) parseTimezone() (*ical.Timezone, error) {
 			// 	return nil, fmt.Errorf("validation error: %w", err)
 			// }
 			return timezone, nil
-		case ical.PropertyNameTimezoneIdentifier:
+		case property.PropertyNameTimezoneIdentifier:
 			if len(l.Values) > 1 {
 				return nil, fmt.Errorf("")
 			}
@@ -37,7 +38,7 @@ func (p *Parser) parseTimezone() (*ical.Timezone, error) {
 			if err := timezone.SetTimezoneID(params, t); err != nil {
 				return nil, fmt.Errorf("failed to set value to %s: %w", pname, err)
 			}
-		case ical.PropertyNameLastModified:
+		case property.PropertyNameLastModified:
 			var tz string
 			tzs := params[parameter.TypeNameReferenceTimezone]
 			if len(tzs) > 0 {
@@ -50,7 +51,7 @@ func (p *Parser) parseTimezone() (*ical.Timezone, error) {
 			if err := timezone.SetLastModified(params, v); err != nil {
 				return nil, fmt.Errorf("set value to %s: %w", pname, err)
 			}
-		case ical.PropertyNameTimezoneURL:
+		case property.PropertyNameTimezoneURL:
 			if len(l.Values) > 1 {
 				return nil, fmt.Errorf("")
 			}
@@ -61,7 +62,7 @@ func (p *Parser) parseTimezone() (*ical.Timezone, error) {
 			if err := timezone.SetTimezoneURL(params, t); err != nil {
 				return nil, fmt.Errorf("failed to set value to %s: %w", pname, err)
 			}
-		case ical.PropertyNameBegin:
+		case property.PropertyNameBegin:
 			if len(l.Values) != 1 {
 				return nil, fmt.Errorf("")
 			}
@@ -83,7 +84,7 @@ func (p *Parser) parseTimezone() (*ical.Timezone, error) {
 			}
 		default:
 			if token.IsXName(l.Name) {
-				ns, err := ical.NewNonStandard(l.Name, params, l.Values)
+				ns, err := property.NewNonStandard(l.Name, params, l.Values)
 				if err != nil {
 					return nil, fmt.Errorf("value : %w", err)
 				}
@@ -105,13 +106,13 @@ func (p *Parser) parseStandard() (*ical.Standard, error) {
 		if err != nil {
 			return nil, fmt.Errorf("parse parameter: %w", err)
 		}
-		switch pname := ical.PropertyName(l.Name); pname {
-		case ical.PropertyNameEnd:
+		switch pname := property.PropertyName(l.Name); pname {
+		case property.PropertyNameEnd:
 			if !p.isEndComponent(component.ComponentTypeStandard) {
 				return nil, fmt.Errorf("Invalid END")
 			}
 			return standard, nil
-		case ical.PropertyNameDateTimeStart:
+		case property.PropertyNameDateTimeStart:
 			if len(l.Values) != 1 {
 				return nil, NewInvalidValueLengthError(1, len(l.Values))
 			}
@@ -123,7 +124,7 @@ func (p *Parser) parseStandard() (*ical.Standard, error) {
 			if err := standard.SetStart(params, t); err != nil {
 				return nil, NewParseError(component.ComponentTypeStandard, pname, err)
 			}
-		case ical.PropertyNameTimezoneOffsetFrom:
+		case property.PropertyNameTimezoneOffsetFrom:
 			if len(l.Values) != 1 {
 				return nil, NewInvalidValueLengthError(1, len(l.Values))
 			}
@@ -134,7 +135,7 @@ func (p *Parser) parseStandard() (*ical.Standard, error) {
 			if err := standard.SetTimezoneOffsetFrom(params, t); err != nil {
 				return nil, NewParseError(component.ComponentTypeStandard, pname, err)
 			}
-		case ical.PropertyNameTimezoneOffsetTo:
+		case property.PropertyNameTimezoneOffsetTo:
 			if len(l.Values) != 1 {
 				return nil, NewInvalidValueLengthError(1, len(l.Values))
 			}
@@ -145,7 +146,7 @@ func (p *Parser) parseStandard() (*ical.Standard, error) {
 			if err := standard.SetTimezoneOffsetTo(params, t); err != nil {
 				return nil, NewParseError(component.ComponentTypeStandard, pname, err)
 			}
-		case ical.PropertyNameRecurrenceRule:
+		case property.PropertyNameRecurrenceRule:
 			if len(l.Values) != 1 {
 				return nil, NewInvalidValueLengthError(1, len(l.Values))
 			}
@@ -156,7 +157,7 @@ func (p *Parser) parseStandard() (*ical.Standard, error) {
 			if err := standard.SetRecurrenceRule(params, rr); err != nil {
 				return nil, NewParseError(component.ComponentTypeStandard, pname, err)
 			}
-		case ical.PropertyNameComment:
+		case property.PropertyNameComment:
 			if len(l.Values) != 1 {
 				return nil, NewInvalidValueLengthError(1, len(l.Values))
 			}
@@ -164,10 +165,10 @@ func (p *Parser) parseStandard() (*ical.Standard, error) {
 			if err := standard.SetComment(params, t); err != nil {
 				return nil, NewParseError(component.ComponentTypeStandard, pname, err)
 			}
-		case ical.PropertyNameRecurrenceDateTimes:
+		case property.PropertyNameRecurrenceDateTimes:
 			var ts []types.RecurrenceDateTime
 			for _, v := range l.Values {
-				t, err := ical.NewRecurrenceDateTime(params, l.Values[0])
+				t, err := property.NewRecurrenceDateTime(params, l.Values[0])
 				if err != nil {
 					return nil, fmt.Errorf("parse %s to DATE-TIME: %w", v, err)
 				}
@@ -176,7 +177,7 @@ func (p *Parser) parseStandard() (*ical.Standard, error) {
 			if err := standard.SetRecurrenceDateTimes(params, ts); err != nil {
 				return nil, NewParseError(component.ComponentTypeStandard, pname, err)
 			}
-		case ical.PropertyNameTimezoneName:
+		case property.PropertyNameTimezoneName:
 			if len(l.Values) != 1 {
 				return nil, NewInvalidValueLengthError(1, len(l.Values))
 			}
@@ -186,7 +187,7 @@ func (p *Parser) parseStandard() (*ical.Standard, error) {
 			}
 		default:
 			if token.IsXName(l.Name) {
-				ns, err := ical.NewNonStandard(l.Name, params, l.Values)
+				ns, err := property.NewNonStandard(l.Name, params, l.Values)
 				if err != nil {
 					return nil, fmt.Errorf("value : %w", err)
 				}
@@ -207,13 +208,13 @@ func (p *Parser) parseDaylight() (*ical.Daylight, error) {
 		if err != nil {
 			return nil, fmt.Errorf("parse parameter: %w", err)
 		}
-		switch pname := ical.PropertyName(l.Name); pname {
-		case ical.PropertyNameEnd:
+		switch pname := property.PropertyName(l.Name); pname {
+		case property.PropertyNameEnd:
 			if !p.isEndComponent(component.ComponentTypeDaylight) {
 				return nil, fmt.Errorf("finished without END:%s", component.ComponentTypeDaylight)
 			}
 			return daylight, nil
-		case ical.PropertyNameDateTimeStart:
+		case property.PropertyNameDateTimeStart:
 			if len(l.Values) != 1 {
 				return nil, NewInvalidValueLengthError(1, len(l.Values))
 			}
@@ -225,7 +226,7 @@ func (p *Parser) parseDaylight() (*ical.Daylight, error) {
 			if err := daylight.SetStart(params, t); err != nil {
 				return nil, NewParseError(component.ComponentTypeStandard, pname, err)
 			}
-		case ical.PropertyNameTimezoneOffsetFrom:
+		case property.PropertyNameTimezoneOffsetFrom:
 			if len(l.Values) != 1 {
 				return nil, NewInvalidValueLengthError(1, len(l.Values))
 			}
@@ -236,7 +237,7 @@ func (p *Parser) parseDaylight() (*ical.Daylight, error) {
 			if err := daylight.SetTimezoneOffsetFrom(params, t); err != nil {
 				return nil, NewParseError(component.ComponentTypeStandard, pname, err)
 			}
-		case ical.PropertyNameTimezoneOffsetTo:
+		case property.PropertyNameTimezoneOffsetTo:
 			if len(l.Values) != 1 {
 				return nil, NewInvalidValueLengthError(1, len(l.Values))
 			}
@@ -247,7 +248,7 @@ func (p *Parser) parseDaylight() (*ical.Daylight, error) {
 			if err := daylight.SetTimezoneOffsetTo(params, t); err != nil {
 				return nil, NewParseError(component.ComponentTypeStandard, pname, err)
 			}
-		case ical.PropertyNameRecurrenceRule:
+		case property.PropertyNameRecurrenceRule:
 			if len(l.Values) != 1 {
 				return nil, NewInvalidValueLengthError(1, len(l.Values))
 			}
@@ -258,7 +259,7 @@ func (p *Parser) parseDaylight() (*ical.Daylight, error) {
 			if err := daylight.SetRecurrenceRule(params, rr); err != nil {
 				return nil, NewParseError(component.ComponentTypeStandard, pname, err)
 			}
-		case ical.PropertyNameComment:
+		case property.PropertyNameComment:
 			if len(l.Values) != 1 {
 				return nil, NewInvalidValueLengthError(1, len(l.Values))
 			}
@@ -266,10 +267,10 @@ func (p *Parser) parseDaylight() (*ical.Daylight, error) {
 			if err := daylight.SetComment(params, t); err != nil {
 				return nil, NewParseError(component.ComponentTypeStandard, pname, err)
 			}
-		case ical.PropertyNameRecurrenceDateTimes:
+		case property.PropertyNameRecurrenceDateTimes:
 			var ts []types.RecurrenceDateTime
 			for _, v := range l.Values {
-				t, err := ical.NewRecurrenceDateTime(params, l.Values[0])
+				t, err := property.NewRecurrenceDateTime(params, l.Values[0])
 				if err != nil {
 					return nil, fmt.Errorf("parse %s to DATE-TIME: %w", v, err)
 				}
@@ -278,7 +279,7 @@ func (p *Parser) parseDaylight() (*ical.Daylight, error) {
 			if err := daylight.SetRecurrenceDateTimes(params, ts); err != nil {
 				return nil, NewParseError(component.ComponentTypeStandard, pname, err)
 			}
-		case ical.PropertyNameTimezoneName:
+		case property.PropertyNameTimezoneName:
 			if len(l.Values) != 1 {
 				return nil, NewInvalidValueLengthError(1, len(l.Values))
 			}
@@ -288,7 +289,7 @@ func (p *Parser) parseDaylight() (*ical.Daylight, error) {
 			}
 		default:
 			if token.IsXName(l.Name) {
-				ns, err := ical.NewNonStandard(l.Name, params, l.Values)
+				ns, err := property.NewNonStandard(l.Name, params, l.Values)
 				if err != nil {
 					return nil, fmt.Errorf("value : %w", err)
 				}

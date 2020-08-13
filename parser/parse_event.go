@@ -5,7 +5,7 @@ import (
 
 	"github.com/knsh14/ical"
 	"github.com/knsh14/ical/component"
-	"github.com/knsh14/ical/parameter"
+	"github.com/knsh14/ical/property"
 	"github.com/knsh14/ical/token"
 	"github.com/knsh14/ical/types"
 )
@@ -20,8 +20,8 @@ func (p *Parser) parseEvent() (*ical.Event, error) {
 		if err != nil {
 			return nil, fmt.Errorf("parse parameter: %w", err)
 		}
-		switch pname := ical.PropertyName(l.Name); pname {
-		case ical.PropertyNameEnd:
+		switch pname := property.PropertyName(l.Name); pname {
+		case property.PropertyNameEnd:
 			if !p.isEndComponent(component.ComponentTypeEvent) {
 				return nil, fmt.Errorf("Invalid END")
 			}
@@ -30,28 +30,27 @@ func (p *Parser) parseEvent() (*ical.Event, error) {
 			}
 			return event, nil
 
-		case ical.PropertyNameUID:
+		case property.PropertyNameUID:
+			if len(l.Values) != 1 {
+				return nil, NewInvalidValueLengthError(1, len(l.Values))
+			}
 			t := types.NewText(l.Values[0])
 			if err := event.SetUID(params, t); err != nil {
-				return nil, fmt.Errorf("set value to %s: %w", pname, err)
+				return nil, NewParseError(component.ComponentTypeEvent, pname, err)
 			}
-		case ical.PropertyNameDateTimeStamp:
-			var tz string
-			if len(params[parameter.TypeNameReferenceTimezone]) == 1 {
-				tzv, ok := params[parameter.TypeNameReferenceTimezone][0].(*parameter.ReferenceTimezone)
-				if !ok {
-					return nil, fmt.Errorf("not %s but %T", parameter.TypeNameReferenceTimezone, params[parameter.TypeNameReferenceTimezone][0])
-				}
-				tz = tzv.Value
+		case property.PropertyNameDateTimeStamp:
+			if len(l.Values) != 1 {
+				return nil, NewInvalidValueLengthError(1, len(l.Values))
 			}
+			tz := params.GetTimezone()
 			t, err := types.NewDateTime(l.Values[0], tz)
 			if err != nil {
 				return nil, fmt.Errorf("convert date time: %w", err)
 			}
 			if err := event.SetDateTimeStamp(params, t); err != nil {
-				return nil, fmt.Errorf("set value to %s: %w", pname, err)
+				return nil, NewParseError(component.ComponentTypeEvent, pname, err)
 			}
-		case ical.PropertyNameDateTimeStart:
+		case property.PropertyNameDateTimeStart:
 			if len(l.Values) != 1 {
 				return nil, NewInvalidValueLengthError(1, len(l.Values))
 			}
@@ -60,213 +59,218 @@ func (p *Parser) parseEvent() (*ical.Event, error) {
 				return nil, fmt.Errorf("convert date time for %s: %w", pname, err)
 			}
 			if err := event.SetDateTimeStart(params, t); err != nil {
-				return nil, fmt.Errorf("set value to %s: %w", pname, err)
+				return nil, NewParseError(component.ComponentTypeEvent, pname, err)
 			}
-		case ical.PropertyNameClass:
+		case property.PropertyNameClass:
+			if len(l.Values) != 1 {
+				return nil, NewInvalidValueLengthError(1, len(l.Values))
+			}
 			t := types.NewText(l.Values[0])
 			if err := event.SetClass(params, t); err != nil {
-				return nil, fmt.Errorf("set value to %s: %w", pname, err)
+				return nil, NewParseError(component.ComponentTypeEvent, pname, err)
 			}
-		case ical.PropertyNameDateTimeCreated:
-			var tz string
-			if len(params[parameter.TypeNameReferenceTimezone]) == 1 {
-				tz = params[parameter.TypeNameReferenceTimezone][0].(*parameter.ReferenceTimezone).Value
+		case property.PropertyNameDateTimeCreated:
+			if len(l.Values) != 1 {
+				return nil, NewInvalidValueLengthError(1, len(l.Values))
 			}
+			tz := params.GetTimezone()
 			t, err := types.NewDateTime(l.Values[0], tz)
 			if err != nil {
 				return nil, fmt.Errorf("convert date time: %w", err)
 			}
 			if err := event.SetDateTimeCreated(params, t); err != nil {
-				return nil, fmt.Errorf("set value to %s: %w", pname, err)
+				return nil, NewParseError(component.ComponentTypeEvent, pname, err)
 			}
-		case ical.PropertyNameDescription:
+		case property.PropertyNameDescription:
+			if len(l.Values) != 1 {
+				return nil, NewInvalidValueLengthError(1, len(l.Values))
+			}
 			t := types.NewText(l.Values[0])
 			if err := event.SetDescription(params, t); err != nil {
-				return nil, fmt.Errorf("set value to %s: %w", pname, err)
+				return nil, NewParseError(component.ComponentTypeEvent, pname, err)
 			}
-		case ical.PropertyNameGeo:
+		case property.PropertyNameGeo:
 			if len(l.Values) > 1 {
-				return nil, fmt.Errorf("")
+				return nil, NewInvalidValueLengthError(1, len(l.Values))
 			}
 			t := types.NewText(l.Values[0])
 			if err := event.SetGeoWithText(params, t); err != nil {
-				return nil, fmt.Errorf("failed to set value to %s: %w", pname, err)
+				return nil, NewParseError(component.ComponentTypeEvent, pname, err)
 			}
-		case ical.PropertyNameLastModified:
-			var tz string
-			tzs := params[parameter.TypeNameReferenceTimezone]
-			if len(tzs) > 0 {
-				tz = tzs[0].(*parameter.ReferenceTimezone).Value
+		case property.PropertyNameLastModified:
+			if len(l.Values) > 1 {
+				return nil, NewInvalidValueLengthError(1, len(l.Values))
 			}
+			tz := params.GetTimezone()
 			v, err := types.NewDateTime(l.Values[0], tz)
 			if err != nil {
 				return nil, fmt.Errorf("conbert value to DateTime: %w", err)
 			}
 			if err := event.SetLastModified(params, v); err != nil {
-				return nil, fmt.Errorf("set value to %s: %w", pname, err)
+				return nil, NewParseError(component.ComponentTypeEvent, pname, err)
 			}
-		case ical.PropertyNameLocaiton:
+		case property.PropertyNameLocaiton:
 			if len(l.Values) > 1 {
-				return nil, fmt.Errorf("")
+				return nil, NewInvalidValueLengthError(1, len(l.Values))
 			}
 			t := types.NewText(l.Values[0])
 			if err := event.SetLocation(params, t); err != nil {
-				return nil, fmt.Errorf("failed to set value to %s: %w", pname, err)
+				return nil, NewParseError(component.ComponentTypeEvent, pname, err)
 			}
-		case ical.PropertyNameOrganizer:
+		case property.PropertyNameOrganizer:
 			if len(l.Values) > 1 {
-				return nil, fmt.Errorf("")
+				return nil, NewInvalidValueLengthError(1, len(l.Values))
 			}
 			t, err := types.NewCalenderUserAddress(l.Values[0])
 			if err != nil {
 				return nil, fmt.Errorf("convert %s into CalenderUserAddress: %w", l.Values[0], err)
 			}
 			if err := event.SetOrganizer(params, t); err != nil {
-				return nil, fmt.Errorf("failed to set value to %s: %w", pname, err)
+				return nil, NewParseError(component.ComponentTypeEvent, pname, err)
 			}
 
-		case ical.PropertyNamePriority:
+		case property.PropertyNamePriority:
 			if len(l.Values) > 1 {
-				return nil, fmt.Errorf("")
+				return nil, NewInvalidValueLengthError(1, len(l.Values))
 			}
 			i, err := types.NewInteger(l.Values[0])
 			if err != nil {
 				return nil, fmt.Errorf("convert %s into Integer: %w", l.Values[0], err)
 			}
 			if err := event.SetPriority(params, i); err != nil {
-				return nil, fmt.Errorf("failed to set value to %s: %w", pname, err)
+				return nil, NewParseError(component.ComponentTypeEvent, pname, err)
 			}
-		case ical.PropertyNameSequenceNumber:
+		case property.PropertyNameSequenceNumber:
 			if len(l.Values) > 1 {
-				return nil, fmt.Errorf("")
+				return nil, NewInvalidValueLengthError(1, len(l.Values))
 			}
 			i, err := types.NewInteger(l.Values[0])
 			if err != nil {
 				return nil, fmt.Errorf("convert %s into Integer: %w", l.Values[0], err)
 			}
 			if err := event.SetSequenceNumber(params, i); err != nil {
-				return nil, fmt.Errorf("failed to set value to %s: %w", pname, err)
+				return nil, NewParseError(component.ComponentTypeEvent, pname, err)
 			}
-		case ical.PropertyNameStatus:
+		case property.PropertyNameStatus:
 			if len(l.Values) > 1 {
-				return nil, fmt.Errorf("")
+				return nil, NewInvalidValueLengthError(1, len(l.Values))
 			}
 			t := types.NewText(l.Values[0])
 			if err := event.SetStatus(params, t); err != nil {
-				return nil, fmt.Errorf("failed to set value to %s: %w", pname, err)
+				return nil, NewParseError(component.ComponentTypeEvent, pname, err)
 			}
-		case ical.PropertyNameSummary:
+		case property.PropertyNameSummary:
 			if len(l.Values) > 1 {
-				return nil, fmt.Errorf("")
+				return nil, NewInvalidValueLengthError(1, len(l.Values))
 			}
 			t := types.NewText(l.Values[0])
 			if err := event.SetSummary(params, t); err != nil {
-				return nil, fmt.Errorf("failed to set value to %s: %w", pname, err)
+				return nil, NewParseError(component.ComponentTypeEvent, pname, err)
 			}
-		case ical.PropertyNameTimeTransparency:
+		case property.PropertyNameTimeTransparency:
 			if len(l.Values) > 1 {
-				return nil, fmt.Errorf("")
+				return nil, NewInvalidValueLengthError(1, len(l.Values))
 			}
 			t := types.NewText(l.Values[0])
 			if err := event.SetTimeTransparency(params, t); err != nil {
-				return nil, fmt.Errorf("failed to set value to %s: %w", pname, err)
+				return nil, NewParseError(component.ComponentTypeEvent, pname, err)
 			}
-		case ical.PropertyNameURL:
+		case property.PropertyNameURL:
 			if len(l.Values) > 1 {
-				return nil, fmt.Errorf("")
+				return nil, NewInvalidValueLengthError(1, len(l.Values))
 			}
 			t, err := types.NewURI(l.Values[0])
 			if err != nil {
 				return nil, fmt.Errorf("convert %s into URI: %w", l.Values[0], err)
 			}
 			if err := event.SetURL(params, t); err != nil {
-				return nil, fmt.Errorf("failed to set value to %s: %w", pname, err)
+				return nil, NewParseError(component.ComponentTypeEvent, pname, err)
 			}
-		case ical.PropertyNameRecurrenceID:
+		case property.PropertyNameRecurrenceID:
 			if len(l.Values) > 1 {
-				return nil, fmt.Errorf("")
+				return nil, NewInvalidValueLengthError(1, len(l.Values))
 			}
 			t, err := ical.NewTimeType(params, l.Values[0])
 			if err != nil {
 				return nil, fmt.Errorf("convert %s into TimeType: %w", l.Values[0], err)
 			}
 			if err := event.SetRecurrenceID(params, t); err != nil {
-				return nil, fmt.Errorf("failed to set value to %s: %w", pname, err)
+				return nil, NewParseError(component.ComponentTypeEvent, pname, err)
 			}
-		case ical.PropertyNameRecurrenceRule:
+		case property.PropertyNameRecurrenceRule:
 			if len(l.Values) > 1 {
-				return nil, fmt.Errorf("")
+				return nil, NewInvalidValueLengthError(1, len(l.Values))
 			}
 			rr, err := types.NewRecurrenceRule(l.Values[0])
 			if err != nil {
 				return nil, fmt.Errorf("convert %s into RecurrenceRule: %w", l.Values[0], err)
 			}
 			if err := event.SetRecurrenceRule(params, rr); err != nil {
-				return nil, fmt.Errorf("failed to set value to %s: %w", pname, err)
+				return nil, NewParseError(component.ComponentTypeEvent, pname, err)
 			}
-		case ical.PropertyNameDateTimeEnd:
+		case property.PropertyNameDateTimeEnd:
 			if len(l.Values) > 1 {
-				return nil, fmt.Errorf("")
+				return nil, NewInvalidValueLengthError(1, len(l.Values))
 			}
 			t, err := ical.NewTimeType(params, l.Values[0])
 			if err != nil {
 				return nil, fmt.Errorf("convert %s into TimeType: %w", l.Values[0], err)
 			}
 			if err := event.SetDateTimeEnd(params, t); err != nil {
-				return nil, fmt.Errorf("failed to set value to %s: %w", pname, err)
+				return nil, NewParseError(component.ComponentTypeEvent, pname, err)
 			}
-		case ical.PropertyNameDuration:
+		case property.PropertyNameDuration:
 			if len(l.Values) > 1 {
-				return nil, fmt.Errorf("")
+				return nil, NewInvalidValueLengthError(1, len(l.Values))
 			}
 			d, err := types.NewDuration(l.Values[0])
 			if err != nil {
 				return nil, fmt.Errorf("convert %s into Duration: %w", l.Values[0], err)
 			}
 			if err := event.SetDuration(params, d); err != nil {
-				return nil, fmt.Errorf("failed to set value to %s: %w", pname, err)
+				return nil, NewParseError(component.ComponentTypeEvent, pname, err)
 			}
-		case ical.PropertyNameAttachment:
+		case property.PropertyNameAttachment:
 			if len(l.Values) > 1 {
-				return nil, fmt.Errorf("")
+				return nil, NewInvalidValueLengthError(1, len(l.Values))
 			}
-			a, err := ical.NewAttachmentValue(params, l.Values[0])
+			a, err := property.NewAttachmentValue(params, l.Values[0])
 			if err != nil {
 				return nil, fmt.Errorf("convert %s into Attachment value: %w", l.Values[0], err)
 			}
 			if err := event.SetAttachment(params, a); err != nil {
-				return nil, fmt.Errorf("failed to set value to %s: %w", pname, err)
+				return nil, NewParseError(component.ComponentTypeEvent, pname, err)
 			}
 
-		case ical.PropertyNameAttendee:
+		case property.PropertyNameAttendee:
 			if len(l.Values) > 1 {
-				return nil, fmt.Errorf("")
+				return nil, NewInvalidValueLengthError(1, len(l.Values))
 			}
 			a, err := types.NewCalenderUserAddress(l.Values[0])
 			if err != nil {
 				return nil, fmt.Errorf("convert %s into Duration: %w", l.Values[0], err)
 			}
 			if err := event.SetAttendee(params, a); err != nil {
-				return nil, fmt.Errorf("failed to set value to %s: %w", pname, err)
+				return nil, NewParseError(component.ComponentTypeEvent, pname, err)
 			}
 
-		case ical.PropertyNameCategories:
+		case property.PropertyNameCategories:
 			var ts []types.Text
 			for _, v := range l.Values {
 				ts = append(ts, types.NewText(v))
 			}
 			if err := event.SetCategories(params, ts); err != nil {
-				return nil, fmt.Errorf("failed to set value to %s: %w", pname, err)
+				return nil, NewParseError(component.ComponentTypeEvent, pname, err)
 			}
-		case ical.PropertyNameContact:
+		case property.PropertyNameContact:
 			if len(l.Values) > 1 {
-				return nil, fmt.Errorf("")
+				return nil, NewInvalidValueLengthError(1, len(l.Values))
 			}
 			t := types.NewText(l.Values[0])
 			if err := event.SetContact(params, t); err != nil {
-				return nil, fmt.Errorf("failed to set value to %s: %w", pname, err)
+				return nil, NewParseError(component.ComponentTypeEvent, pname, err)
 			}
-		case ical.PropertyNameExceptionDateTimes:
+		case property.PropertyNameExceptionDateTimes:
 			var ts []types.TimeType
 			for _, v := range l.Values {
 				t, err := ical.NewTimeType(params, v)
@@ -276,47 +280,47 @@ func (p *Parser) parseEvent() (*ical.Event, error) {
 				ts = append(ts, t)
 			}
 			if err := event.SetExceptionDateTimes(params, ts); err != nil {
-				return nil, fmt.Errorf("failed to set value to %s: %w", pname, err)
+				return nil, NewParseError(component.ComponentTypeEvent, pname, err)
 			}
-		case ical.PropertyNameRequestStatus:
+		case property.PropertyNameRequestStatus:
 			if len(l.Values) > 1 {
-				return nil, fmt.Errorf("")
+				return nil, NewInvalidValueLengthError(1, len(l.Values))
 			}
 			t := types.NewText(l.Values[0])
 			if err := event.SetRequestStatus(params, t); err != nil {
-				return nil, fmt.Errorf("failed to set value to %s: %w", pname, err)
+				return nil, NewParseError(component.ComponentTypeEvent, pname, err)
 			}
-		case ical.PropertyNameRelatedTo:
+		case property.PropertyNameRelatedTo:
 			if len(l.Values) > 1 {
-				return nil, fmt.Errorf("")
+				return nil, NewInvalidValueLengthError(1, len(l.Values))
 			}
 			t := types.NewText(l.Values[0])
 			if err := event.SetRelatedTo(params, t); err != nil {
-				return nil, fmt.Errorf("failed to set value to %s: %w", pname, err)
+				return nil, NewParseError(component.ComponentTypeEvent, pname, err)
 			}
-		case ical.PropertyNameResources:
+		case property.PropertyNameResources:
 			var ts []types.Text
 			for _, v := range l.Values {
 				ts = append(ts, types.NewText(v))
 			}
 			if err := event.SetResources(params, ts); err != nil {
-				return nil, fmt.Errorf("failed to set value to %s: %w", pname, err)
+				return nil, NewParseError(component.ComponentTypeEvent, pname, err)
 			}
-		case ical.PropertyNameRecurrenceDateTimes:
+		case property.PropertyNameRecurrenceDateTimes:
 			var rdts []types.RecurrenceDateTime
 			for _, v := range l.Values {
-				rdt, err := ical.NewRecurrenceDateTime(params, v)
+				rdt, err := property.NewRecurrenceDateTime(params, v)
 				if err != nil {
 					return nil, fmt.Errorf("convert %s to RecurrenceDateTime: %w", v, err)
 				}
 				rdts = append(rdts, rdt)
 			}
 			if err := event.SetRecurrenceDateTimes(params, rdts); err != nil {
-				return nil, fmt.Errorf("failed to set value to %s: %w", pname, err)
+				return nil, NewParseError(component.ComponentTypeEvent, pname, err)
 			}
 		default:
 			if token.IsXName(l.Name) {
-				ns, err := ical.NewNonStandard(l.Name, params, l.Values)
+				ns, err := property.NewNonStandard(l.Name, params, l.Values)
 				if err != nil {
 					return nil, fmt.Errorf("value : %w", err)
 				}

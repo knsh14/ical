@@ -9,6 +9,7 @@ import (
 	"github.com/knsh14/ical/component"
 	"github.com/knsh14/ical/contentline"
 	"github.com/knsh14/ical/parameter"
+	"github.com/knsh14/ical/property"
 	"github.com/knsh14/ical/types"
 )
 
@@ -31,7 +32,11 @@ func TestParseCalender(t *testing.T) {
 					Values: []string{string(component.ComponentTypeCalendar)},
 				},
 			},
-			expected:      &ical.Calender{},
+			expected: &ical.Calender{
+				Version: &property.Version{
+					Max: types.NewText("2.0"),
+				},
+			},
 			expectedError: nil,
 		},
 		"calender version": {
@@ -50,12 +55,9 @@ func TestParseCalender(t *testing.T) {
 				},
 			},
 			expected: &ical.Calender{
-				Version: struct {
-					Param parameter.Container
-					Max   types.Text
-					Min   types.Text
-				}{
-					Max: types.NewText("2.0"),
+				Version: &property.Version{
+					Parameter: parameter.Container{},
+					Max:       types.NewText("2.0"),
 				},
 			},
 			expectedError: nil,
@@ -76,13 +78,10 @@ func TestParseCalender(t *testing.T) {
 				},
 			},
 			expected: &ical.Calender{
-				Version: struct {
-					Param parameter.Container
-					Max   types.Text
-					Min   types.Text
-				}{
-					Min: types.NewText("1.2"),
-					Max: types.NewText("2.0"),
+				Version: &property.Version{
+					Parameter: parameter.Container{},
+					Min:       types.NewText("1.2"),
+					Max:       types.NewText("2.0"),
 				},
 			},
 			expectedError: nil,
@@ -103,14 +102,14 @@ func TestParseCalender(t *testing.T) {
 				},
 			},
 			expected: &ical.Calender{
-				XProperty: map[string]struct {
-					Name   string
-					Param  parameter.Container
-					Values []types.Text
-				}{
-					"X-WR-TIMEZONE": {
-						Name:   "X-WR-TIMEZONE",
-						Values: []types.Text{"UTC"},
+				Version: &property.Version{
+					Max: types.NewText("2.0"),
+				},
+				XProperties: []*property.NonStandard{
+					{
+						Name:      "X-WR-TIMEZONE",
+						Parameter: parameter.Container{},
+						Value:     []string{"UTC"},
 					},
 				},
 			},
@@ -157,13 +156,10 @@ func TestParseCalender(t *testing.T) {
 				Component: []ical.CalenderComponent{
 					&ical.Event{},
 				},
-				Version: struct {
-					Param parameter.Container
-					Max   types.Text
-					Min   types.Text
-				}{
-					Min: types.NewText("1.2"),
-					Max: types.NewText("2.0"),
+				Version: &property.Version{
+					Parameter: parameter.Container{},
+					Min:       types.NewText("1.2"),
+					Max:       types.NewText("2.0"),
 				},
 			},
 			expectedError: nil,

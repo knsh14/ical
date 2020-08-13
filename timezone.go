@@ -2,34 +2,37 @@ package ical
 
 import (
 	"github.com/knsh14/ical/parameter"
+	"github.com/knsh14/ical/property"
 	"github.com/knsh14/ical/types"
 )
 
 func NewTimezone() *Timezone {
-	return &Timezone{TimezoneIdentifier: &TimezoneIdentifier{}}
+	return &Timezone{TimezoneIdentifier: &property.TimezoneIdentifier{}}
 }
 
 // Timezone is VTIMEZONE
 // https://tools.ietf.org/html/rfc5545#section-3.6.5
 type Timezone struct {
 	// required field
-	*TimezoneIdentifier
+	TimezoneIdentifier *property.TimezoneIdentifier
 
-	*LastModified
-	*TimezoneURL
+	LastModified *property.LastModified
+	TimezoneURL  *property.TimezoneURL
 
 	Standards []*Standard
 	Daylights []*Daylight
 
-	XProperties    []*NonStandard
-	IANAProperties []*IANA
+	XProperties    []*property.NonStandard
+	IANAProperties []*property.IANA
 }
+
+func (tz *Timezone) implementCalender() {}
 
 func (tz *Timezone) SetTimezoneID(params parameter.Container, value types.Text) error {
 	if tz.TimezoneIdentifier != nil {
 		return tz.TimezoneIdentifier.SetTimezoneID(params, value)
 	}
-	tzid := &TimezoneIdentifier{}
+	tzid := &property.TimezoneIdentifier{}
 	if err := tzid.SetTimezoneID(params, value); err != nil {
 		return err
 	}
@@ -40,7 +43,7 @@ func (tz *Timezone) SetLastModified(params parameter.Container, value types.Date
 	if tz.LastModified != nil {
 		return tz.LastModified.SetLastModified(params, value)
 	}
-	lm := &LastModified{}
+	lm := &property.LastModified{}
 	if err := lm.SetLastModified(params, value); err != nil {
 		return err
 	}
@@ -51,7 +54,7 @@ func (tz *Timezone) SetTimezoneURL(params parameter.Container, value types.URI) 
 	if tz.TimezoneURL != nil {
 		return tz.TimezoneURL.SetTimezoneURL(params, value)
 	}
-	tzurl := &TimezoneURL{}
+	tzurl := &property.TimezoneURL{}
 	if err := tzurl.SetTimezoneURL(params, value); err != nil {
 		return err
 	}
@@ -66,26 +69,26 @@ func NewStandard() *Standard {
 // Standard is sub component of timezone
 type Standard struct {
 	//required
-	*DateTimeStart
-	*TimezoneOffsetFrom
-	*TimezoneOffsetTo
+	DateTimeStart      *property.DateTimeStart
+	TimezoneOffsetFrom *property.TimezoneOffsetFrom
+	TimezoneOffsetTo   *property.TimezoneOffsetTo
 
 	// optional
-	*RecurrenceRule
+	RecurrenceRule *property.RecurrenceRule
 
-	*Comment
-	*RecurrenceDateTimes
-	*TimezoneName
+	Comment             *property.Comment
+	RecurrenceDateTimes *property.RecurrenceDateTimes
+	TimezoneName        *property.TimezoneName
 
-	XProperties    []*NonStandard
-	IANAProperties []*IANA
+	XProperties    []*property.NonStandard
+	IANAProperties []*property.IANA
 }
 
 func (s *Standard) SetStart(params parameter.Container, value types.DateTime) error {
 	if s.DateTimeStart != nil {
 		return s.DateTimeStart.SetStart(params, value)
 	}
-	dts := &DateTimeStart{}
+	dts := &property.DateTimeStart{}
 	if err := dts.SetStart(params, value); err != nil {
 		return err
 	}
@@ -96,7 +99,7 @@ func (s *Standard) SetTimezoneOffsetFrom(params parameter.Container, value types
 	if s.TimezoneOffsetFrom != nil {
 		return s.TimezoneOffsetFrom.SetTimezoneOffsetFrom(params, value)
 	}
-	tzof := &TimezoneOffsetFrom{}
+	tzof := &property.TimezoneOffsetFrom{}
 	if err := tzof.SetTimezoneOffsetFrom(params, value); err != nil {
 		return err
 	}
@@ -107,7 +110,7 @@ func (s *Standard) SetTimezoneOffsetTo(params parameter.Container, value types.U
 	if s.TimezoneOffsetTo != nil {
 		return s.TimezoneOffsetTo.SetTimezoneOffsetTo(params, value)
 	}
-	tzot := &TimezoneOffsetTo{}
+	tzot := &property.TimezoneOffsetTo{}
 	if err := tzot.SetTimezoneOffsetTo(params, value); err != nil {
 		return err
 	}
@@ -118,7 +121,7 @@ func (s *Standard) SetRecurrenceRule(params parameter.Container, value types.Rec
 	if s.RecurrenceRule != nil {
 		return s.RecurrenceRule.SetRecurrenceRule(params, value)
 	}
-	rr := &RecurrenceRule{}
+	rr := &property.RecurrenceRule{}
 	if err := rr.SetRecurrenceRule(params, value); err != nil {
 		return err
 	}
@@ -130,7 +133,7 @@ func (s *Standard) SetComment(params parameter.Container, value types.Text) erro
 	if s.Comment != nil {
 		return s.Comment.SetComment(params, value)
 	}
-	c := &Comment{}
+	c := &property.Comment{}
 	if err := c.SetComment(params, value); err != nil {
 		return err
 	}
@@ -141,7 +144,7 @@ func (s *Standard) SetRecurrenceDateTimes(params parameter.Container, values []t
 	if s.RecurrenceDateTimes != nil {
 		return s.RecurrenceDateTimes.SetRecurrenceDateTimes(params, values)
 	}
-	rdt := &RecurrenceDateTimes{}
+	rdt := &property.RecurrenceDateTimes{}
 	if err := rdt.SetRecurrenceDateTimes(params, values); err != nil {
 		return err
 	}
@@ -152,7 +155,7 @@ func (s *Standard) SetTimezoneName(params parameter.Container, value types.Text)
 	if s.TimezoneName != nil {
 		return s.TimezoneName.SetTimezoneName(params, value)
 	}
-	tzn := &TimezoneName{}
+	tzn := &property.TimezoneName{}
 	if err := tzn.SetTimezoneName(params, value); err != nil {
 		return err
 	}
@@ -167,26 +170,26 @@ func NewDaylight() *Daylight {
 // Daylight is sub component of timezone
 type Daylight struct {
 	//required
-	*DateTimeStart
-	*TimezoneOffsetFrom
-	*TimezoneOffsetTo
+	DateTimeStart      *property.DateTimeStart
+	TimezoneOffsetFrom *property.TimezoneOffsetFrom
+	TimezoneOffsetTo   *property.TimezoneOffsetTo
 
 	// optional
-	*RecurrenceRule
+	RecurrenceRule *property.RecurrenceRule
 
-	*Comment
-	*RecurrenceDateTimes
-	*TimezoneName
+	Comment             *property.Comment
+	RecurrenceDateTimes *property.RecurrenceDateTimes
+	TimezoneName        *property.TimezoneName
 
-	XProperties    []*NonStandard
-	IANAProperties []*IANA
+	XProperties    []*property.NonStandard
+	IANAProperties []*property.IANA
 }
 
 func (d *Daylight) SetStart(params parameter.Container, value types.DateTime) error {
 	if d.DateTimeStart != nil {
 		return d.DateTimeStart.SetStart(params, value)
 	}
-	dts := &DateTimeStart{}
+	dts := &property.DateTimeStart{}
 	if err := dts.SetStart(params, value); err != nil {
 		return err
 	}
@@ -197,7 +200,7 @@ func (d *Daylight) SetTimezoneOffsetFrom(params parameter.Container, value types
 	if d.TimezoneOffsetFrom != nil {
 		return d.TimezoneOffsetFrom.SetTimezoneOffsetFrom(params, value)
 	}
-	tzof := &TimezoneOffsetFrom{}
+	tzof := &property.TimezoneOffsetFrom{}
 	if err := tzof.SetTimezoneOffsetFrom(params, value); err != nil {
 		return err
 	}
@@ -208,7 +211,7 @@ func (d *Daylight) SetTimezoneOffsetTo(params parameter.Container, value types.U
 	if d.TimezoneOffsetTo != nil {
 		return d.TimezoneOffsetTo.SetTimezoneOffsetTo(params, value)
 	}
-	tzot := &TimezoneOffsetTo{}
+	tzot := &property.TimezoneOffsetTo{}
 	if err := tzot.SetTimezoneOffsetTo(params, value); err != nil {
 		return err
 	}
@@ -219,7 +222,7 @@ func (d *Daylight) SetRecurrenceRule(params parameter.Container, value types.Rec
 	if d.RecurrenceRule != nil {
 		return d.RecurrenceRule.SetRecurrenceRule(params, value)
 	}
-	rr := &RecurrenceRule{}
+	rr := &property.RecurrenceRule{}
 	if err := rr.SetRecurrenceRule(params, value); err != nil {
 		return err
 	}
@@ -231,7 +234,7 @@ func (d *Daylight) SetComment(params parameter.Container, value types.Text) erro
 	if d.Comment != nil {
 		return d.Comment.SetComment(params, value)
 	}
-	c := &Comment{}
+	c := &property.Comment{}
 	if err := c.SetComment(params, value); err != nil {
 		return err
 	}
@@ -242,7 +245,7 @@ func (s *Daylight) SetRecurrenceDateTimes(params parameter.Container, values []t
 	if s.RecurrenceDateTimes != nil {
 		return s.RecurrenceDateTimes.SetRecurrenceDateTimes(params, values)
 	}
-	rdt := &RecurrenceDateTimes{}
+	rdt := &property.RecurrenceDateTimes{}
 	if err := rdt.SetRecurrenceDateTimes(params, values); err != nil {
 		return err
 	}
@@ -253,7 +256,7 @@ func (s *Daylight) SetTimezoneName(params parameter.Container, value types.Text)
 	if s.TimezoneName != nil {
 		return s.TimezoneName.SetTimezoneName(params, value)
 	}
-	tzn := &TimezoneName{}
+	tzn := &property.TimezoneName{}
 	if err := tzn.SetTimezoneName(params, value); err != nil {
 		return err
 	}

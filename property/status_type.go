@@ -1,4 +1,4 @@
-package ical
+package property
 
 type StatusType string
 

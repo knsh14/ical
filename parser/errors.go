@@ -3,8 +3,8 @@ package parser
 import (
 	"fmt"
 
-	"github.com/knsh14/ical"
 	"github.com/knsh14/ical/component"
+	"github.com/knsh14/ical/property"
 	"github.com/morikuni/failure"
 )
 
@@ -18,7 +18,7 @@ func (e NoEndError) Error() string {
 	return fmt.Sprintf("finished without END:%s", string(e))
 }
 
-func NewParseError(cname component.ComponentType, pname ical.PropertyName, e error) ParseError {
+func NewParseError(cname component.ComponentType, pname property.PropertyName, e error) ParseError {
 	return ParseError{
 		componentName: cname,
 		propertyName:  pname,
@@ -28,7 +28,7 @@ func NewParseError(cname component.ComponentType, pname ical.PropertyName, e err
 
 type ParseError struct {
 	componentName component.ComponentType
-	propertyName  ical.PropertyName
+	propertyName  property.PropertyName
 	err           error
 }
 
@@ -36,7 +36,7 @@ func (e ParseError) Error() string {
 	return fmt.Sprintf("parse %s.%s: %s", e.componentName, e.propertyName, e.err)
 }
 
-type InvalidPropertyError ical.PropertyName
+type InvalidPropertyError property.PropertyName
 
 type UnknownComponentTypeError component.ComponentType
 

@@ -1,166 +1,79 @@
 package ical
 
 import (
-	"fmt"
-	"regexp"
-	"strings"
-
-	"github.com/Masterminds/semver/v3"
 	"github.com/knsh14/ical/parameter"
+	"github.com/knsh14/ical/property"
 	"github.com/knsh14/ical/types"
 )
 
 func NewCalender() *Calender {
-	return &Calender{}
+	return &Calender{Version: property.NewVersion()}
 }
 
-// Calender is top object of ical
+// Calender is root object of ical
 // https://tools.ietf.org/html/rfc5545#section-3.4
 // https://tools.ietf.org/html/rfc5545#section-3.5
 // https://tools.ietf.org/html/rfc5545#section-3.6
 type Calender struct {
 	// required field
-	ProdID struct {
-		Param parameter.Container
-		Value types.Text
-	}
-	Version struct {
-		Param parameter.Container
-		Max   types.Text
-		Min   types.Text
-	}
+	ProdID  *property.ProdID
+	Version *property.Version
 
 	// optional
-	CalScale struct {
-		Valid bool
-		Param parameter.Container
-		Value types.Text
-	}
-	Method struct {
-		Valid bool
-		Param parameter.Container
-		Value types.Text
-	}
+	CalScale *property.CalScale
+	Method   *property.Method
 
-	XProperty map[string]struct {
-		Name   string
-		Param  parameter.Container
-		Values []types.Text
-	}
-	IANAProperty map[string]struct {
-		Name   string
-		Param  parameter.Container
-		Values []types.Text
-	}
+	XProperties    []*property.NonStandard // https://tools.ietf.org/html/rfc5545#section-3.8.8.2
+	IANAProperties []*property.IANA
 
 	Component []CalenderComponent
 }
 
-// SetCalScale updates CALSCALE property
-// spec is https://tools.ietf.org/html/rfc5545#section-3.7.1
-func (c *Calender) SetCalScale(params parameter.Container, t types.Text) error {
-	if t == "" {
-		return ErrInputIsEmpty
+func (c *Calender) SetCalScale(params parameter.Container, value types.Text) error {
+	if c.CalScale != nil {
+		return c.CalScale.SetCalScale(params, value)
 	}
-	if string(t) != "GREGORIAN" {
-		return fmt.Errorf("Invalid CALSCALE Value %s, allow only GREGORIAN", string(t))
-	}
-	c.CalScale.Param = params
-	c.CalScale.Value = t
-	return nil
-}
-
-// SetMethod updates Method property
-// spec is https://tools.ietf.org/html/rfc5545#section-3.7.2
-func (c *Calender) SetMethod(params parameter.Container, t types.Text) error {
-	if t == "" {
-		return ErrInputIsEmpty
-	}
-	if isMethod(string(t)) {
-		c.Method.Param = params
-		c.Method.Value = t
-		return nil
-	}
-	return fmt.Errorf("Invalid Method Value %s, allow only registerd IANA tokens", t)
-}
-
-// SetProdID updates PRODID property
-// spec is https://tools.ietf.org/html/rfc5545#section-3.7.3
-func (c *Calender) SetProdID(params parameter.Container, t types.Text) error {
-	if t == "" {
-		return ErrInputIsEmpty
-	}
-	c.ProdID.Param = params
-	c.ProdID.Value = t
-	return nil
-}
-
-// SetVersion updates VERSION property
-// spec is https://tools.ietf.org/html/rfc5545#section-3.7.4
-func (c *Calender) SetVersion(params parameter.Container, t types.Text) error {
-	if t == "" {
-		return ErrInputIsEmpty
-	}
-	isMatch, err := regexp.MatchString(`^\d+.\d+$`, string(t))
-	if err != nil {
+	cs := &property.CalScale{}
+	if err := cs.SetCalScale(params, value); err != nil {
 		return err
 	}
-	if isMatch {
-		c.Version.Param = params
-		c.Version.Max = t
-		return nil
-	}
-	isMatch, err = regexp.MatchString(`^\d+.\d+;\d+.\d+$`, string(t))
-	if err != nil {
-		return err
-	}
-	if !isMatch {
-		return fmt.Errorf("not required format, allow X.Y or W.X;Y.Z")
-	}
-	v := strings.SplitN(string(t), ";", 2)
-	return c.UpdateVersion(params, types.NewText(v[0]), types.NewText(v[1]))
-}
-
-func (c *Calender) UpdateVersion(params parameter.Container, min, max types.Text) error {
-	a, err := semver.NewVersion(string(min))
-	if err != nil {
-		return fmt.Errorf("convert %s to semvar: %w", min, err)
-	}
-	b, err := semver.NewVersion(string(min))
-	if err != nil {
-		return fmt.Errorf("convert %s to semvar: %w", max, err)
-	}
-	if a.GreaterThan(b) {
-		return fmt.Errorf("min version %s is greater than max version %s", min, max)
-	}
-	c.Version.Min = min
-	c.Version.Max = max
-	c.Version.Param = params
+	c.CalScale = cs
 	return nil
 }
 
-// SetXProp sets experimental property to calender.
-// schema defined in https://tools.ietf.org/html/rfc5545#section-3.8.8.2
-func (c *Calender) SetXProp(name string, params parameter.Container, values []types.Text) error {
-	if c.XProperty == nil {
-		c.XProperty = make(map[string]struct {
-			Name   string
-			Param  parameter.Container
-			Values []types.Text
-		})
+func (c *Calender) SetMethod(params parameter.Container, value types.Text) error {
+	if c.Method != nil {
+		return c.Method.SetMethod(params, value)
 	}
-	if _, ok := c.XProperty[name]; ok {
-		return fmt.Errorf("Property %s is already defined", name)
+	m := &property.Method{}
+	if err := m.SetMethod(params, value); err != nil {
+		return err
 	}
-	c.XProperty[name] = struct {
-		Name   string
-		Param  parameter.Container
-		Values []types.Text
-	}{
-		Name:   name,
-		Param:  params,
-		Values: values,
+	c.Method = m
+	return nil
+}
+
+func (c *Calender) SetProdID(params parameter.Container, value types.Text) error {
+	if c.ProdID != nil {
+		return c.ProdID.SetProdID(params, value)
 	}
+	pid := &property.ProdID{}
+	if err := pid.SetProdID(params, value); err != nil {
+		return err
+	}
+	c.ProdID = pid
+	return nil
+}
+
+func (c *Calender) SetVersion(params parameter.Container, value types.Text) error {
+	if c.Version != nil {
+		return c.Version.SetVersion(params, value)
+	}
+	ver := property.NewVersion()
+	if err := ver.SetVersion(params, value); err != nil {
+		return err
+	}
+	c.Version = ver
 	return nil
 }
 

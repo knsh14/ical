@@ -8,6 +8,8 @@ import (
 	"github.com/knsh14/ical"
 	"github.com/knsh14/ical/component"
 	"github.com/knsh14/ical/contentline"
+	"github.com/knsh14/ical/parameter"
+	"github.com/knsh14/ical/property"
 	"github.com/knsh14/ical/types"
 )
 
@@ -68,8 +70,9 @@ func TestParseEvent(t *testing.T) {
 				},
 			},
 			expected: &ical.Event{
-				UID: ical.UID{
-					Value: types.Text("hello.world@kns14.dev"),
+				UID: &property.UID{
+					Parameter: parameter.Container{},
+					Value:     types.Text("hello.world@kns14.dev"),
 				},
 			},
 			assertError: func(t *testing.T, err error) {

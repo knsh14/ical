@@ -5,6 +5,7 @@ import (
 
 	"github.com/knsh14/ical"
 	"github.com/knsh14/ical/component"
+	"github.com/knsh14/ical/property"
 	"github.com/knsh14/ical/token"
 	"github.com/knsh14/ical/types"
 )
@@ -14,60 +15,56 @@ func (p *Parser) parseCalender() (*ical.Calender, error) {
 	c := ical.NewCalender()
 
 	for l := p.getCurrentLine(); l != nil; l = p.getCurrentLine() {
-		_, err := p.parseParameter(l)
+		params, err := p.parseParameter(l)
 		if err != nil {
 			return nil, fmt.Errorf("parse parameter: %w", err)
 		}
-		switch l.Name {
-		case "CALSCALE":
-			params, err := p.parseParameter(l)
-			if err != nil {
-				p.errors = append(p.errors, err)
+		switch pname := property.PropertyName(l.Name); pname {
+		case property.PropertyNameCalScale:
+			if len(l.Values) > 1 {
+				return nil, NewInvalidValueLengthError(1, len(l.Values))
 			}
 			t := types.NewText(l.Values[0])
 			err = c.SetCalScale(params, t)
 			if err != nil {
-				return nil, fmt.Errorf("failed to set value to VCALENDER.CALSCALE: %w", err)
+				return nil, NewParseError(component.ComponentTypeCalendar, pname, err)
 			}
-		case "METHOD":
-			params, err := p.parseParameter(l)
-			if err != nil {
-				p.errors = append(p.errors, err)
+		case property.PropertyNameMethod:
+			if len(l.Values) > 1 {
+				return nil, NewInvalidValueLengthError(1, len(l.Values))
 			}
 			t := types.NewText(l.Values[0])
 			err = c.SetMethod(params, t)
 			if err != nil {
-				return nil, fmt.Errorf("failed to set value to VCALENDER.METHOD: %w", err)
+				return nil, NewParseError(component.ComponentTypeCalendar, pname, err)
 			}
-		case "PRODID":
-			params, err := p.parseParameter(l)
-			if err != nil {
-				p.errors = append(p.errors, err)
+		case property.PropertyNameProdID:
+			if len(l.Values) > 1 {
+				return nil, NewInvalidValueLengthError(1, len(l.Values))
 			}
 			t := types.NewText(l.Values[0])
 			err = c.SetProdID(params, t)
 			if err != nil {
-				return nil, fmt.Errorf("failed to set value to VCALENDER.ProdID: %w", err)
+				return nil, NewParseError(component.ComponentTypeCalendar, pname, err)
 			}
-		case "VERSION":
-			params, err := p.parseParameter(l)
-			if err != nil {
-				p.errors = append(p.errors, err)
+		case property.PropertyNameVersion:
+			if len(l.Values) > 1 {
+				return nil, NewInvalidValueLengthError(1, len(l.Values))
 			}
 			t := types.NewText(l.Values[0])
 			err = c.SetVersion(params, t)
 			if err != nil {
-				return nil, fmt.Errorf("failed to set value to VCALENDER.VERSION: %w", err)
+				return nil, NewParseError(component.ComponentTypeCalendar, pname, err)
 			}
-		case "BEGIN":
+		case property.PropertyNameBegin:
 			if len(l.Values) != 1 {
-				return nil, fmt.Errorf("not expected value length")
+				return nil, NewInvalidValueLengthError(1, len(l.Values))
 			}
 			switch ct := component.ComponentType(l.Values[0]); ct {
 			case component.ComponentTypeEvent:
 				e, err := p.parseEvent()
 				if err != nil {
-					return nil, fmt.Errorf("parse event: %w", err)
+					return nil, fmt.Errorf("parse %s: %w", component.ComponentTypeEvent, err)
 				}
 				c.Component = append(c.Component, e)
 				break
@@ -84,9 +81,12 @@ func (p *Parser) parseCalender() (*ical.Calender, error) {
 					p.nextLine()
 				}
 			case component.ComponentTypeTimezone:
-				for !p.isEndComponent(ct) {
-					p.nextLine()
+				tz, err := p.parseTimezone()
+				if err != nil {
+					return nil, fmt.Errorf("parse %s: %w", component.ComponentTypeTimezone, err)
 				}
+				c.Component = append(c.Component, tz)
+				break
 			default:
 				return nil, fmt.Errorf("unknown component type %s", ct)
 			}
@@ -100,20 +100,11 @@ func (p *Parser) parseCalender() (*ical.Calender, error) {
 			return c, nil
 		default:
 			if token.IsXName(l.Name) {
-				params, err := p.parseParameter(l)
+				ns, err := property.NewNonStandard(l.Name, params, l.Values)
 				if err != nil {
-					p.errors = append(p.errors, err)
-					break
+					return nil, fmt.Errorf("value : %w", err)
 				}
-				var values []types.Text
-				for _, v := range l.Values {
-					values = append(values, types.Text(v))
-				}
-				err = c.SetXProp(l.Name, params, values)
-				if err != nil {
-					p.errors = append(p.errors, err)
-					break
-				}
+				c.XProperties = append(c.XProperties, ns)
 				break
 			}
 			// if isIANAProp {
