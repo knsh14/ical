@@ -30,6 +30,7 @@ const (
 	// time
 	PropertyNameDateTimeCompleted PropertyName = "COMPLETED"
 	PropertyNameDateTimeEnd       PropertyName = "DTEND"
+	PropertyNameDateTimeDue       PropertyName = "DUE"
 	PropertyNameDateTimeStart     PropertyName = "DTSTART"
 	PropertyNameDuration          PropertyName = "DURATION"
 	PropertyNameFreeBusyTime      PropertyName = "FREEBUSY"

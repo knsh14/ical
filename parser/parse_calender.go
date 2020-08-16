@@ -69,9 +69,12 @@ func (p *Parser) parseCalender() (*ical.Calender, error) {
 				c.Component = append(c.Component, e)
 				break
 			case component.ComponentTypeTODO:
-				for !p.isEndComponent(ct) {
-					p.nextLine()
+				todo, err := p.parseTodo()
+				if err != nil {
+					return nil, fmt.Errorf("parse %s: %w", component.ComponentTypeTODO, err)
 				}
+				c.Component = append(c.Component, todo)
+				break
 			case component.ComponentTypeJournal:
 				for !p.isEndComponent(ct) {
 					p.nextLine()

@@ -44,16 +44,17 @@ type Event struct {
 	DateTimeEnd *property.DateTimeEnd
 	Duration    *property.Duration
 
-	Attachment          *property.Attachment
-	Attendee            *property.Attendee
-	Categories          *property.Categories
-	Comment             *property.Comment
-	Contact             *property.Contact
-	ExceptionDateTimes  *property.ExceptionDateTimes
-	RequestStatus       *property.RequestStatus
-	RelatedTo           *property.RelatedTo
-	Resources           *property.Resources
-	RecurrenceDateTimes *property.RecurrenceDateTimes
+	// optional but may occur more than once
+	Attachments         []*property.Attachment
+	Attendees           []*property.Attendee
+	Categories          []*property.Categories
+	Comments            []*property.Comment
+	Contacts            []*property.Contact
+	ExceptionDateTimes  []*property.ExceptionDateTimes
+	RequestStatus       []*property.RequestStatus
+	RelatedTos          []*property.RelatedTo
+	Resources           []*property.Resources
+	RecurrenceDateTimes []*property.RecurrenceDateTimes
 
 	XProperties    []*property.NonStandard
 	IANAProperties []*property.IANA
@@ -321,122 +322,92 @@ func (e *Event) SetDuration(params parameter.Container, value types.Duration) er
 	return nil
 }
 
-func (e *Event) SetAttachment(params parameter.Container, value types.Attachmentable) error {
-	if e.Attachment != nil {
-		return e.Attachment.SetAttachment(params, value)
-	}
+func (e *Event) AddAttachment(params parameter.Container, value types.Attachmentable) error {
 	a := &property.Attachment{}
 	if err := a.SetAttachment(params, value); err != nil {
 		return err
 	}
-	e.Attachment = a
+	e.Attachments = append(e.Attachments, a)
 	return nil
 }
 
-func (e *Event) SetAttendee(params parameter.Container, value types.CalenderUserAddress) error {
-	if e.Attendee != nil {
-		return e.Attendee.SetAttendee(params, value)
-	}
+func (e *Event) AddAttendee(params parameter.Container, value types.CalenderUserAddress) error {
 	a := &property.Attendee{}
 	if err := a.SetAttendee(params, value); err != nil {
 		return err
 	}
-	e.Attendee = a
+	e.Attendees = append(e.Attendees, a)
 	return nil
 }
 
-func (e *Event) SetCategories(params parameter.Container, values []types.Text) error {
-	if e.Categories != nil {
-		return e.Categories.SetCategories(params, values)
-	}
+func (e *Event) AddCategories(params parameter.Container, values []types.Text) error {
 	c := &property.Categories{}
 	if err := c.SetCategories(params, values); err != nil {
 		return err
 	}
-	e.Categories = c
+	e.Categories = append(e.Categories, c)
 	return nil
 }
 
-func (e *Event) SetComment(params parameter.Container, value types.Text) error {
-	if e.Comment != nil {
-		return e.Comment.SetComment(params, value)
-	}
+func (e *Event) AddComment(params parameter.Container, value types.Text) error {
 	c := &property.Comment{}
 	if err := c.SetComment(params, value); err != nil {
 		return err
 	}
-	e.Comment = c
+	e.Comments = append(e.Comments, c)
 	return nil
 }
 
-func (e *Event) SetContact(params parameter.Container, value types.Text) error {
-	if e.Contact != nil {
-		return e.Contact.SetContact(params, value)
-	}
+func (e *Event) AddContact(params parameter.Container, value types.Text) error {
 	c := &property.Contact{}
 	if err := c.SetContact(params, value); err != nil {
 		return err
 	}
-	e.Contact = c
+	e.Contacts = append(e.Contacts, c)
 	return nil
 }
 
-func (e *Event) SetExceptionDateTimes(params parameter.Container, values []types.TimeType) error {
-	if e.ExceptionDateTimes != nil {
-		return e.ExceptionDateTimes.SetExceptionDateTimes(params, values)
-	}
+func (e *Event) AddExceptionDateTimes(params parameter.Container, values []types.TimeType) error {
 	edt := &property.ExceptionDateTimes{}
 	if err := edt.SetExceptionDateTimes(params, values); err != nil {
 		return err
 	}
-	e.ExceptionDateTimes = edt
+	e.ExceptionDateTimes = append(e.ExceptionDateTimes, edt)
 	return nil
 }
 
-func (e *Event) SetRequestStatus(params parameter.Container, value types.Text) error {
-	if e.RequestStatus != nil {
-		return e.RequestStatus.SetRequestStatus(params, value)
-	}
+func (e *Event) AddRequestStatus(params parameter.Container, value types.Text) error {
 	rs := &property.RequestStatus{}
 	if err := rs.SetRequestStatus(params, value); err != nil {
 		return err
 	}
-	e.RequestStatus = rs
+	e.RequestStatus = append(e.RequestStatus, rs)
 	return nil
 }
 
-func (e *Event) SetRelatedTo(params parameter.Container, value types.Text) error {
-	if e.RelatedTo != nil {
-		return e.RelatedTo.SetRelatedTo(params, value)
-	}
+func (e *Event) AddRelatedTo(params parameter.Container, value types.Text) error {
 	rt := &property.RelatedTo{}
 	if err := rt.SetRelatedTo(params, value); err != nil {
 		return err
 	}
-	e.RelatedTo = rt
+	e.RelatedTos = append(e.RelatedTos, rt)
 	return nil
 }
 
-func (e *Event) SetResources(params parameter.Container, values []types.Text) error {
-	if e.Resources != nil {
-		return e.Resources.SetResources(params, values)
-	}
+func (e *Event) AddResources(params parameter.Container, values []types.Text) error {
 	r := &property.Resources{}
 	if err := r.SetResources(params, values); err != nil {
 		return err
 	}
-	e.Resources = r
+	e.Resources = append(e.Resources, r)
 	return nil
 }
 
-func (e *Event) SetRecurrenceDateTimes(params parameter.Container, values []types.RecurrenceDateTime) error {
-	if e.RecurrenceDateTimes != nil {
-		return e.RecurrenceDateTimes.SetRecurrenceDateTimes(params, values)
-	}
+func (e *Event) AddRecurrenceDateTimes(params parameter.Container, values []types.RecurrenceDateTime) error {
 	rdt := &property.RecurrenceDateTimes{}
 	if err := rdt.SetRecurrenceDateTimes(params, values); err != nil {
 		return err
 	}
-	e.RecurrenceDateTimes = rdt
+	e.RecurrenceDateTimes = append(e.RecurrenceDateTimes, rdt)
 	return nil
 }
