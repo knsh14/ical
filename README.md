@@ -5,24 +5,34 @@ ical
 
 parse iCal file based on [RFC 5545]( https://tools.ietf.org/html/rfc5545 )
 
-# Usage
-
+# Example
+https://play.golang.org/p/SDQl0Cwc67J
 ```go
 package main
 
 import (
 	"fmt"
+	"log"
+	"net/http"
 
+	"github.com/knsh14/ical"
 	"github.com/knsh14/ical/parser"
 )
 
 func main() {
-	calendar, err := parser.Parse("~/holiday.ics")
+	res, err := http.Get("https://www.google.com/calendar/ical/japanese__ja%40holiday.calendar.google.com/public/basic.ics")
 	if err != nil {
-		fmt.Println(err)
-		return
+		log.Fatal(err)
 	}
-	fmt.Printf("%#v\n", calendar)
+	cal, err := parser.Parse(res.Body)
+	if err != nil {
+		log.Fatal(err)
+	}
+	for _, c := range cal.Components {
+		if e, ok := c.(*ical.Event); ok {
+			fmt.Println(e.Summary.Value)
+		}
+	}
 }
 ```
 
