@@ -12,7 +12,7 @@ import (
 
 func (p *Parser) parseEvent() (*ical.Event, error) {
 	p.nextLine() // skip BEGIN:VEVENT line
-
+	p.currentComponentType = component.ComponentTypeEvent
 	event := ical.NewEvent()
 
 	for l := p.getCurrentLine(); l != nil; l = p.getCurrentLine() {
@@ -29,7 +29,16 @@ func (p *Parser) parseEvent() (*ical.Event, error) {
 				return nil, fmt.Errorf("validation error: %w", err)
 			}
 			return event, nil
-
+		case property.PropertyNameBegin:
+			if !p.isBeginComponent(component.ComponentTypeAlarm) {
+				return nil, fmt.Errorf("allow only BEGIN:VALARM, but %v", l)
+			}
+			a, err := p.parseAlarm()
+			if err != nil {
+				return nil, NewParseError(component.ComponentTypeEvent, pname, err)
+			}
+			event.AddAlarm(a)
+			p.currentComponentType = component.ComponentTypeEvent
 		case property.PropertyNameUID:
 			if len(l.Values) != 1 {
 				return nil, NewInvalidValueLengthError(1, len(l.Values))

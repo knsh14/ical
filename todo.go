@@ -56,6 +56,8 @@ type ToDo struct {
 	Resources           []*property.Resources
 	RecurrenceDateTimes []*property.RecurrenceDateTimes
 
+	Alarms []Alarm
+
 	XProperties    []*property.NonStandard
 	IANAProperties []*property.IANA
 }
@@ -421,4 +423,8 @@ func (todo *ToDo) AddRecurrenceDateTimes(params parameter.Container, values []ty
 	}
 	todo.RecurrenceDateTimes = append(todo.RecurrenceDateTimes, rdt)
 	return nil
+}
+
+func (todo *ToDo) AddAlarm(a Alarm) {
+	todo.Alarms = append(todo.Alarms, a)
 }

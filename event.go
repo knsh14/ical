@@ -56,6 +56,8 @@ type Event struct {
 	Resources           []*property.Resources
 	RecurrenceDateTimes []*property.RecurrenceDateTimes
 
+	Alarms []Alarm
+
 	XProperties    []*property.NonStandard
 	IANAProperties []*property.IANA
 }
@@ -410,4 +412,8 @@ func (e *Event) AddRecurrenceDateTimes(params parameter.Container, values []type
 	}
 	e.RecurrenceDateTimes = append(e.RecurrenceDateTimes, rdt)
 	return nil
+}
+
+func (e *Event) AddAlarm(a Alarm) {
+	e.Alarms = append(e.Alarms, a)
 }

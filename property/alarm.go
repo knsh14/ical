@@ -54,7 +54,7 @@ func (rc *RepeatCount) SetRepeatCount(params parameter.Container, value types.In
 // https://tools.ietf.org/html/rfc5545#section-3.8.6.3
 type Trigger struct {
 	Parameter parameter.Container
-	Value     interface{} // duration or datetime , default is duration
+	Value     interface{} // TODO: duration or datetime , default is duration
 }
 
 func (t *Trigger) SetTrigger(params parameter.Container, value interface{}) error {

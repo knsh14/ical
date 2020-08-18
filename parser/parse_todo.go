@@ -12,7 +12,7 @@ import (
 
 func (p *Parser) parseTodo() (*ical.ToDo, error) {
 	p.nextLine() // skip BEGIN:VEVENT line
-
+	p.currentComponentType = component.ComponentTypeTODO
 	todo := ical.NewToDo()
 
 	for l := p.getCurrentLine(); l != nil; l = p.getCurrentLine() {
@@ -319,6 +319,16 @@ func (p *Parser) parseTodo() (*ical.ToDo, error) {
 			if err := todo.AddRecurrenceDateTimes(params, rdts); err != nil {
 				return nil, NewParseError(component.ComponentTypeTODO, pname, err)
 			}
+		case property.PropertyNameBegin:
+			if !p.isBeginComponent(component.ComponentTypeAlarm) {
+				return nil, fmt.Errorf("allow only BEGIN:VALARM, but %v", l)
+			}
+			a, err := p.parseAlarm()
+			if err != nil {
+				return nil, NewParseError(component.ComponentTypeEvent, pname, err)
+			}
+			todo.AddAlarm(a)
+			p.currentComponentType = component.ComponentTypeTODO
 		default:
 			if token.IsXName(l.Name) {
 				ns, err := property.NewNonStandard(l.Name, params, l.Values)

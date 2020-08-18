@@ -11,6 +11,7 @@ import (
 )
 
 func (p *Parser) parseCalender() (*ical.Calender, error) {
+	p.nextLine()
 	p.currentComponentType = component.ComponentTypeCalendar
 	c := ical.NewCalender()
 
@@ -67,14 +68,12 @@ func (p *Parser) parseCalender() (*ical.Calender, error) {
 					return nil, fmt.Errorf("parse %s: %w", component.ComponentTypeEvent, err)
 				}
 				c.Component = append(c.Component, e)
-				break
 			case component.ComponentTypeTODO:
 				todo, err := p.parseTodo()
 				if err != nil {
 					return nil, fmt.Errorf("parse %s: %w", component.ComponentTypeTODO, err)
 				}
 				c.Component = append(c.Component, todo)
-				break
 			case component.ComponentTypeJournal:
 				for !p.isEndComponent(ct) {
 					p.nextLine()
@@ -89,10 +88,10 @@ func (p *Parser) parseCalender() (*ical.Calender, error) {
 					return nil, fmt.Errorf("parse %s: %w", component.ComponentTypeTimezone, err)
 				}
 				c.Component = append(c.Component, tz)
-				break
 			default:
 				return nil, fmt.Errorf("unknown component type %s", ct)
 			}
+			p.currentComponentType = component.ComponentTypeCalendar
 		case "END":
 			if !p.isEndComponent(component.ComponentTypeCalendar) {
 				return nil, fmt.Errorf("Invalid END")

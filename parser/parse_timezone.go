@@ -13,7 +13,7 @@ import (
 
 func (p *Parser) parseTimezone() (*ical.Timezone, error) {
 	p.nextLine() // skip BEGIN:VTIMEZONE line
-
+	p.currentComponentType = component.ComponentTypeTimezone
 	timezone := ical.NewTimezone()
 
 	for l := p.getCurrentLine(); l != nil; l = p.getCurrentLine() {
@@ -82,6 +82,7 @@ func (p *Parser) parseTimezone() (*ical.Timezone, error) {
 			default:
 				return nil, UnknownComponentTypeError(cname)
 			}
+			p.currentComponentType = component.ComponentTypeTimezone
 		default:
 			if token.IsXName(l.Name) {
 				ns, err := property.NewNonStandard(l.Name, params, l.Values)
@@ -98,7 +99,7 @@ func (p *Parser) parseTimezone() (*ical.Timezone, error) {
 
 func (p *Parser) parseStandard() (*ical.Standard, error) {
 	p.nextLine() // skip BEGIN line
-
+	p.currentComponentType = component.ComponentTypeStandard
 	standard := ical.NewStandard()
 
 	for l := p.getCurrentLine(); l != nil; l = p.getCurrentLine() {
@@ -200,7 +201,7 @@ func (p *Parser) parseStandard() (*ical.Standard, error) {
 }
 func (p *Parser) parseDaylight() (*ical.Daylight, error) {
 	p.nextLine() // skip BEGIN line
-
+	p.currentComponentType = component.ComponentTypeDaylight
 	daylight := ical.NewDaylight()
 
 	for l := p.getCurrentLine(); l != nil; l = p.getCurrentLine() {
