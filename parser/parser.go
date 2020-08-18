@@ -3,6 +3,7 @@ package parser
 import (
 	"bufio"
 	"fmt"
+	"io"
 	"os"
 	"strings"
 
@@ -13,12 +14,20 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
-func Parse(path string) (*ical.Calender, error) {
+func Parse(r io.Reader) (*ical.Calender, error) {
+	return parseFromScanner(bufio.NewScanner(r))
+}
+
+func ParseFile(path string) (*ical.Calender, error) {
 	f, err := os.Open(path)
 	if err != nil {
 		return nil, err
 	}
 	scanner := bufio.NewScanner(f)
+	return parseFromScanner(scanner)
+}
+
+func parseFromScanner(scanner *bufio.Scanner) (*ical.Calender, error) {
 	lines, err := scanLines(scanner)
 	if err != nil {
 		return nil, err
@@ -42,22 +51,6 @@ func Parse(path string) (*ical.Calender, error) {
 	}
 	p := NewParser(contentlines)
 	return p.parse()
-}
-
-func rebuildContentLines(raw []string) []string {
-	var res []string
-	for _, l := range raw {
-		switch {
-		case strings.HasPrefix(l, " "):
-			res[len(res)-1] += "\n" + strings.TrimPrefix(l, " ")
-		case strings.HasPrefix(l, "\t"):
-			res[len(res)-1] += "\n" + strings.TrimPrefix(l, "\t")
-			continue
-		default:
-			res = append(res, l)
-		}
-	}
-	return res
 }
 
 func scanLines(scanner *bufio.Scanner) ([]string, error) {
@@ -90,7 +83,7 @@ type Parser struct {
 	Lines                []*contentline.ContentLine
 	CurrentIndex         int
 	currentComponentType component.ComponentType
-	errors               []error
+	// errors               []error
 }
 
 func (p *Parser) getCurrentLine() *contentline.ContentLine {
@@ -118,7 +111,6 @@ func (p *Parser) parse() (*ical.Calender, error) {
 	if !p.isBeginComponent(component.ComponentTypeCalendar) {
 		return nil, fmt.Errorf("not %s:%s, got %v", "BEGIN", component.ComponentTypeCalendar, l)
 	}
-	p.nextLine()
 	c, err := p.parseCalender()
 	if err != nil {
 		return nil, err

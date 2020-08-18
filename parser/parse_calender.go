@@ -65,15 +65,15 @@ func (p *Parser) parseCalender() (*ical.Calender, error) {
 			case component.ComponentTypeEvent:
 				e, err := p.parseEvent()
 				if err != nil {
-					return nil, fmt.Errorf("parse %s: %w", component.ComponentTypeEvent, err)
+					return nil, fmt.Errorf("parse %s: %w", ct, err)
 				}
-				c.Component = append(c.Component, e)
+				c.Components = append(c.Components, e)
 			case component.ComponentTypeTODO:
 				todo, err := p.parseTodo()
 				if err != nil {
-					return nil, fmt.Errorf("parse %s: %w", component.ComponentTypeTODO, err)
+					return nil, fmt.Errorf("parse %s: %w", ct, err)
 				}
-				c.Component = append(c.Component, todo)
+				c.Components = append(c.Components, todo)
 			case component.ComponentTypeJournal:
 				for !p.isEndComponent(ct) {
 					p.nextLine()
@@ -85,14 +85,14 @@ func (p *Parser) parseCalender() (*ical.Calender, error) {
 			case component.ComponentTypeTimezone:
 				tz, err := p.parseTimezone()
 				if err != nil {
-					return nil, fmt.Errorf("parse %s: %w", component.ComponentTypeTimezone, err)
+					return nil, fmt.Errorf("parse %s: %w", ct, err)
 				}
-				c.Component = append(c.Component, tz)
+				c.Components = append(c.Components, tz)
 			default:
 				return nil, fmt.Errorf("unknown component type %s", ct)
 			}
 			p.currentComponentType = component.ComponentTypeCalendar
-		case "END":
+		case property.PropertyNameEnd:
 			if !p.isEndComponent(component.ComponentTypeCalendar) {
 				return nil, fmt.Errorf("Invalid END")
 			}

@@ -33,15 +33,6 @@ func (l *Lexer) readChar() {
 	l.readPosition++
 }
 
-// peekChar returns next char but does not increment position
-func (l *Lexer) peekChar() rune {
-	if l.readPosition >= len(l.input) {
-		return 0
-	} else {
-		return l.input[l.readPosition]
-	}
-}
-
 func (l *Lexer) NextToken() token.Token {
 	var tok token.Token
 
@@ -89,16 +80,6 @@ func (l *Lexer) readIdentifier() string {
 		l.readChar()
 	}
 	return string(l.input[position:l.position])
-}
-
-func isLetter(ch rune) bool {
-	if unicode.IsControl(ch) {
-		return ch == rune('\t')
-	}
-	if ch == rune(',') {
-		return false
-	}
-	return true
 }
 
 func (l *Lexer) skipWhitespace() {

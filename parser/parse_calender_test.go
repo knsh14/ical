@@ -153,7 +153,7 @@ func TestParseCalender(t *testing.T) {
 				},
 			},
 			expected: &ical.Calender{
-				Component: []ical.CalenderComponent{
+				Components: []ical.CalenderComponent{
 					&ical.Event{},
 				},
 				Version: &property.Version{

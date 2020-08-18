@@ -26,7 +26,7 @@ type Calender struct {
 	XProperties    []*property.NonStandard // https://tools.ietf.org/html/rfc5545#section-3.8.8.2
 	IANAProperties []*property.IANA
 
-	Component []CalenderComponent
+	Components []CalenderComponent
 }
 
 func (c *Calender) SetCalScale(params parameter.Container, value types.Text) error {
