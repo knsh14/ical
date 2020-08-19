@@ -96,9 +96,6 @@ func (p *Parser) parseCalender() (*ical.Calender, error) {
 			if !p.isEndComponent(component.ComponentTypeCalendar) {
 				return nil, fmt.Errorf("Invalid END")
 			}
-			if err := c.Validate(); err != nil {
-				return nil, fmt.Errorf("validation error: %w", err)
-			}
 			return c, nil
 		default:
 			if token.IsXName(l.Name) {

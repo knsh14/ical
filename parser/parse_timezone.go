@@ -26,9 +26,6 @@ func (p *Parser) parseTimezone() (*ical.Timezone, error) {
 			if !p.isEndComponent(component.ComponentTypeTimezone) {
 				return nil, fmt.Errorf("Invalid END")
 			}
-			// if err := timezone.Validate(); err != nil {
-			// 	return nil, fmt.Errorf("validation error: %w", err)
-			// }
 			return timezone, nil
 		case property.PropertyNameTimezoneIdentifier:
 			if len(l.Values) > 1 {

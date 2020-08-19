@@ -25,9 +25,6 @@ func (p *Parser) parseEvent() (*ical.Event, error) {
 			if !p.isEndComponent(component.ComponentTypeEvent) {
 				return nil, fmt.Errorf("Invalid END")
 			}
-			if err := event.Validate(); err != nil {
-				return nil, fmt.Errorf("validation error: %w", err)
-			}
 			return event, nil
 		case property.PropertyNameBegin:
 			if !p.isBeginComponent(component.ComponentTypeAlarm) {
