@@ -95,7 +95,7 @@ func (e *Event) SetDateTimeStamp(params parameter.Container, value types.DateTim
 	return nil
 }
 
-func (e *Event) SetDateTimeStart(params parameter.Container, value types.TimeType) error {
+func (e *Event) SetDateTimeStart(params parameter.Container, value types.TimeValue) error {
 	if e.DateTimeStart != nil {
 		return e.DateTimeStart.SetStart(params, value)
 	}
@@ -229,10 +229,10 @@ func (e *Event) SetSequenceNumber(params parameter.Container, value types.Intege
 
 func (e *Event) SetStatus(params parameter.Container, value types.Text) error {
 	if e.Status != nil {
-		return e.Status.SetStatus(params, value, component.ComponentTypeEvent)
+		return e.Status.SetStatus(params, value, component.TypeEvent)
 	}
 	s := &property.Status{}
-	if err := s.SetStatus(params, value, component.ComponentTypeEvent); err != nil {
+	if err := s.SetStatus(params, value, component.TypeEvent); err != nil {
 		return err
 	}
 	e.Status = s
@@ -251,7 +251,7 @@ func (e *Event) SetSummary(params parameter.Container, value types.Text) error {
 	return nil
 }
 
-func (e *Event) SetTimeTransparency(params parameter.Container, value types.Text) error {
+func (e *Event) SetTimeTransparency(params parameter.Container, value property.TransparencyValueType) error {
 	if e.TimeTransparency != nil {
 		return e.TimeTransparency.SetTransparency(params, value)
 	}
@@ -275,7 +275,7 @@ func (e *Event) SetURL(params parameter.Container, value types.URI) error {
 	return nil
 }
 
-func (e *Event) SetRecurrenceID(params parameter.Container, value types.TimeType) error {
+func (e *Event) SetRecurrenceID(params parameter.Container, value types.TimeValue) error {
 	if e.RecurrenceID != nil {
 		return e.RecurrenceID.SetRecurrenceID(params, value)
 	}
@@ -300,7 +300,7 @@ func (e *Event) SetRecurrenceRule(params parameter.Container, value types.Recurr
 
 }
 
-func (e *Event) SetDateTimeEnd(params parameter.Container, value types.TimeType) error {
+func (e *Event) SetDateTimeEnd(params parameter.Container, value types.TimeValue) error {
 	if e.DateTimeEnd != nil {
 		return e.DateTimeEnd.SetEnd(params, value)
 	}
@@ -324,7 +324,7 @@ func (e *Event) SetDuration(params parameter.Container, value types.Duration) er
 	return nil
 }
 
-func (e *Event) AddAttachment(params parameter.Container, value types.Attachmentable) error {
+func (e *Event) AddAttachment(params parameter.Container, value types.AttachmentValue) error {
 	a := &property.Attachment{}
 	if err := a.SetAttachment(params, value); err != nil {
 		return err
@@ -369,7 +369,7 @@ func (e *Event) AddContact(params parameter.Container, value types.Text) error {
 	return nil
 }
 
-func (e *Event) AddExceptionDateTimes(params parameter.Container, values []types.TimeType) error {
+func (e *Event) AddExceptionDateTimes(params parameter.Container, values []types.TimeValue) error {
 	edt := &property.ExceptionDateTimes{}
 	if err := edt.SetExceptionDateTimes(params, values); err != nil {
 		return err
@@ -405,7 +405,7 @@ func (e *Event) AddResources(params parameter.Container, values []types.Text) er
 	return nil
 }
 
-func (e *Event) AddRecurrenceDateTimes(params parameter.Container, values []types.RecurrenceDateTime) error {
+func (e *Event) AddRecurrenceDateTimes(params parameter.Container, values []types.RecurrenceDateTimeValue) error {
 	rdt := &property.RecurrenceDateTimes{}
 	if err := rdt.SetRecurrenceDateTimes(params, values); err != nil {
 		return err

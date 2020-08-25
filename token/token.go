@@ -1,19 +1,19 @@
 package token
 
 type Token struct {
-	Type  TokenType
+	Type  Type
 	Value string
 }
 
-type TokenType string
+type Type string
 
 const (
-	ILLEGAL   TokenType = "ILLEGAL"
-	EOF       TokenType = "EOF"
-	IDENT     TokenType = "IDENT"
-	STRING    TokenType = "STRING"
-	ASSIGN    TokenType = "="
-	COMMA     TokenType = ","
-	SEMICOLON TokenType = ";"
-	COLON     TokenType = ":"
+	ILLEGAL   Type = "ILLEGAL"
+	EOF       Type = "EOF"
+	IDENT     Type = "IDENT"
+	STRING    Type = "STRING"
+	ASSIGN    Type = "="
+	COMMA     Type = ","
+	SEMICOLON Type = ";"
+	COLON     Type = ":"
 )

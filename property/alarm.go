@@ -50,14 +50,50 @@ func (rc *RepeatCount) SetRepeatCount(params parameter.Container, value types.In
 	return nil
 }
 
+func NewTriggerValue(params parameter.Container, value string) (types.TriggerValue, error) {
+	if len(params[parameter.TypeNameValueType]) > 1 {
+		return nil, fmt.Errorf("invalid %s parameter count", parameter.TypeNameValueType)
+	}
+	if len(params[parameter.TypeNameValueType]) == 0 {
+		d, err := types.NewDuration(value)
+		if err != nil {
+			return nil, fmt.Errorf("value %s is not DURATION: %w", value, err)
+		}
+		return d, nil
+	}
+
+	valueType, ok := params[parameter.TypeNameValueType][0].(*parameter.ValueType)
+	if !ok {
+		return nil, fmt.Errorf("invalid type %T in %s ", params[parameter.TypeNameValueType][0], parameter.TypeNameValueType)
+	}
+
+	switch valueType.Value {
+	case "DURATION":
+		d, err := types.NewDuration(value)
+		if err != nil {
+			return nil, fmt.Errorf("value %s is not DURATION: %w", value, err)
+		}
+		return d, nil
+	case "DATE-TIME":
+		tz := params.GetTimezone()
+		dt, err := types.NewDateTime(value, tz)
+		if err != nil {
+			return nil, fmt.Errorf("value %s is not DATE-TIME: %w", value, err)
+		}
+		return dt, nil
+	default:
+		return nil, fmt.Errorf("invalid value type %s, must be DURATION or DATE-TIME", valueType.Value)
+	}
+}
+
 // Trigger is TRIGGER
 // https://tools.ietf.org/html/rfc5545#section-3.8.6.3
 type Trigger struct {
 	Parameter parameter.Container
-	Value     interface{} // TODO: duration or datetime , default is duration
+	Value     types.TriggerValue
 }
 
-func (t *Trigger) SetTrigger(params parameter.Container, value interface{}) error {
+func (t *Trigger) SetTrigger(params parameter.Container, value types.TriggerValue) error {
 	if len(params[parameter.TypeNameValueType]) > 1 {
 		return fmt.Errorf("invalid %s parameter count", parameter.TypeNameValueType)
 	}

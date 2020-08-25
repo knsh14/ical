@@ -48,13 +48,11 @@ func (aa *AlarmAudio) SetAction(params parameter.Container, value types.Text) er
 	aa.Action = a
 	return nil
 }
-func (aa *AlarmAudio) SetTrigger(params parameter.Container, value interface{}) error {
+func (aa *AlarmAudio) SetTrigger(params parameter.Container, value types.TriggerValue) error {
 	if aa.Trigger != nil {
 		return aa.Trigger.SetTrigger(params, value)
 	}
-	t := &property.Trigger{
-		Value: types.Text(property.ActionTypeAudio),
-	}
+	t := &property.Trigger{}
 	if err := t.SetTrigger(params, value); err != nil {
 		return err
 	}
@@ -83,7 +81,7 @@ func (aa *AlarmAudio) SetRepeatCount(params parameter.Container, value types.Int
 	aa.RepeatCount = rc
 	return nil
 }
-func (aa *AlarmAudio) SetAttachment(params parameter.Container, value types.Attachmentable) error {
+func (aa *AlarmAudio) SetAttachment(params parameter.Container, value types.AttachmentValue) error {
 	if aa.Attachment != nil {
 		return aa.Attachment.SetAttachment(params, value)
 	}
@@ -133,13 +131,11 @@ func (ad *AlarmDisplay) SetDescription(params parameter.Container, value types.T
 	ad.Description = d
 	return nil
 }
-func (ad *AlarmDisplay) SetTrigger(params parameter.Container, value interface{}) error {
+func (ad *AlarmDisplay) SetTrigger(params parameter.Container, value types.TriggerValue) error {
 	if ad.Trigger != nil {
 		return ad.Trigger.SetTrigger(params, value)
 	}
-	t := &property.Trigger{
-		Value: types.Text(property.ActionTypeAudio),
-	}
+	t := &property.Trigger{}
 	if err := t.SetTrigger(params, value); err != nil {
 		return err
 	}
@@ -210,13 +206,11 @@ func (ae *AlarmEmail) SetDescription(params parameter.Container, value types.Tex
 	ae.Description = d
 	return nil
 }
-func (ae *AlarmEmail) SetTrigger(params parameter.Container, value interface{}) error {
+func (ae *AlarmEmail) SetTrigger(params parameter.Container, value types.TriggerValue) error {
 	if ae.Trigger != nil {
 		return ae.Trigger.SetTrigger(params, value)
 	}
-	t := &property.Trigger{
-		Value: types.Text(property.ActionTypeAudio),
-	}
+	t := &property.Trigger{}
 	if err := t.SetTrigger(params, value); err != nil {
 		return err
 	}
@@ -264,7 +258,7 @@ func (ae *AlarmEmail) SetRepeatCount(params parameter.Container, value types.Int
 	ae.RepeatCount = rc
 	return nil
 }
-func (ae *AlarmEmail) AddAttachment(params parameter.Container, value types.Attachmentable) error {
+func (ae *AlarmEmail) AddAttachment(params parameter.Container, value types.AttachmentValue) error {
 	a := &property.Attachment{}
 	if err := a.SetAttachment(params, value); err != nil {
 		return err

@@ -1,74 +1,84 @@
 package property
 
-type PropertyName string
+// Name is list of contents line name
+type Name string
 
 const (
 	// component block
-	PropertyNameBegin PropertyName = "BEGIN"
-	PropertyNameEnd   PropertyName = "END"
+
+	NameBegin Name = "BEGIN"
+	NameEnd   Name = "END"
 
 	// Alarm
 
-	PropertyNameAction      PropertyName = "ACTION"
-	PropertyNameRepeatCount PropertyName = "REPEAT"
-	PropertyNameTrigger     PropertyName = "TRIGGER"
+	NameAction      Name = "ACTION"
+	NameRepeatCount Name = "REPEAT"
+	NameTrigger     Name = "TRIGGER"
 
 	// descriptive
-	PropertyNameAttachment      PropertyName = "ATTACH"
-	PropertyNameCategories      PropertyName = "CATEGORIES"
-	PropertyNameClass           PropertyName = "CLASS"
-	PropertyNameComment         PropertyName = "COMMENT"
-	PropertyNameDescription     PropertyName = "DESCRIPTION"
-	PropertyNameGeo             PropertyName = "GEO"
-	PropertyNameLocaiton        PropertyName = "LOCATION"
-	PropertyNamePercentComplete PropertyName = "PERCENT-COMPLETE"
-	PropertyNamePriority        PropertyName = "PRIORITY"
-	PropertyNameResources       PropertyName = "RESOURCES"
-	PropertyNameStatus          PropertyName = "STATUS"
-	PropertyNameSummary         PropertyName = "SUMMARY"
+
+	NameAttachment      Name = "ATTACH"
+	NameCategories      Name = "CATEGORIES"
+	NameClass           Name = "CLASS"
+	NameComment         Name = "COMMENT"
+	NameDescription     Name = "DESCRIPTION"
+	NameGeo             Name = "GEO"
+	NameLocaiton        Name = "LOCATION"
+	NamePercentComplete Name = "PERCENT-COMPLETE"
+	NamePriority        Name = "PRIORITY"
+	NameResources       Name = "RESOURCES"
+	NameStatus          Name = "STATUS"
+	NameSummary         Name = "SUMMARY"
 
 	// time
-	PropertyNameDateTimeCompleted PropertyName = "COMPLETED"
-	PropertyNameDateTimeEnd       PropertyName = "DTEND"
-	PropertyNameDateTimeDue       PropertyName = "DUE"
-	PropertyNameDateTimeStart     PropertyName = "DTSTART"
-	PropertyNameDuration          PropertyName = "DURATION"
-	PropertyNameFreeBusyTime      PropertyName = "FREEBUSY"
-	PropertyNameTimeTransparency  PropertyName = "TRANSP"
+
+	NameDateTimeCompleted Name = "COMPLETED"
+	NameDateTimeEnd       Name = "DTEND"
+	NameDateTimeDue       Name = "DUE"
+	NameDateTimeStart     Name = "DTSTART"
+	NameDuration          Name = "DURATION"
+	NameFreeBusyTime      Name = "FREEBUSY"
+	NameTimeTransparency  Name = "TRANSP"
 
 	// timezone
-	PropertyNameTimezoneIdentifier PropertyName = "TZID"
-	PropertyNameTimezoneName       PropertyName = "TZNAME"
-	PropertyNameTimezoneOffsetFrom PropertyName = "TZOFFSETFROM"
-	PropertyNameTimezoneOffsetTo   PropertyName = "TZOFFSETTO"
-	PropertyNameTimezoneURL        PropertyName = "TZURL"
+
+	NameTimezoneIdentifier Name = "TZID"
+	NameTimezoneName       Name = "TZNAME"
+	NameTimezoneOffsetFrom Name = "TZOFFSETFROM"
+	NameTimezoneOffsetTo   Name = "TZOFFSETTO"
+	NameTimezoneURL        Name = "TZURL"
 
 	// relationship
-	PropertyNameAttendee     PropertyName = "ATTENDEE"
-	PropertyNameContact      PropertyName = "CONTACT"
-	PropertyNameOrganizer    PropertyName = "ORGANIZER"
-	PropertyNameRecurrenceID PropertyName = "RECURRENCE-ID"
-	PropertyNameRelatedTo    PropertyName = "RELATED-TO"
-	PropertyNameURL          PropertyName = "URL"
-	PropertyNameUID          PropertyName = "UID"
+
+	NameAttendee     Name = "ATTENDEE"
+	NameContact      Name = "CONTACT"
+	NameOrganizer    Name = "ORGANIZER"
+	NameRecurrenceID Name = "RECURRENCE-ID"
+	NameRelatedTo    Name = "RELATED-TO"
+	NameURL          Name = "URL"
+	NameUID          Name = "UID"
 
 	// change management
-	PropertyNameDateTimeStamp   PropertyName = "DTSTAMP"
-	PropertyNameDateTimeCreated PropertyName = "CREATED"
-	PropertyNameLastModified    PropertyName = "LAST-MODIFIED"
-	PropertyNameSequenceNumber  PropertyName = "SEQUENCE"
+
+	NameDateTimeStamp   Name = "DTSTAMP"
+	NameDateTimeCreated Name = "CREATED"
+	NameLastModified    Name = "LAST-MODIFIED"
+	NameSequenceNumber  Name = "SEQUENCE"
 
 	// recurrence
-	PropertyNameExceptionDateTimes  PropertyName = "EXDATE"
-	PropertyNameRecurrenceDateTimes PropertyName = "RDATE"
-	PropertyNameRecurrenceRule      PropertyName = "RRULE"
+
+	NameExceptionDateTimes  Name = "EXDATE"
+	NameRecurrenceDateTimes Name = "RDATE"
+	NameRecurrenceRule      Name = "RRULE"
 
 	// Miscellaneous
-	PropertyNameRequestStatus PropertyName = "REQUEST-STATUS"
+
+	NameRequestStatus Name = "REQUEST-STATUS"
 
 	// Calender component
-	PropertyNameCalScale PropertyName = "CALSCALE"
-	PropertyNameMethod   PropertyName = "METHOD"
-	PropertyNameProdID   PropertyName = "PRODID"
-	PropertyNameVersion  PropertyName = "VERSION"
+
+	NameCalScale Name = "CALSCALE"
+	NameMethod   Name = "METHOD"
+	NameProdID   Name = "PRODID"
+	NameVersion  Name = "VERSION"
 )

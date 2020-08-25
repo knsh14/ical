@@ -18,7 +18,7 @@ type Binary struct {
 	Value string
 }
 
-func (b Binary) attachmentable() {}
+func (b Binary) attachmentValue() {}
 
 func NewBinary(v string) (Binary, error) {
 	if _, err := base64.StdEncoding.DecodeString(v); err != nil {
@@ -54,8 +54,8 @@ func NewCalenderUserAddress(v string) (CalenderUserAddress, error) {
 // Date is defined in https://tools.ietf.org/html/rfc5545#section-3.3.4
 type Date time.Time
 
-func (d Date) isTime()                      {}
-func (d Date) implementRecurrenceDateTime() {}
+func (d Date) timeValue()               {}
+func (d Date) recurrenceDateTimeValue() {}
 
 func NewDate(v string) (Date, error) {
 	t, err := time.Parse("20060102", v)
@@ -68,8 +68,9 @@ func NewDate(v string) (Date, error) {
 // DateTime is defined in https://tools.ietf.org/html/rfc5545#section-3.3.5
 type DateTime time.Time
 
-func (dt DateTime) isTime()                      {}
-func (dt DateTime) implementRecurrenceDateTime() {}
+func (dt DateTime) timeValue()               {}
+func (dt DateTime) recurrenceDateTimeValue() {}
+func (dt DateTime) triggerValue()            {}
 
 func NewDateTime(v, tz string) (DateTime, error) {
 	loc := time.Local
@@ -98,6 +99,8 @@ type Duration struct {
 	Day          int64
 	HourDuration time.Duration
 }
+
+func (d Duration) triggerValue() {}
 
 var (
 	durationWeekRe = regexp.MustCompile(`([+-]?)P(\d+W)`)
@@ -187,7 +190,7 @@ type Period struct {
 	Range Duration
 }
 
-func (p Period) implementRecurrenceDateTime() {}
+func (p Period) recurrenceDateTimeValue() {}
 
 func NewPeriod(v string) (Period, error) {
 	l := strings.Split(v, "/")
@@ -220,7 +223,7 @@ func NewPeriod(v string) (Period, error) {
 // RecurrenceRule is defined in https://tools.ietf.org/html/rfc5545#section-3.3.10
 type RecurrenceRule struct {
 	Frequency  FrequencyPattern
-	EndDate    TimeType // UNTIL
+	EndDate    TimeValue // UNTIL
 	Count      int64
 	Interval   int64
 	BySecond   []int64
@@ -469,7 +472,7 @@ type URI struct {
 	*url.URL
 }
 
-func (v URI) attachmentable() {}
+func (v URI) attachmentValue() {}
 
 func NewURI(v string) (URI, error) {
 	uri, err := url.ParseRequestURI(v)

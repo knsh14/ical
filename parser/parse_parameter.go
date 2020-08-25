@@ -102,7 +102,6 @@ func (p *Parser) parseParameter(cl *contentline.ContentLine) (parameter.Containe
 			if len(v.Values) != 1 {
 				return nil, fmt.Errorf("value for %s must be 1, but %d", t, len(v.Values))
 			}
-			// TODO get current component type
 			p, err := parameter.NewParticipationStatus(v.Values[0], p.currentComponentType)
 			if err != nil {
 				return nil, fmt.Errorf("parse %s: %w", t, err)

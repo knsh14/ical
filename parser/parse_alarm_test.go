@@ -24,11 +24,11 @@ func TestParseAlarm(t *testing.T) {
 			input: []*contentline.ContentLine{
 				{
 					Name:   "BEGIN",
-					Values: []string{string(component.ComponentTypeAlarm)},
+					Values: []string{string(component.TypeAlarm)},
 				},
 				{
 					Name:   "END",
-					Values: []string{string(component.ComponentTypeAlarm)},
+					Values: []string{string(component.TypeAlarm)},
 				},
 			},
 			expected: nil,
@@ -42,7 +42,7 @@ func TestParseAlarm(t *testing.T) {
 			input: []*contentline.ContentLine{
 				{
 					Name:   "BEGIN",
-					Values: []string{string(component.ComponentTypeAlarm)},
+					Values: []string{string(component.TypeAlarm)},
 				},
 				{
 					Name:   string(property.PropertyNameAction),
@@ -50,7 +50,7 @@ func TestParseAlarm(t *testing.T) {
 				},
 				{
 					Name:   "END",
-					Values: []string{string(component.ComponentTypeAlarm)},
+					Values: []string{string(component.TypeAlarm)},
 				},
 			},
 			expected: &ical.AlarmAudio{
@@ -69,7 +69,7 @@ func TestParseAlarm(t *testing.T) {
 			input: []*contentline.ContentLine{
 				{
 					Name:   "BEGIN",
-					Values: []string{string(component.ComponentTypeAlarm)},
+					Values: []string{string(component.TypeAlarm)},
 				},
 				{
 					Name:   string(property.PropertyNameAction),
@@ -77,7 +77,7 @@ func TestParseAlarm(t *testing.T) {
 				},
 				{
 					Name:   "END",
-					Values: []string{string(component.ComponentTypeAlarm)},
+					Values: []string{string(component.TypeAlarm)},
 				},
 			},
 			expected: &ical.AlarmDisplay{
@@ -96,7 +96,7 @@ func TestParseAlarm(t *testing.T) {
 			input: []*contentline.ContentLine{
 				{
 					Name:   "BEGIN",
-					Values: []string{string(component.ComponentTypeAlarm)},
+					Values: []string{string(component.TypeAlarm)},
 				},
 				{
 					Name:   string(property.PropertyNameAction),
@@ -104,7 +104,7 @@ func TestParseAlarm(t *testing.T) {
 				},
 				{
 					Name:   "END",
-					Values: []string{string(component.ComponentTypeAlarm)},
+					Values: []string{string(component.TypeAlarm)},
 				},
 			},
 			expected: &ical.AlarmEmail{

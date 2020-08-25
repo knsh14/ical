@@ -1,6 +1,6 @@
 package property
 
-// Method is content-type
+// MethodType is content-type
 // list of methods is defined in https://www.iana.org/assignments/icalendar/icalendar.xhtml#methods
 // used by https://tools.ietf.org/html/rfc5545#section-3.6
 type MethodType string

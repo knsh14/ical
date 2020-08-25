@@ -25,11 +25,11 @@ func TestParseEvent(t *testing.T) {
 			input: []*contentline.ContentLine{
 				{
 					Name:   "BEGIN",
-					Values: []string{string(component.ComponentTypeEvent)},
+					Values: []string{string(component.TypeEvent)},
 				},
 				{
 					Name:   "END",
-					Values: []string{string(component.ComponentTypeEvent)},
+					Values: []string{string(component.TypeEvent)},
 				},
 			},
 			expected: &ical.Event{},
@@ -43,12 +43,12 @@ func TestParseEvent(t *testing.T) {
 			input: []*contentline.ContentLine{
 				{
 					Name:   "BEGIN",
-					Values: []string{string(component.ComponentTypeEvent)},
+					Values: []string{string(component.TypeEvent)},
 				},
 			},
 			expected: nil,
 			assertError: func(t *testing.T, err error) {
-				expected := NoEndError(component.ComponentTypeEvent)
+				expected := NoEndError(component.TypeEvent)
 				if !errors.Is(err, expected) {
 					t.Fatalf("unexpected: %s\nactual: %s", expected, err)
 				}
@@ -58,7 +58,7 @@ func TestParseEvent(t *testing.T) {
 			input: []*contentline.ContentLine{
 				{
 					Name:   "BEGIN",
-					Values: []string{string(component.ComponentTypeEvent)},
+					Values: []string{string(component.TypeEvent)},
 				},
 				{
 					Name:   "UID",
@@ -66,7 +66,7 @@ func TestParseEvent(t *testing.T) {
 				},
 				{
 					Name:   "END",
-					Values: []string{string(component.ComponentTypeEvent)},
+					Values: []string{string(component.TypeEvent)},
 				},
 			},
 			expected: &ical.Event{
@@ -85,7 +85,7 @@ func TestParseEvent(t *testing.T) {
 			input: []*contentline.ContentLine{
 				{
 					Name:   "BEGIN",
-					Values: []string{string(component.ComponentTypeEvent)},
+					Values: []string{string(component.TypeEvent)},
 				},
 				{
 					Name:   "UID",
@@ -93,7 +93,7 @@ func TestParseEvent(t *testing.T) {
 				},
 				{
 					Name:   "BEGIN",
-					Values: []string{string(component.ComponentTypeAlarm)},
+					Values: []string{string(component.TypeAlarm)},
 				},
 				{
 					Name:   "ACTION",
@@ -101,11 +101,11 @@ func TestParseEvent(t *testing.T) {
 				},
 				{
 					Name:   "END",
-					Values: []string{string(component.ComponentTypeAlarm)},
+					Values: []string{string(component.TypeAlarm)},
 				},
 				{
 					Name:   "END",
-					Values: []string{string(component.ComponentTypeEvent)},
+					Values: []string{string(component.TypeEvent)},
 				},
 			},
 			expected: &ical.Event{

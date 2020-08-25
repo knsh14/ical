@@ -1,13 +1,14 @@
 package parameter
 
-// CalenderUserType is defined in https://www.iana.org/assignments/icalendar/icalendar.xhtml#calendar-user-types
-type CalenderUserTypeKind string
+// CalendarUserTypeKind is types of calendar
+// https://www.iana.org/assignments/icalendar/icalendar.xhtml#calendar-user-types
+type CalendarUserTypeKind string
 
 const (
-	CalenderUserTypeKindIndividual CalenderUserTypeKind = "INDIVIDUAL"
-	CalenderUserTypeKindGroup      CalenderUserTypeKind = "GROUP"
-	CalenderUserTypeKindResource   CalenderUserTypeKind = "RESOURCE"
-	CalenderUserTypeKindRoom       CalenderUserTypeKind = "ROOM"
-	CalenderUserTypeKindUnknown    CalenderUserTypeKind = "UNKNOWN"
-	CalenderUserTypeKindXToken     CalenderUserTypeKind = "XToken"
+	CalendarUserTypeKindIndividual CalendarUserTypeKind = "INDIVIDUAL"
+	CalendarUserTypeKindGroup      CalendarUserTypeKind = "GROUP"
+	CalendarUserTypeKindResource   CalendarUserTypeKind = "RESOURCE"
+	CalendarUserTypeKindRoom       CalendarUserTypeKind = "ROOM"
+	CalendarUserTypeKindUnknown    CalendarUserTypeKind = "UNKNOWN"
+	CalendarUserTypeKindXToken     CalendarUserTypeKind = "XToken"
 )

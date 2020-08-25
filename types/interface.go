@@ -1,13 +1,17 @@
 package types
 
-type TimeType interface {
-	isTime()
+type TimeValue interface {
+	timeValue()
 }
 
-type Attachmentable interface {
-	attachmentable()
+type AttachmentValue interface {
+	attachmentValue()
 }
 
-type RecurrenceDateTime interface {
-	implementRecurrenceDateTime()
+type RecurrenceDateTimeValue interface {
+	recurrenceDateTimeValue()
+}
+
+type TriggerValue interface {
+	triggerValue()
 }

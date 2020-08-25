@@ -61,16 +61,15 @@ func (l *Lexer) NextToken() token.Token {
 			tok.Value = l.readIdentifier()
 			tok.Type = token.IDENT
 			return tok
-		} else {
-			tok = newToken(token.ILLEGAL, l.ch)
 		}
+		tok = newToken(token.ILLEGAL, l.ch)
 	}
 
 	l.readChar()
 	return tok
 }
 
-func newToken(tokenType token.TokenType, ch rune) token.Token {
+func newToken(tokenType token.Type, ch rune) token.Token {
 	return token.Token{Type: tokenType, Value: string(ch)}
 }
 

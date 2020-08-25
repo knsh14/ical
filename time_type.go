@@ -7,7 +7,7 @@ import (
 	"github.com/knsh14/ical/types"
 )
 
-func NewTimeType(params parameter.Container, s string) (types.TimeType, error) {
+func NewTimeType(params parameter.Container, s string) (types.TimeValue, error) {
 	var tz string
 	tzs := params[parameter.TypeNameReferenceTimezone]
 	if len(tzs) > 0 {

@@ -48,16 +48,16 @@ type CommonName struct {
 func (cn *CommonName) implementParameter() {}
 
 func NewCalenderUserType(value string) (*CalenderUserType, error) {
-	switch v := CalenderUserTypeKind(value); v {
-	case CalenderUserTypeKindIndividual,
-		CalenderUserTypeKindGroup,
-		CalenderUserTypeKindResource,
-		CalenderUserTypeKindRoom,
-		CalenderUserTypeKindUnknown:
+	switch v := CalendarUserTypeKind(value); v {
+	case CalendarUserTypeKindIndividual,
+		CalendarUserTypeKindGroup,
+		CalendarUserTypeKindResource,
+		CalendarUserTypeKindRoom,
+		CalendarUserTypeKindUnknown:
 		return &CalenderUserType{Type: v}, nil
 	default:
 		if token.IsXName(value) {
-			return &CalenderUserType{Type: CalenderUserTypeKindXToken, Value: value}, nil
+			return &CalenderUserType{Type: CalendarUserTypeKindXToken, Value: value}, nil
 		}
 		return nil, fmt.Errorf("undefined CalenderUserType %s", value)
 	}
@@ -65,7 +65,7 @@ func NewCalenderUserType(value string) (*CalenderUserType, error) {
 
 // CalenderUserType is defined in https://tools.ietf.org/html/rfc5545#section-3.2.3
 type CalenderUserType struct {
-	Type  CalenderUserTypeKind
+	Type  CalendarUserTypeKind
 	Value string
 }
 
@@ -224,10 +224,10 @@ type Membership struct {
 
 func (m *Membership) implementParameter() {}
 
-func NewParticipationStatus(value string, kind component.ComponentType) (*ParticipationStatus, error) {
+func NewParticipationStatus(value string, kind component.Type) (*ParticipationStatus, error) {
 	var list map[ParticipationStatusType]struct{}
 	switch kind {
-	case component.ComponentTypeEvent:
+	case component.TypeEvent:
 		list = map[ParticipationStatusType]struct{}{
 			ParticipationStatusTypeNeedsAction: {},
 			ParticipationStatusTypeAccepted:    {},
@@ -235,7 +235,7 @@ func NewParticipationStatus(value string, kind component.ComponentType) (*Partic
 			ParticipationStatusTypeDelegated:   {},
 			ParticipationStatusTypeXToken:      {},
 		}
-	case component.ComponentTypeTODO:
+	case component.TypeTODO:
 		list = map[ParticipationStatusType]struct{}{
 			ParticipationStatusTypeNeedsAction: {},
 			ParticipationStatusTypeAccepted:    {},
@@ -246,7 +246,7 @@ func NewParticipationStatus(value string, kind component.ComponentType) (*Partic
 			ParticipationStatusTypeInProcess:   {},
 			ParticipationStatusTypeXToken:      {},
 		}
-	case component.ComponentTypeJournal:
+	case component.TypeJournal:
 		list = map[ParticipationStatusType]struct{}{
 			ParticipationStatusTypeNeedsAction: {},
 			ParticipationStatusTypeAccepted:    {},
@@ -271,7 +271,7 @@ func NewParticipationStatus(value string, kind component.ComponentType) (*Partic
 }
 
 type ParticipationStatus struct {
-	Kind  component.ComponentType
+	Kind  component.Type
 	Type  ParticipationStatusType
 	Value string
 }

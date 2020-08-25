@@ -17,10 +17,10 @@ import (
 // https://tools.ietf.org/html/rfc5545#section-3.8.1.1
 type Attachment struct {
 	Parameters parameter.Container
-	Value      types.Attachmentable
+	Value      types.AttachmentValue
 }
 
-func NewAttachmentValue(params parameter.Container, s string) (types.Attachmentable, error) {
+func NewAttachmentValue(params parameter.Container, s string) (types.AttachmentValue, error) {
 	if checkAttachmentIsBinary(params) {
 		b, err := types.NewBinary(s)
 		if err != nil {
@@ -58,7 +58,7 @@ func checkAttachmentIsBinary(params parameter.Container) bool {
 	return true
 }
 
-func (a *Attachment) SetAttachment(params parameter.Container, value types.Attachmentable) error {
+func (a *Attachment) SetAttachment(params parameter.Container, value types.AttachmentValue) error {
 	enc, encOK := params[parameter.TypeNameInlineEncoding]
 	val, valOK := params[parameter.TypeNameValueType]
 	if encOK && valOK {
@@ -167,8 +167,8 @@ func (c *Comment) SetComment(params parameter.Container, value types.Text) error
 	return nil
 }
 
-// SetDescription updates DESCRIPTION
-// specification https://tools.ietf.org/html/rfc5545#section-3.8.1.5
+// Description is DESCRIPTION
+// https://tools.ietf.org/html/rfc5545#section-3.8.1.5
 type Description struct {
 	Parameter parameter.Container
 	Value     types.Text
@@ -225,7 +225,7 @@ func (g *Geo) SetGeoWithText(params parameter.Container, value types.Text) error
 	return g.SetGeo(params, lat, log)
 }
 
-// Locaiton is LOCATION
+// Location is LOCATION
 // location of component
 // https://tools.ietf.org/html/rfc5545#section-3.8.1.7
 type Location struct {
@@ -308,10 +308,10 @@ type Status struct {
 	Value     StatusType
 }
 
-func (s *Status) SetStatus(params parameter.Container, value types.Text, kind component.ComponentType) error {
+func (s *Status) SetStatus(params parameter.Container, value types.Text, kind component.Type) error {
 	v := StatusType(value)
 	switch kind {
-	case component.ComponentTypeEvent:
+	case component.TypeEvent:
 		switch v {
 		case StatusTypeTentative, StatusTypeConfirmed, StatusTypeCancelled:
 			s.Parameter = params
@@ -320,7 +320,7 @@ func (s *Status) SetStatus(params parameter.Container, value types.Text, kind co
 		default:
 			return fmt.Errorf("")
 		}
-	case component.ComponentTypeTODO:
+	case component.TypeTODO:
 		switch v {
 		case StatusTypeNeedsAction, StatusTypeCompleted, StatusTypeInProcess, StatusTypeCancelled:
 			s.Parameter = params
@@ -329,7 +329,7 @@ func (s *Status) SetStatus(params parameter.Container, value types.Text, kind co
 		default:
 			return fmt.Errorf("")
 		}
-	case component.ComponentTypeJournal:
+	case component.TypeJournal:
 		switch v {
 		case StatusTypeDraft, StatusTypeFinal, StatusTypeCancelled:
 			s.Parameter = params

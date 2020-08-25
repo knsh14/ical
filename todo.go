@@ -95,7 +95,7 @@ func (todo *ToDo) SetDateTimeStamp(params parameter.Container, value types.DateT
 	return nil
 }
 
-func (todo *ToDo) SetDateTimeStart(params parameter.Container, value types.TimeType) error {
+func (todo *ToDo) SetDateTimeStart(params parameter.Container, value types.TimeValue) error {
 	if todo.DateTimeStart != nil {
 		return todo.DateTimeStart.SetStart(params, value)
 	}
@@ -252,10 +252,10 @@ func (todo *ToDo) SetSequenceNumber(params parameter.Container, value types.Inte
 
 func (todo *ToDo) SetStatus(params parameter.Container, value types.Text) error {
 	if todo.Status != nil {
-		return todo.Status.SetStatus(params, value, component.ComponentTypeEvent)
+		return todo.Status.SetStatus(params, value, component.TypeEvent)
 	}
 	s := &property.Status{}
-	if err := s.SetStatus(params, value, component.ComponentTypeEvent); err != nil {
+	if err := s.SetStatus(params, value, component.TypeEvent); err != nil {
 		return err
 	}
 	todo.Status = s
@@ -286,7 +286,7 @@ func (todo *ToDo) SetURL(params parameter.Container, value types.URI) error {
 	return nil
 }
 
-func (todo *ToDo) SetRecurrenceID(params parameter.Container, value types.TimeType) error {
+func (todo *ToDo) SetRecurrenceID(params parameter.Container, value types.TimeValue) error {
 	if todo.RecurrenceID != nil {
 		return todo.RecurrenceID.SetRecurrenceID(params, value)
 	}
@@ -311,7 +311,7 @@ func (todo *ToDo) SetRecurrenceRule(params parameter.Container, value types.Recu
 
 }
 
-func (todo *ToDo) SetDateTimeDue(params parameter.Container, value types.TimeType) error {
+func (todo *ToDo) SetDateTimeDue(params parameter.Container, value types.TimeValue) error {
 	if todo.DateTimeDue != nil {
 		return todo.DateTimeDue.SetDue(params, value)
 	}
@@ -335,7 +335,7 @@ func (todo *ToDo) SetDuration(params parameter.Container, value types.Duration) 
 	return nil
 }
 
-func (todo *ToDo) AddAttachment(params parameter.Container, value types.Attachmentable) error {
+func (todo *ToDo) AddAttachment(params parameter.Container, value types.AttachmentValue) error {
 	a := &property.Attachment{}
 	if err := a.SetAttachment(params, value); err != nil {
 		return err
@@ -380,7 +380,7 @@ func (todo *ToDo) AddContact(params parameter.Container, value types.Text) error
 	return nil
 }
 
-func (todo *ToDo) AddExceptionDateTimes(params parameter.Container, values []types.TimeType) error {
+func (todo *ToDo) AddExceptionDateTimes(params parameter.Container, values []types.TimeValue) error {
 	edt := &property.ExceptionDateTimes{}
 	if err := edt.SetExceptionDateTimes(params, values); err != nil {
 		return err
@@ -416,7 +416,7 @@ func (todo *ToDo) AddResources(params parameter.Container, values []types.Text) 
 	return nil
 }
 
-func (todo *ToDo) AddRecurrenceDateTimes(params parameter.Container, values []types.RecurrenceDateTime) error {
+func (todo *ToDo) AddRecurrenceDateTimes(params parameter.Container, values []types.RecurrenceDateTimeValue) error {
 	rdt := &property.RecurrenceDateTimes{}
 	if err := rdt.SetRecurrenceDateTimes(params, values); err != nil {
 		return err

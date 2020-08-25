@@ -21,11 +21,11 @@ func TestParseTimezone(t *testing.T) {
 			input: []*contentline.ContentLine{
 				{
 					Name:   "BEGIN",
-					Values: []string{string(component.ComponentTypeTimezone)},
+					Values: []string{string(component.TypeTimezone)},
 				},
 				{
 					Name:   "END",
-					Values: []string{string(component.ComponentTypeTimezone)},
+					Values: []string{string(component.TypeTimezone)},
 				},
 			},
 			expected: ical.NewTimezone(),
@@ -62,11 +62,11 @@ func TestParseStandard(t *testing.T) {
 			input: []*contentline.ContentLine{
 				{
 					Name:   "BEGIN",
-					Values: []string{string(component.ComponentTypeStandard)},
+					Values: []string{string(component.TypeStandard)},
 				},
 				{
 					Name:   "END",
-					Values: []string{string(component.ComponentTypeStandard)},
+					Values: []string{string(component.TypeStandard)},
 				},
 			},
 			expected: &ical.Standard{},

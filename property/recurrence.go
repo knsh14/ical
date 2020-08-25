@@ -14,10 +14,10 @@ import (
 // https://tools.ietf.org/html/rfc5545#section-3.8.5.1
 type ExceptionDateTimes struct {
 	Parameter parameter.Container
-	Values    []types.TimeType // default is DateTime
+	Values    []types.TimeValue // default is DateTime
 }
 
-func (edt *ExceptionDateTimes) SetExceptionDateTimes(params parameter.Container, values []types.TimeType) error {
+func (edt *ExceptionDateTimes) SetExceptionDateTimes(params parameter.Container, values []types.TimeValue) error {
 
 	var isDate bool
 	valueParam, hasValueParam := params[parameter.TypeNameValueType]
@@ -47,10 +47,10 @@ func (edt *ExceptionDateTimes) SetExceptionDateTimes(params parameter.Container,
 // https://tools.ietf.org/html/rfc5545#section-3.8.5.2
 type RecurrenceDateTimes struct {
 	Parameter parameter.Container
-	Values    []types.RecurrenceDateTime // default is DateTime, Date or Period are fine.
+	Values    []types.RecurrenceDateTimeValue // default is DateTime, Date or Period are fine.
 }
 
-func NewRecurrenceDateTime(params parameter.Container, s string) (types.RecurrenceDateTime, error) {
+func NewRecurrenceDateTime(params parameter.Container, s string) (types.RecurrenceDateTimeValue, error) {
 	value, ok := params[parameter.TypeNameValueType]
 	if !ok {
 		return nil, fmt.Errorf("no value type")
@@ -94,7 +94,7 @@ func NewRecurrenceDateTime(params parameter.Container, s string) (types.Recurren
 	}
 }
 
-func (rdt *RecurrenceDateTimes) SetRecurrenceDateTimes(params parameter.Container, values []types.RecurrenceDateTime) error {
+func (rdt *RecurrenceDateTimes) SetRecurrenceDateTimes(params parameter.Container, values []types.RecurrenceDateTimeValue) error {
 	rdt.Parameter = params
 	rdt.Values = values
 	return nil

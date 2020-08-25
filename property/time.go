@@ -33,10 +33,10 @@ func (dtc *DateTimeCompleted) SetCompleted(params parameter.Container, value typ
 // https://tools.ietf.org/html/rfc5545#section-3.8.2.2
 type DateTimeEnd struct {
 	Parameter parameter.Container
-	Value     types.TimeType // DateTime or Date
+	Value     types.TimeValue // DateTime or Date
 }
 
-func (dte *DateTimeEnd) SetEnd(params parameter.Container, value types.TimeType) error {
+func (dte *DateTimeEnd) SetEnd(params parameter.Container, value types.TimeValue) error {
 	dte.Parameter = params
 	dte.Value = value
 	return nil
@@ -46,10 +46,10 @@ func (dte *DateTimeEnd) SetEnd(params parameter.Container, value types.TimeType)
 // https://tools.ietf.org/html/rfc5545#section-3.8.2.3
 type DateTimeDue struct {
 	Parameter parameter.Container
-	Value     types.TimeType // DateTime or Date
+	Value     types.TimeValue // DateTime or Date
 }
 
-func (dtd *DateTimeDue) SetDue(params parameter.Container, value types.TimeType) error {
+func (dtd *DateTimeDue) SetDue(params parameter.Container, value types.TimeValue) error {
 	dtd.Parameter = params
 	dtd.Value = value
 	return nil
@@ -59,10 +59,10 @@ func (dtd *DateTimeDue) SetDue(params parameter.Container, value types.TimeType)
 // https://tools.ietf.org/html/rfc5545#section-3.8.2.4
 type DateTimeStart struct {
 	Parameter parameter.Container
-	Value     types.TimeType // DateTime or Date
+	Value     types.TimeValue // DateTime or Date
 }
 
-func (dts *DateTimeStart) SetStart(params parameter.Container, value types.TimeType) error {
+func (dts *DateTimeStart) SetStart(params parameter.Container, value types.TimeValue) error {
 	dts.Parameter = params
 	dts.Value = value
 	return nil
@@ -107,14 +107,13 @@ type TimeTransparency struct {
 	Value     TransparencyValueType
 }
 
-// TODO: maybe fix input value type to TransparencyValueType to force value type
-func (tt *TimeTransparency) SetTransparency(params parameter.Container, value types.Text) error {
-	switch v := TransparencyValueType(value); v {
+func (tt *TimeTransparency) SetTransparency(params parameter.Container, value TransparencyValueType) error {
+	switch value {
 	case TransparencyValueTypeOpaque, TransparencyValueTypeTransparent:
 		tt.Parameter = params
-		tt.Value = v
+		tt.Value = value
 		return nil
 	default:
-		return fmt.Errorf("")
+		return fmt.Errorf("unknown TransparencyValueType %s", value)
 	}
 }

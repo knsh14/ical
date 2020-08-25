@@ -140,7 +140,7 @@ func (s *Standard) SetComment(params parameter.Container, value types.Text) erro
 	s.Comment = c
 	return nil
 }
-func (s *Standard) SetRecurrenceDateTimes(params parameter.Container, values []types.RecurrenceDateTime) error {
+func (s *Standard) SetRecurrenceDateTimes(params parameter.Container, values []types.RecurrenceDateTimeValue) error {
 	if s.RecurrenceDateTimes != nil {
 		return s.RecurrenceDateTimes.SetRecurrenceDateTimes(params, values)
 	}
@@ -241,25 +241,25 @@ func (d *Daylight) SetComment(params parameter.Container, value types.Text) erro
 	d.Comment = c
 	return nil
 }
-func (s *Daylight) SetRecurrenceDateTimes(params parameter.Container, values []types.RecurrenceDateTime) error {
-	if s.RecurrenceDateTimes != nil {
-		return s.RecurrenceDateTimes.SetRecurrenceDateTimes(params, values)
+func (d *Daylight) SetRecurrenceDateTimes(params parameter.Container, values []types.RecurrenceDateTimeValue) error {
+	if d.RecurrenceDateTimes != nil {
+		return d.RecurrenceDateTimes.SetRecurrenceDateTimes(params, values)
 	}
 	rdt := &property.RecurrenceDateTimes{}
 	if err := rdt.SetRecurrenceDateTimes(params, values); err != nil {
 		return err
 	}
-	s.RecurrenceDateTimes = rdt
+	d.RecurrenceDateTimes = rdt
 	return nil
 }
-func (s *Daylight) SetTimezoneName(params parameter.Container, value types.Text) error {
-	if s.TimezoneName != nil {
-		return s.TimezoneName.SetTimezoneName(params, value)
+func (d *Daylight) SetTimezoneName(params parameter.Container, value types.Text) error {
+	if d.TimezoneName != nil {
+		return d.TimezoneName.SetTimezoneName(params, value)
 	}
 	tzn := &property.TimezoneName{}
 	if err := tzn.SetTimezoneName(params, value); err != nil {
 		return err
 	}
-	s.TimezoneName = tzn
+	d.TimezoneName = tzn
 	return nil
 }

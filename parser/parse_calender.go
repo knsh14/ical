@@ -12,7 +12,7 @@ import (
 
 func (p *Parser) parseCalender() (*ical.Calender, error) {
 	p.nextLine()
-	p.currentComponentType = component.ComponentTypeCalendar
+	p.currentComponentType = component.TypeCalendar
 	c := ical.NewCalender()
 
 	for l := p.getCurrentLine(); l != nil; l = p.getCurrentLine() {
@@ -28,7 +28,7 @@ func (p *Parser) parseCalender() (*ical.Calender, error) {
 			t := types.NewText(l.Values[0])
 			err = c.SetCalScale(params, t)
 			if err != nil {
-				return nil, NewParseError(component.ComponentTypeCalendar, pname, err)
+				return nil, NewParseError(component.TypeCalendar, pname, err)
 			}
 		case property.PropertyNameMethod:
 			if len(l.Values) > 1 {
@@ -37,7 +37,7 @@ func (p *Parser) parseCalender() (*ical.Calender, error) {
 			t := types.NewText(l.Values[0])
 			err = c.SetMethod(params, t)
 			if err != nil {
-				return nil, NewParseError(component.ComponentTypeCalendar, pname, err)
+				return nil, NewParseError(component.TypeCalendar, pname, err)
 			}
 		case property.PropertyNameProdID:
 			if len(l.Values) > 1 {
@@ -46,7 +46,7 @@ func (p *Parser) parseCalender() (*ical.Calender, error) {
 			t := types.NewText(l.Values[0])
 			err = c.SetProdID(params, t)
 			if err != nil {
-				return nil, NewParseError(component.ComponentTypeCalendar, pname, err)
+				return nil, NewParseError(component.TypeCalendar, pname, err)
 			}
 		case property.PropertyNameVersion:
 			if len(l.Values) > 1 {
@@ -55,34 +55,34 @@ func (p *Parser) parseCalender() (*ical.Calender, error) {
 			t := types.NewText(l.Values[0])
 			err = c.SetVersion(params, t)
 			if err != nil {
-				return nil, NewParseError(component.ComponentTypeCalendar, pname, err)
+				return nil, NewParseError(component.TypeCalendar, pname, err)
 			}
 		case property.PropertyNameBegin:
 			if len(l.Values) != 1 {
 				return nil, NewInvalidValueLengthError(1, len(l.Values))
 			}
-			switch ct := component.ComponentType(l.Values[0]); ct {
-			case component.ComponentTypeEvent:
+			switch ct := component.Type(l.Values[0]); ct {
+			case component.TypeEvent:
 				e, err := p.parseEvent()
 				if err != nil {
 					return nil, fmt.Errorf("parse %s: %w", ct, err)
 				}
 				c.Components = append(c.Components, e)
-			case component.ComponentTypeTODO:
+			case component.TypeTODO:
 				todo, err := p.parseTodo()
 				if err != nil {
 					return nil, fmt.Errorf("parse %s: %w", ct, err)
 				}
 				c.Components = append(c.Components, todo)
-			case component.ComponentTypeJournal:
+			case component.TypeJournal:
 				for !p.isEndComponent(ct) {
 					p.nextLine()
 				}
-			case component.ComponentTypeFreeBusy:
+			case component.TypeFreeBusy:
 				for !p.isEndComponent(ct) {
 					p.nextLine()
 				}
-			case component.ComponentTypeTimezone:
+			case component.TypeTimezone:
 				tz, err := p.parseTimezone()
 				if err != nil {
 					return nil, fmt.Errorf("parse %s: %w", ct, err)
@@ -91,9 +91,9 @@ func (p *Parser) parseCalender() (*ical.Calender, error) {
 			default:
 				return nil, fmt.Errorf("unknown component type %s", ct)
 			}
-			p.currentComponentType = component.ComponentTypeCalendar
+			p.currentComponentType = component.TypeCalendar
 		case property.PropertyNameEnd:
-			if !p.isEndComponent(component.ComponentTypeCalendar) {
+			if !p.isEndComponent(component.TypeCalendar) {
 				return nil, fmt.Errorf("Invalid END")
 			}
 			return c, nil
@@ -112,5 +112,5 @@ func (p *Parser) parseCalender() (*ical.Calender, error) {
 		}
 		p.nextLine()
 	}
-	return nil, NoEndError(component.ComponentTypeCalendar)
+	return nil, NoEndError(component.TypeCalendar)
 }

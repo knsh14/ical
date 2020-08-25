@@ -82,7 +82,7 @@ func NewParser(cls []*contentline.ContentLine) *Parser {
 type Parser struct {
 	Lines                []*contentline.ContentLine
 	CurrentIndex         int
-	currentComponentType component.ComponentType
+	currentComponentType component.Type
 	// errors               []error
 }
 
@@ -100,7 +100,6 @@ func (p *Parser) nextLine() {
 func (p *Parser) Parse() (*ical.Calender, error) {
 	c, err := p.parse()
 	if err != nil {
-		// TODO: wrap
 		return nil, err
 	}
 	return c, nil
@@ -108,8 +107,8 @@ func (p *Parser) Parse() (*ical.Calender, error) {
 
 func (p *Parser) parse() (*ical.Calender, error) {
 	l := p.getCurrentLine()
-	if !p.isBeginComponent(component.ComponentTypeCalendar) {
-		return nil, fmt.Errorf("not %s:%s, got %v", "BEGIN", component.ComponentTypeCalendar, l)
+	if !p.isBeginComponent(component.TypeCalendar) {
+		return nil, fmt.Errorf("not %s:%s, got %v", "BEGIN", component.TypeCalendar, l)
 	}
 	c, err := p.parseCalender()
 	if err != nil {
@@ -118,22 +117,22 @@ func (p *Parser) parse() (*ical.Calender, error) {
 	return c, nil
 }
 
-func (p *Parser) isBeginComponent(c component.ComponentType) bool {
+func (p *Parser) isBeginComponent(c component.Type) bool {
 	if p.getCurrentLine().Name != "BEGIN" {
 		return false
 	}
 	if len(p.getCurrentLine().Values) != 1 {
 		return false
 	}
-	return component.ComponentType(p.getCurrentLine().Values[0]) == c
+	return component.Type(p.getCurrentLine().Values[0]) == c
 }
 
-func (p *Parser) isEndComponent(c component.ComponentType) bool {
+func (p *Parser) isEndComponent(c component.Type) bool {
 	if p.getCurrentLine().Name != "END" {
 		return false
 	}
 	if len(p.getCurrentLine().Values) != 1 {
 		return false
 	}
-	return component.ComponentType(p.getCurrentLine().Values[0]) == c
+	return component.Type(p.getCurrentLine().Values[0]) == c
 }

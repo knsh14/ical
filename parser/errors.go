@@ -12,13 +12,13 @@ const (
 	Invalid failure.StringCode = "Invalid"
 )
 
-type NoEndError component.ComponentType
+type NoEndError component.Type
 
 func (e NoEndError) Error() string {
 	return fmt.Sprintf("finished without END:%s", string(e))
 }
 
-func NewParseError(cname component.ComponentType, pname property.PropertyName, e error) ParseError {
+func NewParseError(cname component.Type, pname property.PropertyName, e error) ParseError {
 	return ParseError{
 		componentName: cname,
 		propertyName:  pname,
@@ -27,7 +27,7 @@ func NewParseError(cname component.ComponentType, pname property.PropertyName, e
 }
 
 type ParseError struct {
-	componentName component.ComponentType
+	componentName component.Type
 	propertyName  property.PropertyName
 	err           error
 }
@@ -38,7 +38,7 @@ func (e ParseError) Error() string {
 
 type InvalidPropertyError property.PropertyName
 
-type UnknownComponentTypeError component.ComponentType
+type UnknownComponentTypeError component.Type
 
 func (e UnknownComponentTypeError) Error() string {
 	return fmt.Sprintf("unknown type %s", string(e))

@@ -77,11 +77,16 @@ func (o *Organizer) SetOrganizer(params parameter.Container, value types.Calende
 // https://tools.ietf.org/html/rfc5545#section-3.8.4.4
 type RecurrenceID struct {
 	Parameter parameter.Container
-	Value     types.TimeType
+	Value     types.TimeValue
 }
 
-// TODO: implement
-func (rid RecurrenceID) SetRecurrenceID(params parameter.Container, value types.TimeType) error {
+func (rid RecurrenceID) SetRecurrenceID(params parameter.Container, value types.TimeValue) error {
+	if len(params[parameter.TypeNameReferenceTimezone]) > 1 {
+		return fmt.Errorf("too much values for parameter %s", parameter.TypeNameReferenceTimezone)
+	}
+	if len(params[parameter.TypeNameRecurrenceIDRange]) > 1 {
+		return fmt.Errorf("too much values for parameter %s", parameter.TypeNameRecurrenceIDRange)
+	}
 	rid.Parameter = params
 	rid.Value = value
 	return nil

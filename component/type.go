@@ -1,17 +1,17 @@
 package component
 
-// ComponentType is
+// Type is
 // https://tools.ietf.org/html/rfc5545#section-8.3.1
-type ComponentType string
+type Type string
 
 const (
-	ComponentTypeCalendar ComponentType = "VCALENDAR"
-	ComponentTypeEvent    ComponentType = "VEVENT"
-	ComponentTypeTODO     ComponentType = "VTODO"
-	ComponentTypeJournal  ComponentType = "VJOURNAL"
-	ComponentTypeFreeBusy ComponentType = "VFREEBUSY"
-	ComponentTypeTimezone ComponentType = "VTIMEZONE"
-	ComponentTypeAlarm    ComponentType = "VALARM"
-	ComponentTypeStandard ComponentType = "STANDARD"
-	ComponentTypeDaylight ComponentType = "DAYLIGHT"
+	TypeCalendar Type = "VCALENDAR"
+	TypeEvent    Type = "VEVENT"
+	TypeTODO     Type = "VTODO"
+	TypeJournal  Type = "VJOURNAL"
+	TypeFreeBusy Type = "VFREEBUSY"
+	TypeTimezone Type = "VTIMEZONE"
+	TypeAlarm    Type = "VALARM"
+	TypeStandard Type = "STANDARD"
+	TypeDaylight Type = "DAYLIGHT"
 )
