@@ -18,7 +18,7 @@ func (e NoEndError) Error() string {
 	return fmt.Sprintf("finished without END:%s", string(e))
 }
 
-func NewParseError(cname component.Type, pname property.PropertyName, e error) ParseError {
+func NewParseError(cname component.Type, pname property.Name, e error) ParseError {
 	return ParseError{
 		componentName: cname,
 		propertyName:  pname,
@@ -28,7 +28,7 @@ func NewParseError(cname component.Type, pname property.PropertyName, e error) P
 
 type ParseError struct {
 	componentName component.Type
-	propertyName  property.PropertyName
+	propertyName  property.Name
 	err           error
 }
 
@@ -36,7 +36,7 @@ func (e ParseError) Error() string {
 	return fmt.Sprintf("parse %s.%s: %s", e.componentName, e.propertyName, e.err)
 }
 
-type InvalidPropertyError property.PropertyName
+type InvalidPropertyError property.Name
 
 type UnknownComponentTypeError component.Type
 

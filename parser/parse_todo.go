@@ -21,13 +21,13 @@ func (p *Parser) parseTodo() (*ical.ToDo, error) {
 			return nil, fmt.Errorf("parse parameter: %w", err)
 		}
 
-		switch pname := property.PropertyName(l.Name); pname {
-		case property.PropertyNameEnd:
+		switch pname := property.Name(l.Name); pname {
+		case property.NameEnd:
 			if !p.isEndComponent(component.TypeEvent) {
 				return nil, fmt.Errorf("Invalid END")
 			}
 			return todo, nil
-		case property.PropertyNameUID:
+		case property.NameUID:
 			if len(l.Values) != 1 {
 				return nil, NewInvalidValueLengthError(1, len(l.Values))
 			}
@@ -35,7 +35,7 @@ func (p *Parser) parseTodo() (*ical.ToDo, error) {
 			if err := todo.SetUID(params, t); err != nil {
 				return nil, NewParseError(component.TypeTODO, pname, err)
 			}
-		case property.PropertyNameDateTimeStamp:
+		case property.NameDateTimeStamp:
 			if len(l.Values) != 1 {
 				return nil, NewInvalidValueLengthError(1, len(l.Values))
 			}
@@ -47,7 +47,7 @@ func (p *Parser) parseTodo() (*ical.ToDo, error) {
 			if err := todo.SetDateTimeStamp(params, t); err != nil {
 				return nil, NewParseError(component.TypeTODO, pname, err)
 			}
-		case property.PropertyNameClass:
+		case property.NameClass:
 			if len(l.Values) != 1 {
 				return nil, NewInvalidValueLengthError(1, len(l.Values))
 			}
@@ -55,7 +55,7 @@ func (p *Parser) parseTodo() (*ical.ToDo, error) {
 			if err := todo.SetClass(params, t); err != nil {
 				return nil, NewParseError(component.TypeTODO, pname, err)
 			}
-		case property.PropertyNameDateTimeCompleted:
+		case property.NameDateTimeCompleted:
 			if len(l.Values) != 1 {
 				return nil, NewInvalidValueLengthError(1, len(l.Values))
 			}
@@ -67,7 +67,7 @@ func (p *Parser) parseTodo() (*ical.ToDo, error) {
 			if err := todo.SetDateTimeCompleted(params, t); err != nil {
 				return nil, NewParseError(component.TypeTODO, pname, err)
 			}
-		case property.PropertyNameDateTimeCreated:
+		case property.NameDateTimeCreated:
 			if len(l.Values) != 1 {
 				return nil, NewInvalidValueLengthError(1, len(l.Values))
 			}
@@ -79,7 +79,7 @@ func (p *Parser) parseTodo() (*ical.ToDo, error) {
 			if err := todo.SetDateTimeCreated(params, t); err != nil {
 				return nil, NewParseError(component.TypeTODO, pname, err)
 			}
-		case property.PropertyNameDescription:
+		case property.NameDescription:
 			if len(l.Values) != 1 {
 				return nil, NewInvalidValueLengthError(1, len(l.Values))
 			}
@@ -87,7 +87,7 @@ func (p *Parser) parseTodo() (*ical.ToDo, error) {
 			if err := todo.SetDescription(params, t); err != nil {
 				return nil, NewParseError(component.TypeTODO, pname, err)
 			}
-		case property.PropertyNameDateTimeStart:
+		case property.NameDateTimeStart:
 			if len(l.Values) != 1 {
 				return nil, NewInvalidValueLengthError(1, len(l.Values))
 			}
@@ -98,7 +98,7 @@ func (p *Parser) parseTodo() (*ical.ToDo, error) {
 			if err := todo.SetDateTimeStart(params, t); err != nil {
 				return nil, NewParseError(component.TypeTODO, pname, err)
 			}
-		case property.PropertyNameGeo:
+		case property.NameGeo:
 			if len(l.Values) > 1 {
 				return nil, NewInvalidValueLengthError(1, len(l.Values))
 			}
@@ -106,7 +106,7 @@ func (p *Parser) parseTodo() (*ical.ToDo, error) {
 			if err := todo.SetGeoWithText(params, t); err != nil {
 				return nil, NewParseError(component.TypeTODO, pname, err)
 			}
-		case property.PropertyNameLastModified:
+		case property.NameLastModified:
 			if len(l.Values) > 1 {
 				return nil, NewInvalidValueLengthError(1, len(l.Values))
 			}
@@ -118,7 +118,7 @@ func (p *Parser) parseTodo() (*ical.ToDo, error) {
 			if err := todo.SetLastModified(params, v); err != nil {
 				return nil, NewParseError(component.TypeTODO, pname, err)
 			}
-		case property.PropertyNameLocaiton:
+		case property.NameLocaiton:
 			if len(l.Values) > 1 {
 				return nil, NewInvalidValueLengthError(1, len(l.Values))
 			}
@@ -126,7 +126,7 @@ func (p *Parser) parseTodo() (*ical.ToDo, error) {
 			if err := todo.SetLocation(params, t); err != nil {
 				return nil, NewParseError(component.TypeTODO, pname, err)
 			}
-		case property.PropertyNameOrganizer:
+		case property.NameOrganizer:
 			if len(l.Values) > 1 {
 				return nil, NewInvalidValueLengthError(1, len(l.Values))
 			}
@@ -137,7 +137,7 @@ func (p *Parser) parseTodo() (*ical.ToDo, error) {
 			if err := todo.SetOrganizer(params, t); err != nil {
 				return nil, NewParseError(component.TypeTODO, pname, err)
 			}
-		case property.PropertyNamePercentComplete:
+		case property.NamePercentComplete:
 			if len(l.Values) > 1 {
 				return nil, NewInvalidValueLengthError(1, len(l.Values))
 			}
@@ -148,7 +148,7 @@ func (p *Parser) parseTodo() (*ical.ToDo, error) {
 			if err := todo.SetPercentComplete(params, t); err != nil {
 				return nil, NewParseError(component.TypeTODO, pname, err)
 			}
-		case property.PropertyNamePriority:
+		case property.NamePriority:
 			if len(l.Values) > 1 {
 				return nil, NewInvalidValueLengthError(1, len(l.Values))
 			}
@@ -159,7 +159,7 @@ func (p *Parser) parseTodo() (*ical.ToDo, error) {
 			if err := todo.SetPriority(params, i); err != nil {
 				return nil, NewParseError(component.TypeTODO, pname, err)
 			}
-		case property.PropertyNameRecurrenceID:
+		case property.NameRecurrenceID:
 			if len(l.Values) > 1 {
 				return nil, NewInvalidValueLengthError(1, len(l.Values))
 			}
@@ -170,7 +170,7 @@ func (p *Parser) parseTodo() (*ical.ToDo, error) {
 			if err := todo.SetRecurrenceID(params, t); err != nil {
 				return nil, NewParseError(component.TypeTODO, pname, err)
 			}
-		case property.PropertyNameSequenceNumber:
+		case property.NameSequenceNumber:
 			if len(l.Values) > 1 {
 				return nil, NewInvalidValueLengthError(1, len(l.Values))
 			}
@@ -181,7 +181,7 @@ func (p *Parser) parseTodo() (*ical.ToDo, error) {
 			if err := todo.SetSequenceNumber(params, i); err != nil {
 				return nil, NewParseError(component.TypeTODO, pname, err)
 			}
-		case property.PropertyNameStatus:
+		case property.NameStatus:
 			if len(l.Values) > 1 {
 				return nil, NewInvalidValueLengthError(1, len(l.Values))
 			}
@@ -189,7 +189,7 @@ func (p *Parser) parseTodo() (*ical.ToDo, error) {
 			if err := todo.SetStatus(params, t); err != nil {
 				return nil, NewParseError(component.TypeTODO, pname, err)
 			}
-		case property.PropertyNameSummary:
+		case property.NameSummary:
 			if len(l.Values) > 1 {
 				return nil, NewInvalidValueLengthError(1, len(l.Values))
 			}
@@ -197,7 +197,7 @@ func (p *Parser) parseTodo() (*ical.ToDo, error) {
 			if err := todo.SetSummary(params, t); err != nil {
 				return nil, NewParseError(component.TypeTODO, pname, err)
 			}
-		case property.PropertyNameURL:
+		case property.NameURL:
 			if len(l.Values) > 1 {
 				return nil, NewInvalidValueLengthError(1, len(l.Values))
 			}
@@ -208,7 +208,7 @@ func (p *Parser) parseTodo() (*ical.ToDo, error) {
 			if err := todo.SetURL(params, t); err != nil {
 				return nil, NewParseError(component.TypeTODO, pname, err)
 			}
-		case property.PropertyNameDateTimeDue:
+		case property.NameDateTimeDue:
 			if len(l.Values) != 1 {
 				return nil, NewInvalidValueLengthError(1, len(l.Values))
 			}
@@ -219,7 +219,7 @@ func (p *Parser) parseTodo() (*ical.ToDo, error) {
 			if err := todo.SetDateTimeDue(params, t); err != nil {
 				return nil, NewParseError(component.TypeTODO, pname, err)
 			}
-		case property.PropertyNameDuration:
+		case property.NameDuration:
 			if len(l.Values) > 1 {
 				return nil, NewInvalidValueLengthError(1, len(l.Values))
 			}
@@ -230,7 +230,7 @@ func (p *Parser) parseTodo() (*ical.ToDo, error) {
 			if err := todo.SetDuration(params, d); err != nil {
 				return nil, NewParseError(component.TypeTODO, pname, err)
 			}
-		case property.PropertyNameAttachment:
+		case property.NameAttachment:
 			if len(l.Values) > 1 {
 				return nil, NewInvalidValueLengthError(1, len(l.Values))
 			}
@@ -241,7 +241,7 @@ func (p *Parser) parseTodo() (*ical.ToDo, error) {
 			if err := todo.AddAttachment(params, a); err != nil {
 				return nil, NewParseError(component.TypeTODO, pname, err)
 			}
-		case property.PropertyNameAttendee:
+		case property.NameAttendee:
 			if len(l.Values) > 1 {
 				return nil, NewInvalidValueLengthError(1, len(l.Values))
 			}
@@ -252,7 +252,7 @@ func (p *Parser) parseTodo() (*ical.ToDo, error) {
 			if err := todo.AddAttendee(params, a); err != nil {
 				return nil, NewParseError(component.TypeTODO, pname, err)
 			}
-		case property.PropertyNameCategories:
+		case property.NameCategories:
 			var ts []types.Text
 			for _, v := range l.Values {
 				ts = append(ts, types.NewText(v))
@@ -260,7 +260,7 @@ func (p *Parser) parseTodo() (*ical.ToDo, error) {
 			if err := todo.AddCategories(params, ts); err != nil {
 				return nil, NewParseError(component.TypeTODO, pname, err)
 			}
-		case property.PropertyNameComment:
+		case property.NameComment:
 			if len(l.Values) > 1 {
 				return nil, NewInvalidValueLengthError(1, len(l.Values))
 			}
@@ -268,7 +268,7 @@ func (p *Parser) parseTodo() (*ical.ToDo, error) {
 			if err := todo.AddComment(params, t); err != nil {
 				return nil, NewParseError(component.TypeTODO, pname, err)
 			}
-		case property.PropertyNameContact:
+		case property.NameContact:
 			if len(l.Values) > 1 {
 				return nil, NewInvalidValueLengthError(1, len(l.Values))
 			}
@@ -276,7 +276,7 @@ func (p *Parser) parseTodo() (*ical.ToDo, error) {
 			if err := todo.AddContact(params, t); err != nil {
 				return nil, NewParseError(component.TypeTODO, pname, err)
 			}
-		case property.PropertyNameExceptionDateTimes:
+		case property.NameExceptionDateTimes:
 			var ts []types.TimeValue
 			for _, v := range l.Values {
 				t, err := ical.NewTimeType(params, v)
@@ -288,7 +288,7 @@ func (p *Parser) parseTodo() (*ical.ToDo, error) {
 			if err := todo.AddExceptionDateTimes(params, ts); err != nil {
 				return nil, NewParseError(component.TypeTODO, pname, err)
 			}
-		case property.PropertyNameRequestStatus:
+		case property.NameRequestStatus:
 			if len(l.Values) > 1 {
 				return nil, NewInvalidValueLengthError(1, len(l.Values))
 			}
@@ -296,7 +296,7 @@ func (p *Parser) parseTodo() (*ical.ToDo, error) {
 			if err := todo.AddRequestStatus(params, t); err != nil {
 				return nil, NewParseError(component.TypeTODO, pname, err)
 			}
-		case property.PropertyNameResources:
+		case property.NameResources:
 			var ts []types.Text
 			for _, v := range l.Values {
 				ts = append(ts, types.NewText(v))
@@ -304,7 +304,7 @@ func (p *Parser) parseTodo() (*ical.ToDo, error) {
 			if err := todo.AddResources(params, ts); err != nil {
 				return nil, NewParseError(component.TypeTODO, pname, err)
 			}
-		case property.PropertyNameRecurrenceDateTimes:
+		case property.NameRecurrenceDateTimes:
 			var rdts []types.RecurrenceDateTimeValue
 			for _, v := range l.Values {
 				rdt, err := property.NewRecurrenceDateTime(params, v)
@@ -316,7 +316,7 @@ func (p *Parser) parseTodo() (*ical.ToDo, error) {
 			if err := todo.AddRecurrenceDateTimes(params, rdts); err != nil {
 				return nil, NewParseError(component.TypeTODO, pname, err)
 			}
-		case property.PropertyNameBegin:
+		case property.NameBegin:
 			if !p.isBeginComponent(component.TypeAlarm) {
 				return nil, fmt.Errorf("allow only BEGIN:VALARM, but %v", l)
 			}

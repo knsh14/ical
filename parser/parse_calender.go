@@ -20,8 +20,8 @@ func (p *Parser) parseCalender() (*ical.Calender, error) {
 		if err != nil {
 			return nil, fmt.Errorf("parse parameter: %w", err)
 		}
-		switch pname := property.PropertyName(l.Name); pname {
-		case property.PropertyNameCalScale:
+		switch pname := property.Name(l.Name); pname {
+		case property.NameCalScale:
 			if len(l.Values) > 1 {
 				return nil, NewInvalidValueLengthError(1, len(l.Values))
 			}
@@ -30,7 +30,7 @@ func (p *Parser) parseCalender() (*ical.Calender, error) {
 			if err != nil {
 				return nil, NewParseError(component.TypeCalendar, pname, err)
 			}
-		case property.PropertyNameMethod:
+		case property.NameMethod:
 			if len(l.Values) > 1 {
 				return nil, NewInvalidValueLengthError(1, len(l.Values))
 			}
@@ -39,7 +39,7 @@ func (p *Parser) parseCalender() (*ical.Calender, error) {
 			if err != nil {
 				return nil, NewParseError(component.TypeCalendar, pname, err)
 			}
-		case property.PropertyNameProdID:
+		case property.NameProdID:
 			if len(l.Values) > 1 {
 				return nil, NewInvalidValueLengthError(1, len(l.Values))
 			}
@@ -48,7 +48,7 @@ func (p *Parser) parseCalender() (*ical.Calender, error) {
 			if err != nil {
 				return nil, NewParseError(component.TypeCalendar, pname, err)
 			}
-		case property.PropertyNameVersion:
+		case property.NameVersion:
 			if len(l.Values) > 1 {
 				return nil, NewInvalidValueLengthError(1, len(l.Values))
 			}
@@ -57,7 +57,7 @@ func (p *Parser) parseCalender() (*ical.Calender, error) {
 			if err != nil {
 				return nil, NewParseError(component.TypeCalendar, pname, err)
 			}
-		case property.PropertyNameBegin:
+		case property.NameBegin:
 			if len(l.Values) != 1 {
 				return nil, NewInvalidValueLengthError(1, len(l.Values))
 			}
@@ -92,7 +92,7 @@ func (p *Parser) parseCalender() (*ical.Calender, error) {
 				return nil, fmt.Errorf("unknown component type %s", ct)
 			}
 			p.currentComponentType = component.TypeCalendar
-		case property.PropertyNameEnd:
+		case property.NameEnd:
 			if !p.isEndComponent(component.TypeCalendar) {
 				return nil, fmt.Errorf("Invalid END")
 			}

@@ -17,8 +17,8 @@ func (p *Parser) parseAlarm() (ical.Alarm, error) {
 
 	var parseFunc func([]*contentline.ContentLine) (ical.Alarm, error)
 	for l := p.getCurrentLine(); l != nil; l = p.getCurrentLine() {
-		switch pname := property.PropertyName(l.Name); pname {
-		case property.PropertyNameEnd:
+		switch pname := property.Name(l.Name); pname {
+		case property.NameEnd:
 			if !p.isEndComponent(component.TypeAlarm) {
 				return nil, fmt.Errorf("Invalid END")
 			}
@@ -26,7 +26,7 @@ func (p *Parser) parseAlarm() (ical.Alarm, error) {
 				return nil, NewParseError(component.TypeAlarm, pname, fmt.Errorf("required ACTION but not found"))
 			}
 			return parseFunc(lines)
-		case property.PropertyNameAction:
+		case property.NameAction:
 			if len(l.Values) != 1 {
 				return nil, NewInvalidValueLengthError(1, len(l.Values))
 			}
@@ -55,8 +55,8 @@ func (p *Parser) parseAlarmAudio(lines []*contentline.ContentLine) (ical.Alarm, 
 		if err != nil {
 			return nil, fmt.Errorf("parse parameter: %w", err)
 		}
-		switch pname := property.PropertyName(l.Name); pname {
-		case property.PropertyNameAction:
+		switch pname := property.Name(l.Name); pname {
+		case property.NameAction:
 			if len(l.Values) != 1 {
 				return nil, NewInvalidValueLengthError(1, len(l.Values))
 			}
@@ -64,7 +64,7 @@ func (p *Parser) parseAlarmAudio(lines []*contentline.ContentLine) (ical.Alarm, 
 			if err := aa.SetAction(params, t); err != nil {
 				return nil, NewParseError(component.TypeAlarm, pname, err)
 			}
-		case property.PropertyNameTrigger:
+		case property.NameTrigger:
 			if len(l.Values) != 1 {
 				return nil, NewInvalidValueLengthError(1, len(l.Values))
 			}
@@ -75,7 +75,7 @@ func (p *Parser) parseAlarmAudio(lines []*contentline.ContentLine) (ical.Alarm, 
 			if err := aa.SetTrigger(params, t); err != nil {
 				return nil, NewParseError(component.TypeAlarm, pname, err)
 			}
-		case property.PropertyNameDuration:
+		case property.NameDuration:
 			if len(l.Values) != 1 {
 				return nil, NewInvalidValueLengthError(1, len(l.Values))
 			}
@@ -86,7 +86,7 @@ func (p *Parser) parseAlarmAudio(lines []*contentline.ContentLine) (ical.Alarm, 
 			if err := aa.SetDuration(params, d); err != nil {
 				return nil, NewParseError(component.TypeAlarm, pname, err)
 			}
-		case property.PropertyNameRepeatCount:
+		case property.NameRepeatCount:
 			if len(l.Values) != 1 {
 				return nil, NewInvalidValueLengthError(1, len(l.Values))
 			}
@@ -97,7 +97,7 @@ func (p *Parser) parseAlarmAudio(lines []*contentline.ContentLine) (ical.Alarm, 
 			if err := aa.SetRepeatCount(params, v); err != nil {
 				return nil, NewParseError(component.TypeAlarm, pname, err)
 			}
-		case property.PropertyNameAttachment:
+		case property.NameAttachment:
 			if len(l.Values) > 1 {
 				return nil, NewInvalidValueLengthError(1, len(l.Values))
 			}
@@ -128,8 +128,8 @@ func (p *Parser) parseAlarmDisplay(lines []*contentline.ContentLine) (ical.Alarm
 		if err != nil {
 			return nil, fmt.Errorf("parse parameter: %w", err)
 		}
-		switch pname := property.PropertyName(l.Name); pname {
-		case property.PropertyNameAction:
+		switch pname := property.Name(l.Name); pname {
+		case property.NameAction:
 			if len(l.Values) != 1 {
 				return nil, NewInvalidValueLengthError(1, len(l.Values))
 			}
@@ -137,7 +137,7 @@ func (p *Parser) parseAlarmDisplay(lines []*contentline.ContentLine) (ical.Alarm
 			if err := ad.SetAction(params, t); err != nil {
 				return nil, NewParseError(component.TypeAlarm, pname, err)
 			}
-		case property.PropertyNameDescription:
+		case property.NameDescription:
 			if len(l.Values) != 1 {
 				return nil, NewInvalidValueLengthError(1, len(l.Values))
 			}
@@ -145,7 +145,7 @@ func (p *Parser) parseAlarmDisplay(lines []*contentline.ContentLine) (ical.Alarm
 			if err := ad.SetDescription(params, t); err != nil {
 				return nil, NewParseError(component.TypeAlarm, pname, err)
 			}
-		case property.PropertyNameTrigger:
+		case property.NameTrigger:
 			if len(l.Values) != 1 {
 				return nil, NewInvalidValueLengthError(1, len(l.Values))
 			}
@@ -156,7 +156,7 @@ func (p *Parser) parseAlarmDisplay(lines []*contentline.ContentLine) (ical.Alarm
 			if err := ad.SetTrigger(params, t); err != nil {
 				return nil, NewParseError(component.TypeAlarm, pname, err)
 			}
-		case property.PropertyNameDuration:
+		case property.NameDuration:
 			if len(l.Values) != 1 {
 				return nil, NewInvalidValueLengthError(1, len(l.Values))
 			}
@@ -167,7 +167,7 @@ func (p *Parser) parseAlarmDisplay(lines []*contentline.ContentLine) (ical.Alarm
 			if err := ad.SetDuration(params, d); err != nil {
 				return nil, NewParseError(component.TypeAlarm, pname, err)
 			}
-		case property.PropertyNameRepeatCount:
+		case property.NameRepeatCount:
 			if len(l.Values) != 1 {
 				return nil, NewInvalidValueLengthError(1, len(l.Values))
 			}
@@ -198,8 +198,8 @@ func (p *Parser) parseAlarmEmail(lines []*contentline.ContentLine) (ical.Alarm, 
 		if err != nil {
 			return nil, fmt.Errorf("parse parameter: %w", err)
 		}
-		switch pname := property.PropertyName(l.Name); pname {
-		case property.PropertyNameAction:
+		switch pname := property.Name(l.Name); pname {
+		case property.NameAction:
 			if len(l.Values) != 1 {
 				return nil, NewInvalidValueLengthError(1, len(l.Values))
 			}
@@ -207,7 +207,7 @@ func (p *Parser) parseAlarmEmail(lines []*contentline.ContentLine) (ical.Alarm, 
 			if err := ae.SetAction(params, t); err != nil {
 				return nil, NewParseError(component.TypeAlarm, pname, err)
 			}
-		case property.PropertyNameDescription:
+		case property.NameDescription:
 			if len(l.Values) != 1 {
 				return nil, NewInvalidValueLengthError(1, len(l.Values))
 			}
@@ -215,7 +215,7 @@ func (p *Parser) parseAlarmEmail(lines []*contentline.ContentLine) (ical.Alarm, 
 			if err := ae.SetDescription(params, t); err != nil {
 				return nil, NewParseError(component.TypeAlarm, pname, err)
 			}
-		case property.PropertyNameTrigger:
+		case property.NameTrigger:
 			if len(l.Values) != 1 {
 				return nil, NewInvalidValueLengthError(1, len(l.Values))
 			}
@@ -226,7 +226,7 @@ func (p *Parser) parseAlarmEmail(lines []*contentline.ContentLine) (ical.Alarm, 
 			if err := ae.SetTrigger(params, t); err != nil {
 				return nil, NewParseError(component.TypeAlarm, pname, err)
 			}
-		case property.PropertyNameSummary:
+		case property.NameSummary:
 			if len(l.Values) != 1 {
 				return nil, NewInvalidValueLengthError(1, len(l.Values))
 			}
@@ -234,7 +234,7 @@ func (p *Parser) parseAlarmEmail(lines []*contentline.ContentLine) (ical.Alarm, 
 			if err := ae.SetSummary(params, t); err != nil {
 				return nil, NewParseError(component.TypeAlarm, pname, err)
 			}
-		case property.PropertyNameAttendee:
+		case property.NameAttendee:
 			if len(l.Values) != 1 {
 				return nil, NewInvalidValueLengthError(1, len(l.Values))
 			}
@@ -245,7 +245,7 @@ func (p *Parser) parseAlarmEmail(lines []*contentline.ContentLine) (ical.Alarm, 
 			if err := ae.AddAttendee(params, cua); err != nil {
 				return nil, NewParseError(component.TypeAlarm, pname, err)
 			}
-		case property.PropertyNameDuration:
+		case property.NameDuration:
 			if len(l.Values) != 1 {
 				return nil, NewInvalidValueLengthError(1, len(l.Values))
 			}
@@ -256,7 +256,7 @@ func (p *Parser) parseAlarmEmail(lines []*contentline.ContentLine) (ical.Alarm, 
 			if err := ae.SetDuration(params, d); err != nil {
 				return nil, NewParseError(component.TypeAlarm, pname, err)
 			}
-		case property.PropertyNameRepeatCount:
+		case property.NameRepeatCount:
 			if len(l.Values) != 1 {
 				return nil, NewInvalidValueLengthError(1, len(l.Values))
 			}
@@ -267,7 +267,7 @@ func (p *Parser) parseAlarmEmail(lines []*contentline.ContentLine) (ical.Alarm, 
 			if err := ae.SetRepeatCount(params, v); err != nil {
 				return nil, NewParseError(component.TypeAlarm, pname, err)
 			}
-		case property.PropertyNameAttachment:
+		case property.NameAttachment:
 			if len(l.Values) > 1 {
 				return nil, NewInvalidValueLengthError(1, len(l.Values))
 			}

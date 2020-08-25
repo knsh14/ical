@@ -45,7 +45,7 @@ func TestParseAlarm(t *testing.T) {
 					Values: []string{string(component.TypeAlarm)},
 				},
 				{
-					Name:   string(property.PropertyNameAction),
+					Name:   string(property.NameAction),
 					Values: []string{string(property.ActionTypeAudio)},
 				},
 				{
@@ -72,7 +72,7 @@ func TestParseAlarm(t *testing.T) {
 					Values: []string{string(component.TypeAlarm)},
 				},
 				{
-					Name:   string(property.PropertyNameAction),
+					Name:   string(property.NameAction),
 					Values: []string{string(property.ActionTypeDisplay)},
 				},
 				{
@@ -99,7 +99,7 @@ func TestParseAlarm(t *testing.T) {
 					Values: []string{string(component.TypeAlarm)},
 				},
 				{
-					Name:   string(property.PropertyNameAction),
+					Name:   string(property.NameAction),
 					Values: []string{string(property.ActionTypeEMail)},
 				},
 				{
