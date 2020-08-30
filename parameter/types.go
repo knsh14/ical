@@ -14,10 +14,6 @@ import (
 )
 
 func NewAlternateTextRepresentation(value string) (*AlternateTextRepresentation, error) {
-	// v, err := strconv.Unquote(value)
-	// if err != nil {
-	// 	return nil, fmt.Errorf("unquote input: %w", err)
-	// }
 	uri, err := types.NewURI(value)
 	if err != nil {
 		return nil, fmt.Errorf("parse input to uri: %w", err)
@@ -96,10 +92,6 @@ func (d *Delegator) implementParameter() {}
 func NewDelegatee(values []string) (*Delegatee, error) {
 	var addresses []types.CalenderUserAddress
 	for _, value := range values {
-		// v, err := strconv.Unquote(value)
-		// if err != nil {
-		// 	return nil, fmt.Errorf("unquote input[%s]: %w", value, err)
-		// }
 		a, err := types.NewCalenderUserAddress(value)
 		if err != nil {
 			return nil, fmt.Errorf("convert value[%s] to CALENDER-USER-ADDRESS: %w", value, err)
@@ -205,10 +197,6 @@ func (l *Language) implementParameter() {}
 func NewMembership(values []string) (*Membership, error) {
 	var l []types.CalenderUserAddress
 	for _, value := range values {
-		// v, err := strconv.Unquote(value)
-		// if err != nil {
-		// 	return nil, fmt.Errorf("unquote input: %w", err)
-		// }
 		uri, err := types.NewCalenderUserAddress(value)
 		if err != nil {
 			return nil, fmt.Errorf("parse %s to uri: %w", value, err)
@@ -311,7 +299,7 @@ func NewRelationshipType(value string) (*RelationshipType, error) {
 	case RelationshipTypeKindParent,
 		RelationshipTypeKindChild,
 		RelationshipTypeKindSibling:
-		return &RelationshipType{Type: t}, nil
+		return &RelationshipType{Type: t, Value: value}, nil
 	default:
 		if token.IsXName(value) {
 			return &RelationshipType{Type: RelationshipTypeKindXName, Value: value}, nil
@@ -333,7 +321,7 @@ func NewParticipationRole(value string) (*ParticipationRole, error) {
 		ParticipationRoleTypeRequestedParticipant,
 		ParticipationRoleTypeOptionalParticipant,
 		ParticipationRoleTypeNonParticipant:
-		return &ParticipationRole{Type: t}, nil
+		return &ParticipationRole{Type: t, Value: value}, nil
 	default:
 		if token.IsXName(value) {
 			return &ParticipationRole{Type: ParticipationRoleTypeXName, Value: value}, nil
