@@ -72,14 +72,11 @@ func getName(l *lexer.Lexer) (string, token.Token, error) {
 
 func getParameter(l *lexer.Lexer) (Parameter, token.Token, error) {
 	var p Parameter
-name:
-	for {
-		t := l.NextToken()
+	for t := l.NextToken(); t.Type != token.ASSIGN; t = l.NextToken() {
 		switch t.Type {
 		case token.IDENT:
 			p.Name += t.Value
 		case token.ASSIGN:
-			break name
 		default:
 			return Parameter{}, t, fmt.Errorf("invalid token %s", t.Value)
 		}
