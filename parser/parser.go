@@ -11,6 +11,7 @@ import (
 	"github.com/knsh14/ical/component"
 	"github.com/knsh14/ical/contentline"
 	"github.com/knsh14/ical/lexer"
+	"github.com/knsh14/ical/property"
 	"golang.org/x/sync/errgroup"
 )
 
@@ -107,18 +108,28 @@ func (p *Parser) Parse() (*ical.Calender, error) {
 
 func (p *Parser) parse() (*ical.Calender, error) {
 	l := p.getCurrentLine()
-	if !p.isBeginComponent(component.TypeCalendar) {
-		return nil, fmt.Errorf("not %s:%s, got %v", "BEGIN", component.TypeCalendar, l)
+	switch pname := property.Name(l.Name); pname {
+	case property.NameBegin:
+		if len(l.Values) != 1 {
+			return nil, NewInvalidValueLengthError(1, len(l.Values))
+		}
+		switch ct := component.Type(l.Values[0]); ct {
+		case component.TypeCalendar:
+			c, err := p.parseCalender()
+			if err != nil {
+				return nil, fmt.Errorf("parse %s: %w", ct, err)
+			}
+			return c, nil
+		default:
+			return nil, fmt.Errorf("not %s:%s, got %v", property.NameBegin, component.TypeCalendar, l)
+		}
+	default:
+		return nil, fmt.Errorf("not %s:%s, got %v", property.NameBegin, component.TypeCalendar, l)
 	}
-	c, err := p.parseCalender()
-	if err != nil {
-		return nil, err
-	}
-	return c, nil
 }
 
 func (p *Parser) isBeginComponent(c component.Type) bool {
-	if p.getCurrentLine().Name != "BEGIN" {
+	if property.Name(p.getCurrentLine().Name) != property.NameBegin {
 		return false
 	}
 	if len(p.getCurrentLine().Values) != 1 {
@@ -128,7 +139,7 @@ func (p *Parser) isBeginComponent(c component.Type) bool {
 }
 
 func (p *Parser) isEndComponent(c component.Type) bool {
-	if p.getCurrentLine().Name != "END" {
+	if property.Name(p.getCurrentLine().Name) != property.NameEnd {
 		return false
 	}
 	if len(p.getCurrentLine().Values) != 1 {
