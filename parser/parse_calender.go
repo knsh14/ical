@@ -10,10 +10,10 @@ import (
 	"github.com/knsh14/ical/types"
 )
 
-func (p *Parser) parseCalender() (*ical.Calender, error) {
+func (p *Parser) parseCalender() (*ical.Calendar, error) {
 	p.nextLine()
 	p.currentComponentType = component.TypeCalendar
-	c := ical.NewCalender()
+	c := ical.NewCalendar()
 
 	for l := p.getCurrentLine(); l != nil; l = p.getCurrentLine() {
 		params, err := p.parseParameter(l)

@@ -18,7 +18,7 @@ func TestParseCalender(t *testing.T) {
 
 	testcases := map[string]struct {
 		input         []*contentline.ContentLine
-		expected      *ical.Calender
+		expected      *ical.Calendar
 		expectedError error
 	}{
 		"empty calender": {
@@ -32,7 +32,7 @@ func TestParseCalender(t *testing.T) {
 					Values: []string{string(component.TypeCalendar)},
 				},
 			},
-			expected: &ical.Calender{
+			expected: &ical.Calendar{
 				Version: &property.Version{
 					Max: types.NewText("2.0"),
 				},
@@ -54,7 +54,7 @@ func TestParseCalender(t *testing.T) {
 					Values: []string{string(component.TypeCalendar)},
 				},
 			},
-			expected: &ical.Calender{
+			expected: &ical.Calendar{
 				Version: &property.Version{
 					Parameter: parameter.Container{},
 					Max:       types.NewText("2.0"),
@@ -77,7 +77,7 @@ func TestParseCalender(t *testing.T) {
 					Values: []string{string(component.TypeCalendar)},
 				},
 			},
-			expected: &ical.Calender{
+			expected: &ical.Calendar{
 				Version: &property.Version{
 					Parameter: parameter.Container{},
 					Min:       types.NewText("1.2"),
@@ -101,7 +101,7 @@ func TestParseCalender(t *testing.T) {
 					Values: []string{string(component.TypeCalendar)},
 				},
 			},
-			expected: &ical.Calender{
+			expected: &ical.Calendar{
 				Version: &property.Version{
 					Max: types.NewText("2.0"),
 				},
@@ -152,7 +152,7 @@ func TestParseCalender(t *testing.T) {
 					Values: []string{string(component.TypeCalendar)},
 				},
 			},
-			expected: &ical.Calender{
+			expected: &ical.Calendar{
 				Components: []ical.CalenderComponent{
 					&ical.Event{},
 				},

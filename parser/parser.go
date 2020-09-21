@@ -15,11 +15,11 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
-func Parse(r io.Reader) (*ical.Calender, error) {
+func Parse(r io.Reader) (*ical.Calendar, error) {
 	return parseFromScanner(bufio.NewScanner(r))
 }
 
-func ParseFile(path string) (*ical.Calender, error) {
+func ParseFile(path string) (*ical.Calendar, error) {
 	f, err := os.Open(path)
 	if err != nil {
 		return nil, err
@@ -28,7 +28,7 @@ func ParseFile(path string) (*ical.Calender, error) {
 	return parseFromScanner(scanner)
 }
 
-func parseFromScanner(scanner *bufio.Scanner) (*ical.Calender, error) {
+func parseFromScanner(scanner *bufio.Scanner) (*ical.Calendar, error) {
 	lines, err := scanLines(scanner)
 	if err != nil {
 		return nil, err
@@ -98,7 +98,7 @@ func (p *Parser) nextLine() {
 	p.CurrentIndex++
 }
 
-func (p *Parser) Parse() (*ical.Calender, error) {
+func (p *Parser) Parse() (*ical.Calendar, error) {
 	c, err := p.parse()
 	if err != nil {
 		return nil, err
@@ -106,7 +106,7 @@ func (p *Parser) Parse() (*ical.Calender, error) {
 	return c, nil
 }
 
-func (p *Parser) parse() (*ical.Calender, error) {
+func (p *Parser) parse() (*ical.Calendar, error) {
 	l := p.getCurrentLine()
 	switch pname := property.Name(l.Name); pname {
 	case property.NameBegin:

@@ -9,15 +9,15 @@ import (
 	"github.com/knsh14/ical/types"
 )
 
-func NewCalender() *Calender {
-	return &Calender{Version: property.NewVersion()}
+func NewCalendar() *Calendar {
+	return &Calendar{Version: property.NewVersion()}
 }
 
-// Calender is root object of ical
+// Calendar is root object of ical
 // https://tools.ietf.org/html/rfc5545#section-3.4
 // https://tools.ietf.org/html/rfc5545#section-3.5
 // https://tools.ietf.org/html/rfc5545#section-3.6
-type Calender struct {
+type Calendar struct {
 	// required field
 	ProdID  *property.ProdID
 	Version *property.Version
@@ -32,7 +32,7 @@ type Calender struct {
 	Components []CalenderComponent
 }
 
-func (c *Calender) SetCalScale(params parameter.Container, value types.Text) error {
+func (c *Calendar) SetCalScale(params parameter.Container, value types.Text) error {
 	if c.CalScale != nil {
 		return c.CalScale.SetCalScale(params, value)
 	}
@@ -44,7 +44,7 @@ func (c *Calender) SetCalScale(params parameter.Container, value types.Text) err
 	return nil
 }
 
-func (c *Calender) SetMethod(params parameter.Container, value types.Text) error {
+func (c *Calendar) SetMethod(params parameter.Container, value types.Text) error {
 	if c.Method != nil {
 		return c.Method.SetMethod(params, value)
 	}
@@ -56,7 +56,7 @@ func (c *Calender) SetMethod(params parameter.Container, value types.Text) error
 	return nil
 }
 
-func (c *Calender) SetProdID(params parameter.Container, value types.Text) error {
+func (c *Calendar) SetProdID(params parameter.Container, value types.Text) error {
 	if c.ProdID != nil {
 		return c.ProdID.SetProdID(params, value)
 	}
@@ -68,7 +68,7 @@ func (c *Calender) SetProdID(params parameter.Container, value types.Text) error
 	return nil
 }
 
-func (c *Calender) SetVersion(params parameter.Container, value types.Text) error {
+func (c *Calendar) SetVersion(params parameter.Container, value types.Text) error {
 	if c.Version != nil {
 		return c.Version.SetVersion(params, value)
 	}
@@ -80,7 +80,7 @@ func (c *Calender) SetVersion(params parameter.Container, value types.Text) erro
 	return nil
 }
 
-func (c *Calender) Validate() error {
+func (c *Calendar) Validate() error {
 	if c.ProdID == nil {
 		return NewValidationError(component.TypeCalendar, property.NameProdID, "must not to be nil")
 	}
