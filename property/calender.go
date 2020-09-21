@@ -101,6 +101,9 @@ func (v *Version) SetVersion(params parameter.Container, value types.Text) error
 		return fmt.Errorf("not required format, allow X.Y or W.X;Y.Z")
 	}
 	versions := strings.SplitN(string(value), ";", 2)
+	if len(versions) != 2 {
+		return fmt.Errorf("versions must be 2, but %d", len(versions))
+	}
 	return v.UpdateVersion(params, types.NewText(versions[0]), types.NewText(versions[1]))
 }
 

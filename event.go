@@ -2,6 +2,7 @@ package ical
 
 import (
 	"fmt"
+	"io"
 
 	"github.com/knsh14/ical/component"
 	"github.com/knsh14/ical/parameter"
@@ -64,9 +65,29 @@ type Event struct {
 
 func (e *Event) implementCalender() {}
 
+func (e *Event) Decode(w io.Writer) error {
+	fmt.Fprintf(w, "%s:%s", property.NameBegin, component.TypeEvent)
+	fmt.Fprintf(w, "%s:%s", property.NameEnd, component.TypeEvent)
+	return nil
+}
+
 func (e *Event) Validate() error {
+	if e.UID == nil {
+		return NewValidationError(component.TypeEvent, property.NameUID, "must not to be nil")
+	}
+	if e.UID.Value == "" {
+		return NewValidationError(component.TypeEvent, property.NameUID, "must not to be empty")
+	}
+	if e.DateTimeStamp == nil {
+		return NewValidationError(component.TypeEvent, property.NameDateTimeStamp, "must not to be nil")
+	}
 	if e.DateTimeEnd != nil && e.Duration != nil {
-		return fmt.Errorf("DateTimeEnd and Duraion are not nil")
+		return NewValidationError(component.TypeEvent, property.NameDateTimeEnd, "one of DateTimeEnd or Duration must not be nil")
+	}
+	for _, alarm := range e.Alarms {
+		if err := alarm.Validate(); err != nil {
+			return fmt.Errorf("%w", err)
+		}
 	}
 	return nil
 }
@@ -297,7 +318,6 @@ func (e *Event) SetRecurrenceRule(params parameter.Container, value types.Recurr
 	}
 	e.RecurrenceRule = rr
 	return nil
-
 }
 
 func (e *Event) SetDateTimeEnd(params parameter.Container, value types.TimeValue) error {

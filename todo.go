@@ -2,6 +2,7 @@ package ical
 
 import (
 	"fmt"
+	"io"
 
 	"github.com/knsh14/ical/component"
 	"github.com/knsh14/ical/parameter"
@@ -64,9 +65,29 @@ type ToDo struct {
 
 func (todo *ToDo) implementCalender() {}
 
+func (todo *ToDo) Decode(w io.Writer) error {
+	fmt.Fprintf(w, "%s:%s", property.NameBegin, component.TypeTODO)
+	fmt.Fprintf(w, "%s:%s", property.NameEnd, component.TypeTODO)
+	return nil
+}
+
 func (todo *ToDo) Validate() error {
+	if todo.UID == nil {
+		return NewValidationError(component.TypeTODO, property.NameUID, "must not to be nil")
+	}
+	if todo.UID.Value == "" {
+		return NewValidationError(component.TypeTODO, property.NameUID, "must not to be empty")
+	}
+	if todo.DateTimeStamp == nil {
+		return NewValidationError(component.TypeTODO, property.NameDateTimeStamp, "must not to be nil")
+	}
 	if todo.DateTimeDue != nil && todo.Duration != nil {
 		return fmt.Errorf("DateTimeEnd and Duraion are not nil")
+	}
+	for _, alarm := range todo.Alarms {
+		if err := alarm.Validate(); err != nil {
+			return fmt.Errorf("%w", err)
+		}
 	}
 	return nil
 }
@@ -118,6 +139,7 @@ func (todo *ToDo) SetClass(params parameter.Container, value types.Text) error {
 	todo.Class = c
 	return nil
 }
+
 func (todo *ToDo) SetDateTimeCompleted(params parameter.Container, value types.DateTime) error {
 	if todo.DateTimeCompleted != nil {
 		return todo.DateTimeCompleted.SetCompleted(params, value)
@@ -308,7 +330,6 @@ func (todo *ToDo) SetRecurrenceRule(params parameter.Container, value types.Recu
 	}
 	todo.RecurrenceRule = rr
 	return nil
-
 }
 
 func (todo *ToDo) SetDateTimeDue(params parameter.Container, value types.TimeValue) error {

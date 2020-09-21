@@ -1,6 +1,10 @@
 package ical
 
 import (
+	"fmt"
+	"io"
+
+	"github.com/knsh14/ical/component"
 	"github.com/knsh14/ical/parameter"
 	"github.com/knsh14/ical/property"
 	"github.com/knsh14/ical/types"
@@ -9,6 +13,7 @@ import (
 // Alarm is VALARM
 // https://tools.ietf.org/html/rfc5545#section-3.6.6
 type Alarm interface {
+	CalendarNode
 	implementAlarm()
 }
 
@@ -35,6 +40,22 @@ type AlarmAudio struct {
 
 func (aa *AlarmAudio) implementAlarm() {}
 
+func (aa *AlarmAudio) Decode(w io.Writer) error {
+	fmt.Fprintf(w, "%s:%s", property.NameBegin, component.TypeAlarm)
+	fmt.Fprintf(w, "%s:%s", property.NameEnd, component.TypeAlarm)
+	return nil
+}
+
+func (aa *AlarmAudio) Validate() error {
+	if aa.Action == nil {
+		return NewValidationError(component.TypeAlarm, property.NameAction, "max must not to be nil")
+	}
+	if aa.Trigger == nil {
+		return NewValidationError(component.TypeAlarm, property.NameTrigger, "max must not to be nil")
+	}
+	return nil
+}
+
 func (aa *AlarmAudio) SetAction(params parameter.Container, value types.Text) error {
 	if aa.Action != nil {
 		return aa.Action.SetAction(params, value)
@@ -48,6 +69,7 @@ func (aa *AlarmAudio) SetAction(params parameter.Container, value types.Text) er
 	aa.Action = a
 	return nil
 }
+
 func (aa *AlarmAudio) SetTrigger(params parameter.Container, value types.TriggerValue) error {
 	if aa.Trigger != nil {
 		return aa.Trigger.SetTrigger(params, value)
@@ -59,6 +81,7 @@ func (aa *AlarmAudio) SetTrigger(params parameter.Container, value types.Trigger
 	aa.Trigger = t
 	return nil
 }
+
 func (aa *AlarmAudio) SetDuration(params parameter.Container, value types.Duration) error {
 	if aa.Duration != nil {
 		return aa.Duration.SetDuration(params, value)
@@ -70,6 +93,7 @@ func (aa *AlarmAudio) SetDuration(params parameter.Container, value types.Durati
 	aa.Duration = d
 	return nil
 }
+
 func (aa *AlarmAudio) SetRepeatCount(params parameter.Container, value types.Integer) error {
 	if aa.RepeatCount != nil {
 		return aa.RepeatCount.SetRepeatCount(params, value)
@@ -81,6 +105,7 @@ func (aa *AlarmAudio) SetRepeatCount(params parameter.Container, value types.Int
 	aa.RepeatCount = rc
 	return nil
 }
+
 func (aa *AlarmAudio) SetAttachment(params parameter.Container, value types.AttachmentValue) error {
 	if aa.Attachment != nil {
 		return aa.Attachment.SetAttachment(params, value)
@@ -107,6 +132,26 @@ type AlarmDisplay struct {
 }
 
 func (ad *AlarmDisplay) implementAlarm() {}
+
+func (ad *AlarmDisplay) Decode(w io.Writer) error {
+	fmt.Fprintf(w, "%s:%s", property.NameBegin, component.TypeAlarm)
+	fmt.Fprintf(w, "%s:%s", property.NameEnd, component.TypeAlarm)
+	return nil
+}
+
+func (ad *AlarmDisplay) Validate() error {
+	if ad.Action == nil {
+		return NewValidationError(component.TypeAlarm, property.NameAction, "max must not to be nil")
+	}
+	if ad.Trigger == nil {
+		return NewValidationError(component.TypeAlarm, property.NameTrigger, "max must not to be nil")
+	}
+	if ad.Description == nil {
+		return NewValidationError(component.TypeAlarm, property.NameDescription, "max must not to be nil")
+	}
+	return nil
+}
+
 func (ad *AlarmDisplay) SetAction(params parameter.Container, value types.Text) error {
 	if ad.Action != nil {
 		return ad.Action.SetAction(params, value)
@@ -120,6 +165,7 @@ func (ad *AlarmDisplay) SetAction(params parameter.Container, value types.Text) 
 	ad.Action = a
 	return nil
 }
+
 func (ad *AlarmDisplay) SetDescription(params parameter.Container, value types.Text) error {
 	if ad.Description != nil {
 		return ad.Description.SetDescription(params, value)
@@ -131,6 +177,7 @@ func (ad *AlarmDisplay) SetDescription(params parameter.Container, value types.T
 	ad.Description = d
 	return nil
 }
+
 func (ad *AlarmDisplay) SetTrigger(params parameter.Container, value types.TriggerValue) error {
 	if ad.Trigger != nil {
 		return ad.Trigger.SetTrigger(params, value)
@@ -142,6 +189,7 @@ func (ad *AlarmDisplay) SetTrigger(params parameter.Container, value types.Trigg
 	ad.Trigger = t
 	return nil
 }
+
 func (ad *AlarmDisplay) SetDuration(params parameter.Container, value types.Duration) error {
 	if ad.Duration != nil {
 		return ad.Duration.SetDuration(params, value)
@@ -153,6 +201,7 @@ func (ad *AlarmDisplay) SetDuration(params parameter.Container, value types.Dura
 	ad.Duration = d
 	return nil
 }
+
 func (ad *AlarmDisplay) SetRepeatCount(params parameter.Container, value types.Integer) error {
 	if ad.RepeatCount != nil {
 		return ad.RepeatCount.SetRepeatCount(params, value)
@@ -182,6 +231,31 @@ type AlarmEmail struct {
 }
 
 func (ae *AlarmEmail) implementAlarm() {}
+func (ae *AlarmEmail) Decode(w io.Writer) error {
+	fmt.Fprintf(w, "%s:%s", property.NameBegin, component.TypeAlarm)
+	fmt.Fprintf(w, "%s:%s", property.NameEnd, component.TypeAlarm)
+	return nil
+}
+
+func (ae *AlarmEmail) Validate() error {
+	if ae.Action == nil {
+		return NewValidationError(component.TypeAlarm, property.NameAction, "max must not to be nil")
+	}
+	if ae.Description == nil {
+		return NewValidationError(component.TypeAlarm, property.NameDescription, "max must not to be nil")
+	}
+	if ae.Trigger == nil {
+		return NewValidationError(component.TypeAlarm, property.NameTrigger, "max must not to be nil")
+	}
+	if ae.Summary == nil {
+		return NewValidationError(component.TypeAlarm, property.NameSummary, "max must not to be nil")
+	}
+	if len(ae.Attendees) == 0 {
+		return NewValidationError(component.TypeAlarm, property.NameAttendee, "max must not to be nil")
+	}
+	return nil
+}
+
 func (ae *AlarmEmail) SetAction(params parameter.Container, value types.Text) error {
 	if ae.Action != nil {
 		return ae.Action.SetAction(params, value)
@@ -195,6 +269,7 @@ func (ae *AlarmEmail) SetAction(params parameter.Container, value types.Text) er
 	ae.Action = a
 	return nil
 }
+
 func (ae *AlarmEmail) SetDescription(params parameter.Container, value types.Text) error {
 	if ae.Description != nil {
 		return ae.Description.SetDescription(params, value)
@@ -206,6 +281,7 @@ func (ae *AlarmEmail) SetDescription(params parameter.Container, value types.Tex
 	ae.Description = d
 	return nil
 }
+
 func (ae *AlarmEmail) SetTrigger(params parameter.Container, value types.TriggerValue) error {
 	if ae.Trigger != nil {
 		return ae.Trigger.SetTrigger(params, value)
@@ -217,6 +293,7 @@ func (ae *AlarmEmail) SetTrigger(params parameter.Container, value types.Trigger
 	ae.Trigger = t
 	return nil
 }
+
 func (ae *AlarmEmail) SetSummary(params parameter.Container, value types.Text) error {
 	if ae.Summary != nil {
 		return ae.Summary.SetSummary(params, value)
@@ -228,6 +305,7 @@ func (ae *AlarmEmail) SetSummary(params parameter.Container, value types.Text) e
 	ae.Summary = s
 	return nil
 }
+
 func (ae *AlarmEmail) AddAttendee(params parameter.Container, value types.CalenderUserAddress) error {
 	a := &property.Attendee{}
 	if err := a.SetAttendee(params, value); err != nil {
@@ -236,6 +314,7 @@ func (ae *AlarmEmail) AddAttendee(params parameter.Container, value types.Calend
 	ae.Attendees = append(ae.Attendees, a)
 	return nil
 }
+
 func (ae *AlarmEmail) SetDuration(params parameter.Container, value types.Duration) error {
 	if ae.Duration != nil {
 		return ae.Duration.SetDuration(params, value)
@@ -247,6 +326,7 @@ func (ae *AlarmEmail) SetDuration(params parameter.Container, value types.Durati
 	ae.Duration = d
 	return nil
 }
+
 func (ae *AlarmEmail) SetRepeatCount(params parameter.Container, value types.Integer) error {
 	if ae.RepeatCount != nil {
 		return ae.RepeatCount.SetRepeatCount(params, value)
@@ -258,6 +338,7 @@ func (ae *AlarmEmail) SetRepeatCount(params parameter.Container, value types.Int
 	ae.RepeatCount = rc
 	return nil
 }
+
 func (ae *AlarmEmail) AddAttachment(params parameter.Container, value types.AttachmentValue) error {
 	a := &property.Attachment{}
 	if err := a.SetAttachment(params, value); err != nil {

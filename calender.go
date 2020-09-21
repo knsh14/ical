@@ -1,6 +1,9 @@
 package ical
 
 import (
+	"fmt"
+
+	"github.com/knsh14/ical/component"
 	"github.com/knsh14/ical/parameter"
 	"github.com/knsh14/ical/property"
 	"github.com/knsh14/ical/types"
@@ -78,5 +81,22 @@ func (c *Calender) SetVersion(params parameter.Container, value types.Text) erro
 }
 
 func (c *Calender) Validate() error {
+	if c.ProdID == nil {
+		return NewValidationError(component.TypeCalendar, property.NameProdID, "must not to be nil")
+	}
+	if c.ProdID.Value == "" {
+		return NewValidationError(component.TypeCalendar, property.NameProdID, "must not to be empty")
+	}
+	if c.Version == nil {
+		return NewValidationError(component.TypeCalendar, property.NameVersion, "must not to be nil")
+	}
+	if c.Version.Max == "" {
+		return NewValidationError(component.TypeCalendar, property.NameVersion, "max must not to be empty")
+	}
+	for _, component := range c.Components {
+		if err := component.Validate(); err != nil {
+			return fmt.Errorf("%w", err)
+		}
+	}
 	return nil
 }
