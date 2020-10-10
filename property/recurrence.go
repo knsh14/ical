@@ -2,6 +2,8 @@ package property
 
 import (
 	"fmt"
+	"io"
+	"strings"
 
 	"github.com/knsh14/ical/parameter"
 	"github.com/knsh14/ical/types"
@@ -15,6 +17,22 @@ import (
 type ExceptionDateTimes struct {
 	Parameter parameter.Container
 	Values    []types.TimeValue // default is DateTime
+}
+
+func (edt *ExceptionDateTimes) Decoce(w io.Writer) error {
+	var s []string
+	for _, v := range edt.Values {
+		s = append(s, v.String())
+	}
+	if _, err := fmt.Fprintf(w, "%s%s:%s", NameExceptionDateTimes, edt.Parameter.String(), strings.Join(s, ",")); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (edt *ExceptionDateTimes) Validate() error {
+	// TODO
+	return nil
 }
 
 func (edt *ExceptionDateTimes) SetExceptionDateTimes(params parameter.Container, values []types.TimeValue) error {
@@ -41,13 +59,6 @@ func (edt *ExceptionDateTimes) SetExceptionDateTimes(params parameter.Container,
 	edt.Parameter = params
 	edt.Values = values
 	return nil
-}
-
-// RecurrenceDateTimes is RDATE
-// https://tools.ietf.org/html/rfc5545#section-3.8.5.2
-type RecurrenceDateTimes struct {
-	Parameter parameter.Container
-	Values    []types.RecurrenceDateTimeValue // default is DateTime, Date or Period are fine.
 }
 
 func NewRecurrenceDateTime(params parameter.Container, s string) (types.RecurrenceDateTimeValue, error) {
@@ -94,6 +105,25 @@ func NewRecurrenceDateTime(params parameter.Container, s string) (types.Recurren
 	}
 }
 
+// RecurrenceDateTimes is RDATE
+// https://tools.ietf.org/html/rfc5545#section-3.8.5.2
+type RecurrenceDateTimes struct {
+	Parameter parameter.Container
+	Values    []types.RecurrenceDateTimeValue // default is DateTime, Date or Period are fine.
+}
+
+func (rdt *RecurrenceDateTimes) Decoce(w io.Writer) error {
+	if _, err := fmt.Fprintf(w, "%s%s:%s", NameRecurrenceDateTimes, rdt.Parameter.String(), rdt.Value); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (rdt *RecurrenceDateTimes) Validate() error {
+	// TODO
+	return nil
+}
+
 func (rdt *RecurrenceDateTimes) SetRecurrenceDateTimes(params parameter.Container, values []types.RecurrenceDateTimeValue) error {
 	rdt.Parameter = params
 	rdt.Values = values
@@ -105,6 +135,18 @@ func (rdt *RecurrenceDateTimes) SetRecurrenceDateTimes(params parameter.Containe
 type RecurrenceRule struct {
 	Parameter parameter.Container
 	Value     types.RecurrenceRule
+}
+
+func (rr *RecurrenceRule) Decoce(w io.Writer) error {
+	if _, err := fmt.Fprintf(w, "%s%s:%s", NameRecurrenceRule, rr.Parameter.String(), rr.Value); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (rr *RecurrenceRule) Validate() error {
+	// TODO
+	return nil
 }
 
 func (rrule *RecurrenceRule) SetRecurrenceRule(params parameter.Container, value types.RecurrenceRule) error {

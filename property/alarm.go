@@ -2,6 +2,7 @@ package property
 
 import (
 	"fmt"
+	"io"
 
 	"github.com/knsh14/ical/parameter"
 	"github.com/knsh14/ical/token"
@@ -34,6 +35,19 @@ func (a *Action) SetAction(params parameter.Container, value types.Text) error {
 	}
 }
 
+func (a *Action) Decode(w io.Writer) error {
+	fmt.Fprintf(w, "%s%s:%s", NameAction, a.Parameter.String(), a.Value)
+	return nil
+}
+
+func (a *Action) Validate() error {
+	switch ActionType(a.Value) {
+	case ActionTypeAudio, ActionTypeDisplay, ActionTypeEMail:
+		return nil
+	}
+	return fmt.Errorf("Invalid Action %s", a.Value)
+}
+
 // RepeatCount is REPEAT
 // https://tools.ietf.org/html/rfc5545#section-3.8.6.2
 type RepeatCount struct {
@@ -47,6 +61,18 @@ func (rc *RepeatCount) SetRepeatCount(params parameter.Container, value types.In
 	}
 	rc.Parameter = params
 	rc.Value = value
+	return nil
+}
+
+func (rc *RepeatCount) Decode(w io.Writer) error {
+	fmt.Fprintf(w, "%s%s:%d", NameRepeatCount, rc.Parameter.String(), rc.Value)
+	return nil
+}
+
+func (rc *RepeatCount) Validate() error {
+	if rc.Value < 0 {
+		return fmt.Errorf("value must be > 0")
+	}
 	return nil
 }
 
@@ -129,4 +155,14 @@ func (t *Trigger) SetTrigger(params parameter.Container, value types.TriggerValu
 	default:
 		return fmt.Errorf("invalid value type %s, must be DURATION or DATE-TIME", valueType.Value)
 	}
+}
+
+func (t *Trigger) Decode(w io.Writer) error {
+	fmt.Fprintf(w, "%s%s:%d", NameTrigger, t.Parameter.String(), t.Value)
+	return nil
+}
+
+func (t *Trigger) Validate() error {
+	// TODO: implement
+	return nil
 }

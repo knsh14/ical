@@ -2,6 +2,7 @@ package property
 
 import (
 	"fmt"
+	"io"
 	"regexp"
 	"strings"
 
@@ -32,6 +33,21 @@ func (cs *CalScale) SetCalScale(params parameter.Container, value types.Text) er
 	return nil
 }
 
+func (cs *CalScale) Decode(w io.Writer) error {
+	if err := cs.Validate(); err != nil {
+		return err
+	}
+	fmt.Fprintf(w, "%s%s:%s", NameCalScale, cs.Parameter.String(), cs.Value)
+	return nil
+}
+
+func (cs *CalScale) Validate() error {
+	if cs.Value != types.Text("GREGORIAN") {
+		return fmt.Errorf("allow only \"GREGORIAN\", but %s", cs.Value)
+	}
+	return nil
+}
+
 // Method is Method
 // https://tools.ietf.org/html/rfc5545#section-3.7.2
 type Method struct {
@@ -51,6 +67,20 @@ func (m *Method) SetMethod(params parameter.Container, value types.Text) error {
 	return fmt.Errorf("Invalid Method Value %s, allow only registerd IANA tokens", value)
 }
 
+func (m *Method) Decode(w io.Writer) error {
+	fmt.Fprintf(w, "%s%s:%s", NameMethod, m.Parameter.String(), m.Value)
+	return nil
+}
+func (m *Method) Validate() error {
+	if m.Value == "" {
+		return ErrInputIsEmpty
+	}
+	if !isMethod(string(m.Value)) {
+		return fmt.Errorf("Invalid Method Value %s, allow only registerd IANA tokens", m.Value)
+	}
+	return nil
+}
+
 // ProdID is PRODID
 // https://tools.ietf.org/html/rfc5545#section-3.7.3
 type ProdID struct {
@@ -67,6 +97,18 @@ func (p *ProdID) SetProdID(params parameter.Container, value types.Text) error {
 	return nil
 }
 
+func (p *ProdID) Decode(w io.Writer) error {
+	fmt.Fprintf(w, "%s%s:%s", NameProdID, p.Parameter.String(), p.Value)
+	return nil
+}
+
+func (p *ProdID) Validate() error {
+	if p.Value == "" {
+		return ErrInputIsEmpty
+	}
+	return nil
+}
+
 func NewVersion() *Version {
 	return &Version{
 		Max: types.Text("2.0"),
@@ -78,6 +120,20 @@ func NewVersion() *Version {
 type Version struct {
 	Parameter parameter.Container
 	Min, Max  types.Text
+}
+
+func (v *Version) Decode(w io.Writer) error {
+	s := v.Max
+	if v.Min == "" {
+		s = v.Min + ";" + s
+	}
+	fmt.Fprintf(w, "%s%s:%s", NameVersion, v.Parameter.String(), s)
+	return nil
+}
+
+func (v *Version) Validate() error {
+	// TODO
+	return nil
 }
 
 func (v *Version) SetVersion(params parameter.Container, value types.Text) error {

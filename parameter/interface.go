@@ -2,6 +2,10 @@ package parameter
 
 type Container map[TypeName][]Base
 
+func (c Container) String() string {
+	return ""
+}
+
 type Base interface {
 	implementParameter()
 }

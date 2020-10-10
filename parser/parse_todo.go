@@ -118,7 +118,7 @@ func (p *Parser) parseTodo() (*ical.ToDo, error) {
 			if err := todo.SetLastModified(params, v); err != nil {
 				return nil, NewParseError(component.TypeTODO, pname, err)
 			}
-		case property.NameLocaiton:
+		case property.NameLocation:
 			if len(l.Values) > 1 {
 				return nil, NewInvalidValueLengthError(1, len(l.Values))
 			}

@@ -115,7 +115,7 @@ func (p *Parser) parseEvent() (*ical.Event, error) {
 			if err := event.SetLastModified(params, v); err != nil {
 				return nil, NewParseError(component.TypeEvent, pname, err)
 			}
-		case property.NameLocaiton:
+		case property.NameLocation:
 			if len(l.Values) > 1 {
 				return nil, NewInvalidValueLengthError(1, len(l.Values))
 			}

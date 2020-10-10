@@ -2,6 +2,7 @@ package property
 
 import (
 	"fmt"
+	"io"
 
 	"github.com/knsh14/ical/parameter"
 	"github.com/knsh14/ical/types"
@@ -16,8 +17,19 @@ type Attendee struct {
 	Value     types.CalenderUserAddress
 }
 
-func (a *Attendee) SetAttendee(params parameter.Container, value types.CalenderUserAddress) error {
+func (a *Attendee) Decoce(w io.Writer) error {
+	if _, err := fmt.Fprintf(w, "%s%s:%s", NameAttendee, a.Parameter.String(), a.Value); err != nil {
+		return err
+	}
+	return nil
+}
 
+func (a *Attendee) Validate() error {
+	// TODO
+	return nil
+}
+
+func (a *Attendee) SetAttendee(params parameter.Container, value types.CalenderUserAddress) error {
 	for _, pname := range []parameter.TypeName{parameter.TypeNameCalenderUserType, parameter.TypeNameMembership, parameter.TypeNameParticipationRole, parameter.TypeNameParticipationStatus, parameter.TypeNameRSVP, parameter.TypeNameDelegatee, parameter.TypeNameDelegatee, parameter.TypeNameSentBy, parameter.TypeNameCommonName, parameter.TypeNameDirectoryEntry, parameter.TypeNameLanguage} {
 		if len(params[pname]) > 1 {
 			return fmt.Errorf("too much values for parameter %s", pname)
@@ -33,6 +45,18 @@ func (a *Attendee) SetAttendee(params parameter.Container, value types.CalenderU
 type Contact struct {
 	Parameter parameter.Container
 	Value     types.Text
+}
+
+func (c *Contact) Decoce(w io.Writer) error {
+	if _, err := fmt.Fprintf(w, "%s%s:%s", NameContact, c.Parameter.String(), c.Value); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (c *Contact) Validate() error {
+	// TODO
+	return nil
 }
 
 func (c *Contact) SetContact(params parameter.Container, value types.Text) error {
@@ -52,6 +76,18 @@ func (c *Contact) SetContact(params parameter.Container, value types.Text) error
 type Organizer struct {
 	Parameter parameter.Container
 	Value     types.CalenderUserAddress
+}
+
+func (o *Organizer) Decoce(w io.Writer) error {
+	if _, err := fmt.Fprintf(w, "%s%s:%s", NameOrganizer, o.Parameter.String(), o.Value); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (o *Organizer) Validate() error {
+	// TODO
+	return nil
 }
 
 func (o *Organizer) SetOrganizer(params parameter.Container, value types.CalenderUserAddress) error {
@@ -80,6 +116,18 @@ type RecurrenceID struct {
 	Value     types.TimeValue
 }
 
+func (rid *RecurrenceID) Decoce(w io.Writer) error {
+	if _, err := fmt.Fprintf(w, "%s%s:%s", NameRecurrenceID, rid.Parameter.String(), rid.Value); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (rid *RecurrenceID) Validate() error {
+	// TODO
+	return nil
+}
+
 func (rid RecurrenceID) SetRecurrenceID(params parameter.Container, value types.TimeValue) error {
 	if len(params[parameter.TypeNameReferenceTimezone]) > 1 {
 		return fmt.Errorf("too much values for parameter %s", parameter.TypeNameReferenceTimezone)
@@ -99,6 +147,18 @@ type RelatedTo struct {
 	Value     types.Text
 }
 
+func (rt *RelatedTo) Decoce(w io.Writer) error {
+	if _, err := fmt.Fprintf(w, "%s%s:%s", NameRelatedTo, rt.Parameter.String(), rt.Value); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (rt *RelatedTo) Validate() error {
+	// TODO
+	return nil
+}
+
 func (rt *RelatedTo) SetRelatedTo(params parameter.Container, value types.Text) error {
 	if len(params[parameter.TypeNameRelationshipType]) > 1 {
 		return fmt.Errorf("too much values for parameter %s", parameter.TypeNameLanguage)
@@ -116,6 +176,17 @@ type URL struct {
 	Value     types.URI
 }
 
+func (u *URL) Decoce(w io.Writer) error {
+	if _, err := fmt.Fprintf(w, "%s%s:%s", NameURL, u.Parameter.String(), u.Value); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (u *URL) Validate() error {
+	// TODO
+	return nil
+}
 func (url *URL) SetURL(params parameter.Container, value types.URI) error {
 	url.Parameter = params
 	url.Value = value
@@ -127,6 +198,18 @@ func (url *URL) SetURL(params parameter.Container, value types.URI) error {
 type UID struct {
 	Parameter parameter.Container
 	Value     types.Text
+}
+
+func (u *UID) Decoce(w io.Writer) error {
+	if _, err := fmt.Fprintf(w, "%s%s:%s", NameUID, u.Parameter.String(), u.Value); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (u *UID) Validate() error {
+	// TODO
+	return nil
 }
 
 func (uid *UID) SetUID(params parameter.Container, value types.Text) error {

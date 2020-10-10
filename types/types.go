@@ -19,6 +19,9 @@ type Binary struct {
 }
 
 func (b Binary) attachmentValue() {}
+func (b Binary) String() string {
+	return b.Value
+}
 
 func NewBinary(v string) (Binary, error) {
 	if _, err := base64.StdEncoding.DecodeString(v); err != nil {
@@ -29,6 +32,13 @@ func NewBinary(v string) (Binary, error) {
 
 // Boolean is defined in https://tools.ietf.org/html/rfc5545#section-3.3.2
 type Boolean bool
+
+func (b Boolean) String() string {
+	if b {
+		return "TRUE"
+	}
+	return "FALSE"
+}
 
 func NewBoolean(v string) (Boolean, error) {
 	if strings.ToUpper(v) == "TRUE" {
@@ -191,6 +201,10 @@ type Period struct {
 }
 
 func (p Period) recurrenceDateTimeValue() {}
+func (p Period) String() string {
+	// TODO implement
+	return ""
+}
 
 func NewPeriod(v string) (Period, error) {
 	l := strings.Split(v, "/")

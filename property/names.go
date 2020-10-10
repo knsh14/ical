@@ -23,7 +23,7 @@ const (
 	NameComment         Name = "COMMENT"
 	NameDescription     Name = "DESCRIPTION"
 	NameGeo             Name = "GEO"
-	NameLocaiton        Name = "LOCATION"
+	NameLocation        Name = "LOCATION"
 	NamePercentComplete Name = "PERCENT-COMPLETE"
 	NamePriority        Name = "PRIORITY"
 	NameResources       Name = "RESOURCES"

@@ -2,6 +2,7 @@ package property
 
 import (
 	"fmt"
+	"io"
 	"time"
 
 	"github.com/knsh14/ical/parameter"
@@ -16,6 +17,16 @@ import (
 type DateTimeCreated struct {
 	Parameter parameter.Container
 	Value     types.DateTime
+}
+
+func (dc *DateTimeCreated) Decode(w io.Writer) error {
+	fmt.Fprintf(w, "%s%s:%s", NameDateTimeCreated, dc.Parameter.String(), dc.Value)
+	return nil
+}
+
+func (dc *DateTimeCreated) Validate() error {
+	// TODO
+	return nil
 }
 
 func (dc *DateTimeCreated) SetDateTimeCreated(params parameter.Container, value types.DateTime) error {
@@ -34,6 +45,16 @@ type DateTimeStamp struct {
 	Value     types.DateTime
 }
 
+func (ds *DateTimeStamp) Decode(w io.Writer) error {
+	fmt.Fprintf(w, "%s%s:%s", NameDateTimeStamp, ds.Parameter.String(), ds.Value)
+	return nil
+}
+
+func (ds *DateTimeStamp) Validate() error {
+	// TODO
+	return nil
+}
+
 func (ds *DateTimeStamp) SetDateTimeStamp(params parameter.Container, value types.DateTime) error {
 	if value == types.DateTime(time.Time{}) {
 		return fmt.Errorf("input is nil")
@@ -50,6 +71,15 @@ type LastModified struct {
 	Value     types.DateTime
 }
 
+func (lm *LastModified) Decode(w io.Writer) error {
+	fmt.Fprintf(w, "%s%s:%s", NameLastModified, lm.Parameter.String(), lm.Value)
+	return nil
+}
+
+func (lm *LastModified) Validate() error {
+	panic("implement me")
+}
+
 func (lm *LastModified) SetLastModified(params parameter.Container, value types.DateTime) error {
 	if value == types.DateTime(time.Time{}) {
 		return fmt.Errorf("input is nil")
@@ -64,6 +94,14 @@ func (lm *LastModified) SetLastModified(params parameter.Container, value types.
 type SequenceNumber struct {
 	Parameter parameter.Container
 	Value     types.Integer // default is 0
+}
+
+func (sn *SequenceNumber) Decode(w io.Writer) error {
+	fmt.Fprintf(w, "%s%s:%s", NameLastModified, lm.Parameter.String(), lm.Value)
+	return nil
+}
+
+func (sn *SequenceNumber) Validate() error {
 }
 
 func (sn *SequenceNumber) SetSequenceNumber(params parameter.Container, value types.Integer) error {

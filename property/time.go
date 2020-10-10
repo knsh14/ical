@@ -2,6 +2,8 @@ package property
 
 import (
 	"fmt"
+	"io"
+	"strings"
 	"time"
 
 	"github.com/knsh14/ical/parameter"
@@ -15,6 +17,18 @@ import (
 type DateTimeCompleted struct {
 	Parameter parameter.Container
 	Value     types.DateTime
+}
+
+func (dtc *DateTimeCompleted) Decoce(w io.Writer) error {
+	if _, err := fmt.Fprintf(w, "%s%s:%s", NameDateTimeCompleted, dtc.Parameter.String(), dtc.Value); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (dtc *DateTimeCompleted) Validate() error {
+	// TODO
+	return nil
 }
 
 func (dtc *DateTimeCompleted) SetCompleted(params parameter.Container, value types.DateTime) error {
@@ -36,6 +50,18 @@ type DateTimeEnd struct {
 	Value     types.TimeValue // DateTime or Date
 }
 
+func (dte *DateTimeEnd) Decoce(w io.Writer) error {
+	if _, err := fmt.Fprintf(w, "%s%s:%s", NameDateTimeEnd, dte.Parameter.String(), dte.Value); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (dte *DateTimeEnd) Validate() error {
+	// TODO
+	return nil
+}
+
 func (dte *DateTimeEnd) SetEnd(params parameter.Container, value types.TimeValue) error {
 	dte.Parameter = params
 	dte.Value = value
@@ -47,6 +73,18 @@ func (dte *DateTimeEnd) SetEnd(params parameter.Container, value types.TimeValue
 type DateTimeDue struct {
 	Parameter parameter.Container
 	Value     types.TimeValue // DateTime or Date
+}
+
+func (dtd *DateTimeDue) Decoce(w io.Writer) error {
+	if _, err := fmt.Fprintf(w, "%s%s:%s", NameDateTimeDue, dtd.Parameter.String(), dtd.Value); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (dtd *DateTimeDue) Validate() error {
+	// TODO
+	return nil
 }
 
 func (dtd *DateTimeDue) SetDue(params parameter.Container, value types.TimeValue) error {
@@ -62,6 +100,18 @@ type DateTimeStart struct {
 	Value     types.TimeValue // DateTime or Date
 }
 
+func (dts *DateTimeStart) Decoce(w io.Writer) error {
+	if _, err := fmt.Fprintf(w, "%s%s:%s", NameDateTimeStart, dts.Parameter.String(), dts.Value); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (dts *DateTimeStart) Validate() error {
+	// TODO
+	return nil
+}
+
 func (dts *DateTimeStart) SetStart(params parameter.Container, value types.TimeValue) error {
 	dts.Parameter = params
 	dts.Value = value
@@ -75,6 +125,18 @@ type Duration struct {
 	Value     types.Duration
 }
 
+func (d *Duration) Decoce(w io.Writer) error {
+	if _, err := fmt.Fprintf(w, "%s%s:%s", NameDuration, d.Parameter.String(), d.Value); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (d *Duration) Validate() error {
+	// TODO
+	return nil
+}
+
 func (d *Duration) SetDuration(params parameter.Container, value types.Duration) error {
 	d.Parameter = params
 	d.Value = value
@@ -86,6 +148,22 @@ func (d *Duration) SetDuration(params parameter.Container, value types.Duration)
 type FreeBusyTime struct {
 	Parameter parameter.Container
 	Values    []types.Period
+}
+
+func (fbt *FreeBusyTime) Decoce(w io.Writer) error {
+	var s []string
+	for _, v := range fbt.Values {
+		s = append(s, v.String())
+	}
+	if _, err := fmt.Fprintf(w, "%s%s:%s", NameFreeBusyTime, fbt.Parameter.String(), strings.Join(s, ",")); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (fbt *FreeBusyTime) Validate() error {
+	// TODO
+	return nil
 }
 
 func (fbt *FreeBusyTime) SetFreeBusyTime(params parameter.Container, values []types.Period) error {
@@ -105,6 +183,18 @@ func (fbt *FreeBusyTime) SetFreeBusyTime(params parameter.Container, values []ty
 type TimeTransparency struct {
 	Parameter parameter.Container
 	Value     TransparencyValueType
+}
+
+func (tt *TimeTransparency) Decoce(w io.Writer) error {
+	if _, err := fmt.Fprintf(w, "%s%s:%s", NameTimeTransparency, tt.Parameter.String(), tt.Value); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (tt *TimeTransparency) Validate() error {
+	// TODO
+	return nil
 }
 
 func (tt *TimeTransparency) SetTransparency(params parameter.Container, value TransparencyValueType) error {
