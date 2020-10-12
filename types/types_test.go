@@ -144,7 +144,7 @@ func TestNewDuration(t *testing.T) {
 		"week": {
 			input: "P7W",
 			expected: Duration{
-				Direction: true,
+				Direction: "",
 				Week:      7,
 			},
 			expectedErr: nil,
@@ -152,7 +152,7 @@ func TestNewDuration(t *testing.T) {
 		"date": {
 			input: "P15DT5H0M20S",
 			expected: Duration{
-				Direction:    true,
+				Direction:    "",
 				Week:         0,
 				Day:          15,
 				HourDuration: time.Duration(5*time.Hour + 20*time.Second),
@@ -162,7 +162,7 @@ func TestNewDuration(t *testing.T) {
 		"time": {
 			input: "PT5H0M20S",
 			expected: Duration{
-				Direction:    true,
+				Direction:    "",
 				Week:         0,
 				HourDuration: time.Duration(5*time.Hour + 20*time.Second),
 			},
@@ -171,7 +171,7 @@ func TestNewDuration(t *testing.T) {
 		"hour": {
 			input: "PT5H",
 			expected: Duration{
-				Direction:    true,
+				Direction:    "",
 				Week:         0,
 				Day:          0,
 				HourDuration: time.Duration(5 * time.Hour),
@@ -365,6 +365,238 @@ func TestRecurrenceRule(t *testing.T) {
 			tt.expectError(t, err)
 			if diff := cmp.Diff(tt.expected, v); diff != "" {
 				t.Errorf("(-got, +want)\n%s", diff)
+			}
+		})
+	}
+}
+
+func TestString(t *testing.T) {
+	t.Parallel()
+	testcases := []struct {
+		title   string
+		input   string
+		convert func(string) (string, error)
+	}{
+		{
+			title: "Binary",
+			input: "AAABAAEAEBAQAAEABAAoAQAAFgAAACgAAAAQAAAAIAAAAAEABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAgIAAAICAgADAwMAA////AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMwAAAAAAABNEMQAAAAAAAkQgAAAAAAJEREQgAAACECQ0QgEgAAQxQzM0E0AABERCRCREQAADRDJEJEQwAAAhA0QwEQAAAAAEREAAAAAAAAREQAAAAAAAAkQgAAAAAAAAMgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+			convert: func(s string) (string, error) {
+				v, err := NewBinary(s)
+				if err != nil {
+					return "", err
+				}
+				return v.String(), nil
+			},
+		},
+		{
+			title: "Boolean",
+			input: "TRUE",
+			convert: func(s string) (string, error) {
+				v, err := NewBoolean(s)
+				if err != nil {
+					return "", err
+				}
+				return v.String(), nil
+			},
+		},
+		{
+			title: "CalAddress",
+			input: "mailto:jane_doe@example.com",
+			convert: func(s string) (string, error) {
+				v, err := NewCalenderUserAddress(s)
+				if err != nil {
+					return "", err
+				}
+				return v.String(), nil
+			},
+		},
+		{
+			title: "Date",
+			input: "19970714",
+			convert: func(s string) (string, error) {
+				v, err := NewDate(s)
+				if err != nil {
+					return "", err
+				}
+				return v.String(), nil
+			},
+		},
+		{
+			title: "DateTime",
+			input: "19980118T230000",
+			convert: func(s string) (string, error) {
+				v, err := NewDateTime(s, "")
+				if err != nil {
+					return "", err
+				}
+				return v.String(), nil
+			},
+		},
+		{
+			title: "DateTimeUTC",
+			input: "19980119T070000Z",
+			convert: func(s string) (string, error) {
+				v, err := NewDateTime(s, "")
+				if err != nil {
+					return "", err
+				}
+				return v.String(), nil
+			},
+		},
+		{
+			title: "DateTimeLocalTZ",
+			input: "19980119T020000",
+			convert: func(s string) (string, error) {
+				v, err := NewDateTime(s, "America/New_York")
+				if err != nil {
+					return "", err
+				}
+				return v.String(), nil
+			},
+		},
+		{
+			title: "Duration_1",
+			input: "P15DT5H0M20S",
+			convert: func(s string) (string, error) {
+				v, err := NewDuration(s)
+				if err != nil {
+					return "", err
+				}
+				return v.String(), nil
+			},
+		},
+		{
+			title: "Duration_2",
+			input: "P7W",
+			convert: func(s string) (string, error) {
+				v, err := NewDuration(s)
+				if err != nil {
+					return "", err
+				}
+				return v.String(), nil
+			},
+		},
+		{
+			title: "Period_1",
+			input: "19970101T180000Z/19970102T070000Z",
+			convert: func(s string) (string, error) {
+				v, err := NewPeriod(s)
+				if err != nil {
+					return "", err
+				}
+				return v.String(), nil
+			},
+		},
+		{
+			title: "Period_2",
+			input: "19970101T180000Z/PT5H30M",
+			convert: func(s string) (string, error) {
+				v, err := NewPeriod(s)
+				if err != nil {
+					return "", err
+				}
+				return v.String(), nil
+			},
+		},
+		{
+			title: "RecurrenceRule",
+			input: "FREQ=DAILY;COUNT=10;INTERVAL=2",
+			convert: func(s string) (string, error) {
+				v, err := NewRecurrenceRule(s)
+				if err != nil {
+					return "", err
+				}
+				return v.String(), nil
+			},
+		},
+		{
+			title: "RecurrenceRule",
+			input: "FREQ=MONTHLY;BYDAY=MO,TU,WE,TH,FR;BYSETPOS=-1",
+			convert: func(s string) (string, error) {
+				v, err := NewRecurrenceRule(s)
+				if err != nil {
+					return "", err
+				}
+				return v.String(), nil
+			},
+		},
+		{
+			title: "RecurrenceRule",
+			input: "FREQ=YEARLY;INTERVAL=2;BYMONTH=1;BYDAY=SU;BYHOUR=8,9;BYMINUTE=30",
+			convert: func(s string) (string, error) {
+				v, err := NewRecurrenceRule(s)
+				if err != nil {
+					return "", err
+				}
+				return v.String(), nil
+			},
+		},
+		{
+			title: "Time",
+			input: "230000",
+			convert: func(s string) (string, error) {
+				v, err := NewTime(s, "")
+				if err != nil {
+					return "", err
+				}
+				return v.String(), nil
+			},
+		},
+		{
+			title: "Time",
+			input: "070000Z",
+			convert: func(s string) (string, error) {
+				v, err := NewTime(s, "")
+				if err != nil {
+					return "", err
+				}
+				return v.String(), nil
+			},
+		},
+		{
+			title: "URI",
+			input: "http://example.com/my-report.txt",
+			convert: func(s string) (string, error) {
+				v, err := NewURI(s)
+				if err != nil {
+					return "", err
+				}
+				return v.String(), nil
+			},
+		},
+		{
+			title: "UTCOffset",
+			input: "-0500",
+			convert: func(s string) (string, error) {
+				v, err := NewUTCOffset(s)
+				if err != nil {
+					return "", err
+				}
+				return v.String(), nil
+			},
+		},
+		{
+			title: "UTCOffset",
+			input: "+0100",
+			convert: func(s string) (string, error) {
+				v, err := NewUTCOffset(s)
+				if err != nil {
+					return "", err
+				}
+				return v.String(), nil
+			},
+		},
+	}
+
+	for _, tc := range testcases {
+		tc := tc
+		t.Run(tc.title, func(t *testing.T) {
+			res, err := tc.convert(tc.input)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if res != tc.input {
+				t.Fatalf("unexpected result\ninput:\t%s\noutput:\t%s", tc.input, res)
 			}
 		})
 	}
