@@ -1,13 +1,22 @@
 package parameter
 
+import "strings"
+
 type Container map[TypeName][]Base
 
 func (c Container) String() string {
-	return ""
+	var v []string
+	for _, bases := range c {
+		for _, b := range bases {
+			v = append(v, b.String())
+		}
+	}
+	return strings.Join(v, ";")
 }
 
 type Base interface {
 	implementParameter()
+	String() string
 }
 
 func (c Container) GetTimezone() string {

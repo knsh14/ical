@@ -29,6 +29,9 @@ type AlternateTextRepresentation struct {
 }
 
 func (a *AlternateTextRepresentation) implementParameter() {}
+func (a *AlternateTextRepresentation) String() string {
+	return fmt.Sprintf("%s=%s", TypeNameAlarmTriggerRelationship, a.URI.String())
+}
 
 func NewCommonName(value string) *CommonName {
 	return &CommonName{
@@ -42,6 +45,9 @@ type CommonName struct {
 }
 
 func (cn *CommonName) implementParameter() {}
+func (cn *CommonName) String() string {
+	return fmt.Sprintf("%s=%s", TypeNameCommonName, cn.String())
+}
 
 func NewCalenderUserType(value string) (*CalenderUserType, error) {
 	switch v := CalendarUserTypeKind(value); v {
@@ -66,14 +72,16 @@ type CalenderUserType struct {
 }
 
 func (cut *CalenderUserType) implementParameter() {}
+func (cut *CalenderUserType) String() string {
+	if cut.Type == CalendarUserTypeKindXToken {
+		return fmt.Sprintf("%s=%s", TypeNameCalenderUserType, cut.Value)
+	}
+	return fmt.Sprintf("%s=%s", TypeNameCalenderUserType, cut.Type)
+}
 
 func NewDelegator(values []string) (*Delegator, error) {
 	var addresses []types.CalenderUserAddress
 	for _, value := range values {
-		//v, err := strconv.Unquote(value)
-		//if err != nil {
-		//	return nil, fmt.Errorf("unquote input[%s]: %w", value, err)
-		//}
 		a, err := types.NewCalenderUserAddress(value)
 		if err != nil {
 			return nil, fmt.Errorf("convert value[%s] to CALENDER-USER-ADDRESS: %w", value, err)
@@ -88,6 +96,13 @@ type Delegator struct {
 }
 
 func (d *Delegator) implementParameter() {}
+func (d *Delegator) String() string {
+	var v []string
+	for _, a := range d.Addresses {
+		v = append(v, a.String())
+	}
+	return fmt.Sprintf("%s=%s", TypeNameDelegator, strings.Join(v, ","))
+}
 
 func NewDelegatee(values []string) (*Delegatee, error) {
 	var addresses []types.CalenderUserAddress
@@ -106,6 +121,13 @@ type Delegatee struct {
 }
 
 func (d *Delegatee) implementParameter() {}
+func (d *Delegatee) String() string {
+	var v []string
+	for _, a := range d.Addresses {
+		v = append(v, a.String())
+	}
+	return fmt.Sprintf("%s=%s", TypeNameDelegatee, strings.Join(v, ","))
+}
 
 func NewDirectoryEntry(value string) (*DirectoryEntry, error) {
 	// v, err := strconv.Unquote(value)
@@ -124,6 +146,9 @@ type DirectoryEntry struct {
 }
 
 func (de *DirectoryEntry) implementParameter() {}
+func (de *DirectoryEntry) String() string {
+	return fmt.Sprintf("%s=%s", TypeNameDirectoryEntry, de.URI.String())
+}
 
 func NewInlineEncoding(value string) (*InlineEncoding, error) {
 	switch v := InlineEncodingType(value); v {
@@ -143,6 +168,12 @@ type InlineEncoding struct {
 }
 
 func (ie *InlineEncoding) implementParameter() {}
+func (ie *InlineEncoding) String() string {
+	if ie.Type == InlineEncodingTypeXName {
+		return fmt.Sprintf("%s=%s", TypeNameInlineEncoding, ie.Value)
+	}
+	return fmt.Sprintf("%s=%s", TypeNameInlineEncoding, ie.Type)
+}
 
 func NewFormatType(value string) (*FormatType, error) {
 	if mime.IsMIMEType(value) {
@@ -156,6 +187,9 @@ type FormatType struct {
 }
 
 func (ft *FormatType) implementParameter() {}
+func (ft *FormatType) String() string {
+	return fmt.Sprintf("%s=%s", TypeNameFormatType, ft.Value)
+}
 
 func NewFreeBusyTimeType(value string) (*FreeBusyTimeType, error) {
 	switch v := FreeBusyTimeTypeKind(value); v {
@@ -179,6 +213,12 @@ type FreeBusyTimeType struct {
 }
 
 func (fbtt *FreeBusyTimeType) implementParameter() {}
+func (fbtt *FreeBusyTimeType) String() string {
+	if fbtt.Type == FreeBusyTimeTypeKindXName {
+		return fmt.Sprintf("%s=%s", TypeNameFreeBusyTimeType, fbtt.Value)
+	}
+	return fmt.Sprintf("%s=%s", TypeNameFreeBusyTimeType, fbtt.Type)
+}
 
 func NewLanguage(value string) (*Language, error) {
 	tag, err := language.Parse(value)
@@ -193,6 +233,9 @@ type Language struct {
 }
 
 func (l *Language) implementParameter() {}
+func (l *Language) String() string {
+	return fmt.Sprintf("%s=%s", TypeNameLanguage, l.Tag.String())
+}
 
 func NewMembership(values []string) (*Membership, error) {
 	var l []types.CalenderUserAddress
@@ -211,6 +254,13 @@ type Membership struct {
 }
 
 func (m *Membership) implementParameter() {}
+func (m *Membership) String() string {
+	var v []string
+	for _, u := range m.URIs {
+		v = append(v, u.String())
+	}
+	return fmt.Sprintf("%s=%s", TypeNameMembership, strings.Join(v, ","))
+}
 
 func NewParticipationStatus(value string, kind component.Type) (*ParticipationStatus, error) {
 	var list map[ParticipationStatusType]struct{}
@@ -265,6 +315,12 @@ type ParticipationStatus struct {
 }
 
 func (ps *ParticipationStatus) implementParameter() {}
+func (ps *ParticipationStatus) String() string {
+	if ps.Type == ParticipationStatusTypeXToken {
+		return fmt.Sprintf("%s=%s", TypeNameParticipationStatus, ps.Value)
+	}
+	return fmt.Sprintf("%s=%s", TypeNameParticipationStatus, ps.Type)
+}
 
 func NewRecurrenceIDRange(value string) (*RecurrenceIDRange, error) {
 	if strings.ToUpper(value) != "THISANDFUTURE" {
@@ -277,6 +333,9 @@ type RecurrenceIDRange struct {
 }
 
 func (ridr *RecurrenceIDRange) implementParameter() {}
+func (ridr *RecurrenceIDRange) String() string {
+	return fmt.Sprintf("%s=%s", TypeNameRecurrenceIDRange, "THISANDFUTURE")
+}
 
 func NewAlarmTriggerRelationship(value string) (*AlarmTriggerRelationship, error) {
 	if value == "START" {
@@ -293,6 +352,12 @@ type AlarmTriggerRelationship struct {
 }
 
 func (atr *AlarmTriggerRelationship) implementParameter() {}
+func (atr *AlarmTriggerRelationship) String() string {
+	if atr.IsStart {
+		return fmt.Sprintf("%s=%s", TypeNameAlarmTriggerRelationship, "START")
+	}
+	return fmt.Sprintf("%s=%s", TypeNameAlarmTriggerRelationship, "END")
+}
 
 func NewRelationshipType(value string) (*RelationshipType, error) {
 	switch t := RelationshipTypeKind(value); t {
@@ -314,6 +379,12 @@ type RelationshipType struct {
 }
 
 func (rt *RelationshipType) implementParameter() {}
+func (rt *RelationshipType) String() string {
+	if rt.Type == RelationshipTypeKindXName {
+		return fmt.Sprintf("%s=%s", TypeNameRelationshipType, rt.Value)
+	}
+	return fmt.Sprintf("%s=%s", TypeNameRelationshipType, rt.Type)
+}
 
 func NewParticipationRole(value string) (*ParticipationRole, error) {
 	switch t := ParticipationRoleType(value); t {
@@ -336,6 +407,12 @@ type ParticipationRole struct {
 }
 
 func (pr *ParticipationRole) implementParameter() {}
+func (pr *ParticipationRole) String() string {
+	if pr.Type == ParticipationRoleTypeXName {
+		return fmt.Sprintf("%s=%s", TypeNameParticipationRole, pr.Value)
+	}
+	return fmt.Sprintf("%s=%s", TypeNameParticipationRole, pr.Type)
+}
 
 func NewRSVP(value string) (*RSVP, error) {
 	b, err := types.NewBoolean(value)
@@ -350,6 +427,9 @@ type RSVP struct {
 }
 
 func (rsvp *RSVP) implementParameter() {}
+func (rsvp *RSVP) String() string {
+	return fmt.Sprintf("%s=%s", TypeNameRSVP, rsvp.Value.String())
+}
 
 func NewSentBy(value string) (*SentBy, error) {
 	v, err := strconv.Unquote(value)
@@ -368,6 +448,9 @@ type SentBy struct {
 }
 
 func (sb *SentBy) implementParameter() {}
+func (sb *SentBy) String() string {
+	return fmt.Sprintf("%s=%s", TypeNameSentBy, sb.Address.String())
+}
 
 func NewReferenceTimezone(value string) (*ReferenceTimezone, error) {
 	for _, v := range value {
@@ -387,6 +470,9 @@ type ReferenceTimezone struct {
 }
 
 func (rtz *ReferenceTimezone) implementParameter() {}
+func (rtz *ReferenceTimezone) String() string {
+	return fmt.Sprintf("%s=%s", TypeNameReferenceTimezone, rtz.Value)
+}
 
 func NewValueType(value string) *ValueType {
 	return &ValueType{Value: value}
@@ -397,6 +483,9 @@ type ValueType struct {
 }
 
 func (vt *ValueType) implementParameter() {}
+func (vt *ValueType) String() string {
+	return fmt.Sprintf("%s=%s", TypeNameValueType, vt.Value)
+}
 
 func NewXParam(param string, values []string) *XParam {
 	return &XParam{
@@ -411,3 +500,6 @@ type XParam struct {
 }
 
 func (xp *XParam) implementParameter() {}
+func (xp *XParam) String() string {
+	return fmt.Sprintf("%s=%s", xp.Parameter, xp.Value)
+}
