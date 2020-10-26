@@ -317,10 +317,6 @@ func (rr RecurrenceRule) String() string {
 	if rr.Frequency != FrequencyPatternInvalid {
 		res = append(res, fmt.Sprintf("FREQ=%s", rr.Frequency))
 	}
-
-	if rr.WeekDay != WeekDayPatternInvalid {
-		res = append(res, fmt.Sprintf("WKST=%s", rr.WeekDay))
-	}
 	if rr.EndDate != nil {
 		res = append(res, fmt.Sprintf("UNTIL=%v", rr.EndDate))
 	}
@@ -393,6 +389,9 @@ func (rr RecurrenceRule) String() string {
 		}
 		res = append(res, fmt.Sprintf("BYSETPOS=%s", strings.Join(s, ",")))
 	}
+	if rr.WeekDay != WeekDayPatternInvalid {
+		res = append(res, fmt.Sprintf("WKST=%s", rr.WeekDay))
+	}
 
 	return strings.Join(res, ";")
 }
@@ -403,6 +402,9 @@ type WeekDay struct {
 }
 
 func (wd WeekDay) String() string {
+	if wd.Week == 0 {
+		return fmt.Sprintf("%s", wd.Day)
+	}
 	return fmt.Sprintf("%d%s", wd.Week, wd.Day)
 }
 
