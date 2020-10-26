@@ -116,7 +116,7 @@ type Categories struct {
 	Values    []types.Text
 }
 
-func (c *Categories) Decoce(w io.Writer) error {
+func (c *Categories) Decode(w io.Writer) error {
 	var s []string
 	for _, v := range c.Values {
 		s = append(s, string(v))
@@ -153,7 +153,7 @@ type Class struct {
 	Value     types.Text
 }
 
-func (c *Class) Decoce(w io.Writer) error {
+func (c *Class) Decode(w io.Writer) error {
 	if _, err := fmt.Fprintf(w, "%s%s:%s", NameClass, c.Parameter.String(), c.Value); err != nil {
 		return err
 	}
@@ -188,7 +188,7 @@ type Comment struct {
 	Value     types.Text
 }
 
-func (c *Comment) Decoce(w io.Writer) error {
+func (c *Comment) Decode(w io.Writer) error {
 	if _, err := fmt.Fprintf(w, "%s%s:%s", NameComment, c.Parameter.String(), c.Value); err != nil {
 		return err
 	}
@@ -223,7 +223,7 @@ type Description struct {
 	Value     types.Text
 }
 
-func (d *Description) Decoce(w io.Writer) error {
+func (d *Description) Decode(w io.Writer) error {
 	if _, err := fmt.Fprintf(w, "%s%s:%s", NameDescription, d.Parameter.String(), d.Value); err != nil {
 		return err
 	}
@@ -255,7 +255,7 @@ type Geo struct {
 	Longitude types.Float
 }
 
-func (g *Geo) Decoce(w io.Writer) error {
+func (g *Geo) Decode(w io.Writer) error {
 	if _, err := fmt.Fprintf(w, "%s%s:%d;%d", NameGeo, g.Parameter.String(), g.Latitude, g.Longitude); err != nil {
 		return err
 	}
@@ -306,7 +306,7 @@ type Location struct {
 	Value     types.Text
 }
 
-func (l *Location) Decoce(w io.Writer) error {
+func (l *Location) Decode(w io.Writer) error {
 	if _, err := fmt.Fprintf(w, "%s%s:%s", NameLocation, l.Parameter.String(), l.Value); err != nil {
 		return err
 	}
@@ -338,7 +338,7 @@ type PercentComplete struct {
 	Value     types.Integer
 }
 
-func (pc *PercentComplete) Decoce(w io.Writer) error {
+func (pc *PercentComplete) Decode(w io.Writer) error {
 	if _, err := fmt.Fprintf(w, "%s%s:%s", NamePercentComplete, pc.Parameter.String(), pc.Value); err != nil {
 		return err
 	}
@@ -367,7 +367,7 @@ type Priority struct {
 	Value     types.Integer
 }
 
-func (p *Priority) Decoce(w io.Writer) error {
+func (p *Priority) Decode(w io.Writer) error {
 	if _, err := fmt.Fprintf(w, "%s%s:%s", NamePriority, p.Parameter.String(), p.Value); err != nil {
 		return err
 	}
@@ -395,7 +395,7 @@ type Resources struct {
 	Values    []types.Text
 }
 
-func (r *Resources) Decoce(w io.Writer) error {
+func (r *Resources) Decode(w io.Writer) error {
 	var s []string
 	for _, v := range r.Values {
 		s = append(s, string(v))
@@ -433,7 +433,7 @@ type Status struct {
 	Value     StatusType
 }
 
-func (s *Status) Decoce(w io.Writer) error {
+func (s *Status) Decode(w io.Writer) error {
 	if _, err := fmt.Fprintf(w, "%s%s:%s", NameStatus, s.Parameter.String(), s.Value); err != nil {
 		return err
 	}
@@ -488,7 +488,7 @@ type Summary struct {
 	Value     types.Text
 }
 
-func (s *Summary) Decoce(w io.Writer) error {
+func (s *Summary) Decode(w io.Writer) error {
 	if _, err := fmt.Fprintf(w, "%s%s:%s", NameSummary, s.Parameter.String(), s.Value); err != nil {
 		return err
 	}

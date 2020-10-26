@@ -67,6 +67,163 @@ func (todo *ToDo) implementCalender() {}
 
 func (todo *ToDo) Decode(w io.Writer) error {
 	fmt.Fprintf(w, "%s:%s", property.NameBegin, component.TypeTODO)
+	if err := todo.UID.Decode(w); err != nil {
+		return err
+	}
+	if err := todo.DateTimeStamp.Decode(w); err != nil {
+		return err
+	}
+
+	if todo.Class != nil {
+		if err := todo.Class.Decode(w); err != nil {
+			return err
+		}
+	}
+	if todo.DateTimeCompleted != nil {
+		if err := todo.DateTimeCompleted.Decode(w); err != nil {
+			return err
+		}
+	}
+	if todo.DateTimeCreated != nil {
+		if err := todo.DateTimeCreated.Decode(w); err != nil {
+			return err
+		}
+	}
+	if todo.Description != nil {
+		if err := todo.Description.Decode(w); err != nil {
+			return err
+		}
+	}
+	if todo.DateTimeStart != nil {
+		if err := todo.DateTimeStart.Decode(w); err != nil {
+			return err
+		}
+	}
+	if todo.Geo != nil {
+		if err := todo.Geo.Decode(w); err != nil {
+			return err
+		}
+	}
+	if todo.LastModified != nil {
+		if err := todo.LastModified.Decode(w); err != nil {
+			return err
+		}
+	}
+	if todo.Location != nil {
+		if err := todo.Location.Decode(w); err != nil {
+			return err
+		}
+	}
+	if todo.Organizer != nil {
+		if err := todo.Organizer.Decode(w); err != nil {
+			return err
+		}
+	}
+	if todo.PercentComplete != nil {
+		if err := todo.PercentComplete.Decode(w); err != nil {
+			return err
+		}
+	}
+	if todo.Priority != nil {
+		if err := todo.Priority.Decode(w); err != nil {
+			return err
+		}
+	}
+	if todo.RecurrenceID != nil {
+		if err := todo.RecurrenceID.Decode(w); err != nil {
+			return err
+		}
+	}
+	if todo.SequenceNumber != nil {
+		if err := todo.SequenceNumber.Decode(w); err != nil {
+			return err
+		}
+	}
+	if todo.Status != nil {
+		if err := todo.Status.Decode(w); err != nil {
+			return err
+		}
+	}
+	if todo.Summary != nil {
+		if err := todo.Summary.Decode(w); err != nil {
+			return err
+		}
+	}
+	if todo.URL != nil {
+		if err := todo.URL.Decode(w); err != nil {
+			return err
+		}
+	}
+	if todo.RecurrenceRule != nil {
+		if err := todo.RecurrenceRule.Decode(w); err != nil {
+			return err
+		}
+	}
+	if todo.DateTimeDue != nil {
+		if err := todo.DateTimeDue.Decode(w); err != nil {
+			return err
+		}
+	}
+	if todo.Duration != nil {
+		if err := todo.Duration.Decode(w); err != nil {
+			return err
+		}
+	}
+	for _, v := range todo.Attachments {
+		if err := v.Decode(w); err != nil {
+			return err
+		}
+	}
+	for _, v := range todo.Attendees {
+		if err := v.Decode(w); err != nil {
+			return err
+		}
+	}
+	for _, v := range todo.Categories {
+		if err := v.Decode(w); err != nil {
+			return err
+		}
+	}
+	for _, v := range todo.Comments {
+		if err := v.Decode(w); err != nil {
+			return err
+		}
+	}
+	for _, v := range todo.Contacts {
+		if err := v.Decode(w); err != nil {
+			return err
+		}
+	}
+	for _, v := range todo.ExceptionDateTimes {
+		if err := v.Decode(w); err != nil {
+			return err
+		}
+	}
+	for _, v := range todo.RequestStatus {
+		if err := v.Decode(w); err != nil {
+			return err
+		}
+	}
+	for _, v := range todo.RelatedTos {
+		if err := v.Decode(w); err != nil {
+			return err
+		}
+	}
+	for _, v := range todo.Resources {
+		if err := v.Decode(w); err != nil {
+			return err
+		}
+	}
+	for _, v := range todo.RecurrenceDateTimes {
+		if err := v.Decode(w); err != nil {
+			return err
+		}
+	}
+	for _, v := range todo.Alarms {
+		if err := v.Decode(w); err != nil {
+			return err
+		}
+	}
 	fmt.Fprintf(w, "%s:%s", property.NameEnd, component.TypeTODO)
 	return nil
 }

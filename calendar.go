@@ -2,6 +2,7 @@ package ical
 
 import (
 	"fmt"
+	"io"
 
 	"github.com/knsh14/ical/component"
 	"github.com/knsh14/ical/parameter"
@@ -30,6 +31,45 @@ type Calendar struct {
 	IANAProperties []*property.IANA
 
 	Components []CalenderComponent
+}
+
+func (c *Calendar) Decode(w io.Writer) error {
+	fmt.Fprintf(w, "%s:%s", property.NameBegin, component.TypeCalendar)
+	if err := c.ProdID.Decode(w); err != nil {
+		return err
+	}
+	if err := c.Version.Decode(w); err != nil {
+		return err
+	}
+	if err := c.CalScale.Decode(w); err != nil {
+		return err
+	}
+	if err := c.Method.Decode(w); err != nil {
+		return err
+	}
+	fmt.Fprintf(w, "%s:%s", property.NameEnd, component.TypeCalendar)
+	return nil
+}
+
+func (c *Calendar) Validate() error {
+	if c.ProdID == nil {
+		return NewValidationError(component.TypeCalendar, property.NameProdID, "must not to be nil")
+	}
+	if c.ProdID.Value == "" {
+		return NewValidationError(component.TypeCalendar, property.NameProdID, "must not to be empty")
+	}
+	if c.Version == nil {
+		return NewValidationError(component.TypeCalendar, property.NameVersion, "must not to be nil")
+	}
+	if c.Version.Max == "" {
+		return NewValidationError(component.TypeCalendar, property.NameVersion, "max must not to be empty")
+	}
+	for _, component := range c.Components {
+		if err := component.Validate(); err != nil {
+			return fmt.Errorf("%w", err)
+		}
+	}
+	return nil
 }
 
 func (c *Calendar) SetCalScale(params parameter.Container, value types.Text) error {
@@ -77,26 +117,5 @@ func (c *Calendar) SetVersion(params parameter.Container, value types.Text) erro
 		return err
 	}
 	c.Version = ver
-	return nil
-}
-
-func (c *Calendar) Validate() error {
-	if c.ProdID == nil {
-		return NewValidationError(component.TypeCalendar, property.NameProdID, "must not to be nil")
-	}
-	if c.ProdID.Value == "" {
-		return NewValidationError(component.TypeCalendar, property.NameProdID, "must not to be empty")
-	}
-	if c.Version == nil {
-		return NewValidationError(component.TypeCalendar, property.NameVersion, "must not to be nil")
-	}
-	if c.Version.Max == "" {
-		return NewValidationError(component.TypeCalendar, property.NameVersion, "max must not to be empty")
-	}
-	for _, component := range c.Components {
-		if err := component.Validate(); err != nil {
-			return fmt.Errorf("%w", err)
-		}
-	}
 	return nil
 }

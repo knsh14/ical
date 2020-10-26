@@ -2,6 +2,7 @@ package property
 
 import (
 	"fmt"
+	"io"
 	"regexp"
 	"strings"
 
@@ -57,6 +58,17 @@ type RequestStatus struct {
 	StatusCode        types.Text
 	StatusDescription types.Text
 	ExtraData         types.Text
+}
+
+func (rs *RequestStatus) Decode(w io.Writer) error {
+	v := []string{string(rs.StatusCode), string(rs.StatusDescription)}
+	if rs.ExtraData != "" {
+		v = append(v, string(rs.ExtraData))
+	}
+	if _, err := fmt.Fprintf(w, "%s%s:%s", NameRequestStatus, rs.Parameter.String(), strings.Join(v, ";")); err != nil {
+		return err
+	}
+	return nil
 }
 
 func (rs *RequestStatus) SetRequestStatus(params parameter.Container, value types.Text) error {

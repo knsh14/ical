@@ -19,7 +19,7 @@ type ExceptionDateTimes struct {
 	Values    []types.TimeValue // default is DateTime
 }
 
-func (edt *ExceptionDateTimes) Decoce(w io.Writer) error {
+func (edt *ExceptionDateTimes) Decode(w io.Writer) error {
 	var s []string
 	for _, v := range edt.Values {
 		s = append(s, v.String())
@@ -112,7 +112,7 @@ type RecurrenceDateTimes struct {
 	Values    []types.RecurrenceDateTimeValue // default is DateTime, Date or Period are fine.
 }
 
-func (rdt *RecurrenceDateTimes) Decoce(w io.Writer) error {
+func (rdt *RecurrenceDateTimes) Decode(w io.Writer) error {
 	if _, err := fmt.Fprintf(w, "%s%s:%s", NameRecurrenceDateTimes, rdt.Parameter.String(), rdt.Value); err != nil {
 		return err
 	}
@@ -137,7 +137,7 @@ type RecurrenceRule struct {
 	Value     types.RecurrenceRule
 }
 
-func (rr *RecurrenceRule) Decoce(w io.Writer) error {
+func (rr *RecurrenceRule) Decode(w io.Writer) error {
 	if _, err := fmt.Fprintf(w, "%s%s:%s", NameRecurrenceRule, rr.Parameter.String(), rr.Value); err != nil {
 		return err
 	}

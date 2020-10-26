@@ -31,6 +31,11 @@ type Timezone struct {
 }
 
 func (tz *Timezone) implementCalender() {}
+func (tz *Timezone) Decode(w io.Writer) error {
+	fmt.Fprintf(w, "%s:%s", property.NameBegin, component.TypeTimezone)
+	fmt.Fprintf(w, "%s:%s", property.NameEnd, component.TypeTimezone)
+	return nil
+}
 
 func (tz *Timezone) Validate() error {
 	if tz.TimezoneIdentifier == nil {
@@ -46,12 +51,6 @@ func (tz *Timezone) Validate() error {
 			return fmt.Errorf("%w", err)
 		}
 	}
-	return nil
-}
-
-func (tz *Timezone) Decode(w io.Writer) error {
-	fmt.Fprintf(w, "%s:%s", property.NameBegin, component.TypeTimezone)
-	fmt.Fprintf(w, "%s:%s", property.NameEnd, component.TypeTimezone)
 	return nil
 }
 
