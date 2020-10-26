@@ -67,6 +67,116 @@ func (e *Event) implementCalender() {}
 
 func (e *Event) Decode(w io.Writer) error {
 	fmt.Fprintf(w, "%s:%s", property.NameBegin, component.TypeEvent)
+	if err := e.UID.Decode(w); err != nil {
+		return err
+	}
+	if err := e.DateTimeStamp.Decode(w); err != nil {
+		return err
+	}
+	if err := e.DateTimeStart.Decode(w); err != nil {
+		return err
+	}
+	if err := e.Class.Decode(w); err != nil {
+		return err
+	}
+	if err := e.DateTimeCreated.Decode(w); err != nil {
+		return err
+	}
+	if err := e.Description.Decode(w); err != nil {
+		return err
+	}
+	if err := e.Geo.Decode(w); err != nil {
+		return err
+	}
+	if err := e.LastModified.Decode(w); err != nil {
+		return err
+	}
+	if err := e.Location.Decode(w); err != nil {
+		return err
+	}
+	if err := e.Organizer.Decode(w); err != nil {
+		return err
+	}
+	if err := e.Priority.Decode(w); err != nil {
+		return err
+	}
+	if err := e.SequenceNumber.Decode(w); err != nil {
+		return err
+	}
+	if err := e.Status.Decode(w); err != nil {
+		return err
+	}
+	if err := e.Summary.Decode(w); err != nil {
+		return err
+	}
+	if err := e.TimeTransparency.Decode(w); err != nil {
+		return err
+	}
+	if err := e.URL.Decode(w); err != nil {
+		return err
+	}
+	if err := e.RecurrenceID.Decode(w); err != nil {
+		return err
+	}
+	if err := e.RecurrenceRule.Decode(w); err != nil {
+		return err
+	}
+	if err := e.DateTimeEnd.Decode(w); err != nil {
+		return err
+	}
+	if err := e.Duration.Decode(w); err != nil {
+		return err
+	}
+	for _, v := range e.Attachments {
+		if err := v.Decode(w); err != nil {
+			return err
+		}
+	}
+	for _, v := range e.Attendees {
+		if err := v.Decode(w); err != nil {
+			return err
+		}
+	}
+	for _, v := range e.Categories {
+		if err := v.Decode(w); err != nil {
+			return err
+		}
+	}
+	for _, v := range e.Comments {
+		if err := v.Decode(w); err != nil {
+			return err
+		}
+	}
+	for _, v := range e.Contacts {
+		if err := v.Decode(w); err != nil {
+			return err
+		}
+	}
+	for _, v := range e.ExceptionDateTimes {
+		if err := v.Decode(w); err != nil {
+			return err
+		}
+	}
+	for _, v := range e.RequestStatus {
+		if err := v.Decode(w); err != nil {
+			return err
+		}
+	}
+	for _, v := range e.RelatedTos {
+		if err := v.Decode(w); err != nil {
+			return err
+		}
+	}
+	for _, v := range e.Resources {
+		if err := v.Decode(w); err != nil {
+			return err
+		}
+	}
+	for _, v := range e.RecurrenceDateTimes {
+		if err := v.Decode(w); err != nil {
+			return err
+		}
+	}
 	fmt.Fprintf(w, "%s:%s", property.NameEnd, component.TypeEvent)
 	return nil
 }

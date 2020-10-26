@@ -42,6 +42,21 @@ func (aa *AlarmAudio) implementAlarm() {}
 
 func (aa *AlarmAudio) Decode(w io.Writer) error {
 	fmt.Fprintf(w, "%s:%s", property.NameBegin, component.TypeAlarm)
+	if err := aa.Action.Decode(w); err != nil {
+		return err
+	}
+	if err := aa.Trigger.Decode(w); err != nil {
+		return err
+	}
+	if err := aa.Duration.Decode(w); err != nil {
+		return err
+	}
+	if err := aa.RepeatCount.Decode(w); err != nil {
+		return err
+	}
+	if err := aa.Attachment.Decode(w); err != nil {
+		return err
+	}
 	fmt.Fprintf(w, "%s:%s", property.NameEnd, component.TypeAlarm)
 	return nil
 }
@@ -135,6 +150,21 @@ func (ad *AlarmDisplay) implementAlarm() {}
 
 func (ad *AlarmDisplay) Decode(w io.Writer) error {
 	fmt.Fprintf(w, "%s:%s", property.NameBegin, component.TypeAlarm)
+	if err := ad.Action.Decode(w); err != nil {
+		return err
+	}
+	if err := ad.Description.Decode(w); err != nil {
+		return err
+	}
+	if err := ad.Trigger.Decode(w); err != nil {
+		return err
+	}
+	if err := ad.Duration.Decode(w); err != nil {
+		return err
+	}
+	if err := ad.RepeatCount.Decode(w); err != nil {
+		return err
+	}
 	fmt.Fprintf(w, "%s:%s", property.NameEnd, component.TypeAlarm)
 	return nil
 }
@@ -233,6 +263,34 @@ type AlarmEmail struct {
 func (ae *AlarmEmail) implementAlarm() {}
 func (ae *AlarmEmail) Decode(w io.Writer) error {
 	fmt.Fprintf(w, "%s:%s", property.NameBegin, component.TypeAlarm)
+	if err := ae.Action.Decode(w); err != nil {
+		return err
+	}
+	if err := ae.Description.Decode(w); err != nil {
+		return err
+	}
+	if err := ae.Trigger.Decode(w); err != nil {
+		return err
+	}
+	if err := ae.Summary.Decode(w); err != nil {
+		return err
+	}
+	for _, a := range ae.Attendees {
+		if err := a.Decode(w); err != nil {
+			return err
+		}
+	}
+	if err := ae.Duration.Decode(w); err != nil {
+		return err
+	}
+	if err := ae.RepeatCount.Decode(w); err != nil {
+		return err
+	}
+	for _, a := range ae.Attachments {
+		if err := a.Decode(w); err != nil {
+			return err
+		}
+	}
 	fmt.Fprintf(w, "%s:%s", property.NameEnd, component.TypeAlarm)
 	return nil
 }

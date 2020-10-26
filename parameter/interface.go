@@ -5,7 +5,7 @@ import "strings"
 type Container map[TypeName][]Base
 
 func (c Container) String() string {
-	var v []string
+	v := []string{""}
 	for _, bases := range c {
 		for _, b := range bases {
 			v = append(v, b.String())

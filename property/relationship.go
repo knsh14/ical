@@ -17,7 +17,7 @@ type Attendee struct {
 	Value     types.CalenderUserAddress
 }
 
-func (a *Attendee) Decoce(w io.Writer) error {
+func (a *Attendee) Decode(w io.Writer) error {
 	if _, err := fmt.Fprintf(w, "%s%s:%s", NameAttendee, a.Parameter.String(), a.Value); err != nil {
 		return err
 	}
@@ -47,7 +47,7 @@ type Contact struct {
 	Value     types.Text
 }
 
-func (c *Contact) Decoce(w io.Writer) error {
+func (c *Contact) Decode(w io.Writer) error {
 	if _, err := fmt.Fprintf(w, "%s%s:%s", NameContact, c.Parameter.String(), c.Value); err != nil {
 		return err
 	}
@@ -78,7 +78,7 @@ type Organizer struct {
 	Value     types.CalenderUserAddress
 }
 
-func (o *Organizer) Decoce(w io.Writer) error {
+func (o *Organizer) Decode(w io.Writer) error {
 	if _, err := fmt.Fprintf(w, "%s%s:%s", NameOrganizer, o.Parameter.String(), o.Value); err != nil {
 		return err
 	}
@@ -116,7 +116,7 @@ type RecurrenceID struct {
 	Value     types.TimeValue
 }
 
-func (rid *RecurrenceID) Decoce(w io.Writer) error {
+func (rid *RecurrenceID) Decode(w io.Writer) error {
 	if _, err := fmt.Fprintf(w, "%s%s:%s", NameRecurrenceID, rid.Parameter.String(), rid.Value); err != nil {
 		return err
 	}
@@ -147,7 +147,7 @@ type RelatedTo struct {
 	Value     types.Text
 }
 
-func (rt *RelatedTo) Decoce(w io.Writer) error {
+func (rt *RelatedTo) Decode(w io.Writer) error {
 	if _, err := fmt.Fprintf(w, "%s%s:%s", NameRelatedTo, rt.Parameter.String(), rt.Value); err != nil {
 		return err
 	}
@@ -176,7 +176,7 @@ type URL struct {
 	Value     types.URI
 }
 
-func (u *URL) Decoce(w io.Writer) error {
+func (u *URL) Decode(w io.Writer) error {
 	if _, err := fmt.Fprintf(w, "%s%s:%s", NameURL, u.Parameter.String(), u.Value); err != nil {
 		return err
 	}
@@ -200,7 +200,7 @@ type UID struct {
 	Value     types.Text
 }
 
-func (u *UID) Decoce(w io.Writer) error {
+func (u *UID) Decode(w io.Writer) error {
 	if _, err := fmt.Fprintf(w, "%s%s:%s", NameUID, u.Parameter.String(), u.Value); err != nil {
 		return err
 	}

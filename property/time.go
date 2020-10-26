@@ -19,7 +19,7 @@ type DateTimeCompleted struct {
 	Value     types.DateTime
 }
 
-func (dtc *DateTimeCompleted) Decoce(w io.Writer) error {
+func (dtc *DateTimeCompleted) Decode(w io.Writer) error {
 	if _, err := fmt.Fprintf(w, "%s%s:%s", NameDateTimeCompleted, dtc.Parameter.String(), dtc.Value); err != nil {
 		return err
 	}
@@ -50,7 +50,7 @@ type DateTimeEnd struct {
 	Value     types.TimeValue // DateTime or Date
 }
 
-func (dte *DateTimeEnd) Decoce(w io.Writer) error {
+func (dte *DateTimeEnd) Decode(w io.Writer) error {
 	if _, err := fmt.Fprintf(w, "%s%s:%s", NameDateTimeEnd, dte.Parameter.String(), dte.Value); err != nil {
 		return err
 	}
@@ -75,7 +75,7 @@ type DateTimeDue struct {
 	Value     types.TimeValue // DateTime or Date
 }
 
-func (dtd *DateTimeDue) Decoce(w io.Writer) error {
+func (dtd *DateTimeDue) Decode(w io.Writer) error {
 	if _, err := fmt.Fprintf(w, "%s%s:%s", NameDateTimeDue, dtd.Parameter.String(), dtd.Value); err != nil {
 		return err
 	}
@@ -100,7 +100,7 @@ type DateTimeStart struct {
 	Value     types.TimeValue // DateTime or Date
 }
 
-func (dts *DateTimeStart) Decoce(w io.Writer) error {
+func (dts *DateTimeStart) Decode(w io.Writer) error {
 	if _, err := fmt.Fprintf(w, "%s%s:%s", NameDateTimeStart, dts.Parameter.String(), dts.Value); err != nil {
 		return err
 	}
@@ -125,7 +125,7 @@ type Duration struct {
 	Value     types.Duration
 }
 
-func (d *Duration) Decoce(w io.Writer) error {
+func (d *Duration) Decode(w io.Writer) error {
 	if _, err := fmt.Fprintf(w, "%s%s:%s", NameDuration, d.Parameter.String(), d.Value); err != nil {
 		return err
 	}
@@ -150,7 +150,7 @@ type FreeBusyTime struct {
 	Values    []types.Period
 }
 
-func (fbt *FreeBusyTime) Decoce(w io.Writer) error {
+func (fbt *FreeBusyTime) Decode(w io.Writer) error {
 	var s []string
 	for _, v := range fbt.Values {
 		s = append(s, v.String())
@@ -185,7 +185,7 @@ type TimeTransparency struct {
 	Value     TransparencyValueType
 }
 
-func (tt *TimeTransparency) Decoce(w io.Writer) error {
+func (tt *TimeTransparency) Decode(w io.Writer) error {
 	if _, err := fmt.Fprintf(w, "%s%s:%s", NameTimeTransparency, tt.Parameter.String(), tt.Value); err != nil {
 		return err
 	}
