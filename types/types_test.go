@@ -477,6 +477,17 @@ func TestString(t *testing.T) {
 			},
 		},
 		{
+			title: "Duration_3",
+			input: "PT5H30M",
+			convert: func(s string) (string, error) {
+				v, err := NewDuration(s)
+				if err != nil {
+					return "", err
+				}
+				return v.String(), nil
+			},
+		},
+		{
 			title: "Period_1",
 			input: "19970101T180000Z/19970102T070000Z",
 			convert: func(s string) (string, error) {
@@ -522,7 +533,7 @@ func TestString(t *testing.T) {
 		},
 		{
 			title: "RecurrenceRule",
-			input: "FREQ=YEARLY;INTERVAL=2;BYMONTH=1;BYDAY=SU;BYHOUR=8,9;BYMINUTE=30",
+			input: "FREQ=YEARLY;INTERVAL=2;BYMINUTE=30;BYHOUR=8,9;BYDAY=SU;BYMONTH=1",
 			convert: func(s string) (string, error) {
 				v, err := NewRecurrenceRule(s)
 				if err != nil {
