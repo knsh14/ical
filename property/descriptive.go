@@ -22,11 +22,12 @@ type Attachment struct {
 }
 
 func (a *Attachment) Decode(w io.Writer) error {
-	fmt.Fprintf(w, "%s%s:%s", NameAttachment, a.Parameter.String(), s)
+	fmt.Fprintf(w, "%s%s:%s", NameAttachment, a.Parameter.String(), a.Value)
 	return nil
 }
 
 func (a *Attachment) Validate() error {
+	return nil
 }
 
 func NewAttachmentValue(params parameter.Container, s string) (types.AttachmentValue, error) {
@@ -256,7 +257,7 @@ type Geo struct {
 }
 
 func (g *Geo) Decode(w io.Writer) error {
-	if _, err := fmt.Fprintf(w, "%s%s:%d;%d", NameGeo, g.Parameter.String(), g.Latitude, g.Longitude); err != nil {
+	if _, err := fmt.Fprintf(w, "%s%s:%f;%f", NameGeo, g.Parameter.String(), g.Latitude, g.Longitude); err != nil {
 		return err
 	}
 	return nil
@@ -339,7 +340,7 @@ type PercentComplete struct {
 }
 
 func (pc *PercentComplete) Decode(w io.Writer) error {
-	if _, err := fmt.Fprintf(w, "%s%s:%s", NamePercentComplete, pc.Parameter.String(), pc.Value); err != nil {
+	if _, err := fmt.Fprintf(w, "%s%s:%d", NamePercentComplete, pc.Parameter.String(), pc.Value); err != nil {
 		return err
 	}
 	return nil
@@ -368,7 +369,7 @@ type Priority struct {
 }
 
 func (p *Priority) Decode(w io.Writer) error {
-	if _, err := fmt.Fprintf(w, "%s%s:%s", NamePriority, p.Parameter.String(), p.Value); err != nil {
+	if _, err := fmt.Fprintf(w, "%s%s:%d", NamePriority, p.Parameter.String(), p.Value); err != nil {
 		return err
 	}
 	return nil

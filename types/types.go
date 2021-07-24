@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/base64"
 	"fmt"
+	"math"
 	"net/url"
 	"regexp"
 	"strconv"
@@ -150,12 +151,12 @@ func (d Duration) String() string {
 	}
 	buf.WriteString("T")
 	if d.HourDuration.Hours() > 0 {
-		fmt.Fprintf(&buf, "%.fH", d.HourDuration.Hours())
+		fmt.Fprintf(&buf, "%.fH", math.Floor(d.HourDuration.Hours()))
 	}
 	if int64(d.HourDuration.Minutes())%60 > 0 {
 		fmt.Fprintf(&buf, "%dM", int64(d.HourDuration.Minutes())%60)
 	}
-	if int64(d.HourDuration.Seconds())%3600 > 0 {
+	if int64(d.HourDuration.Seconds())%60 > 0 {
 		if d.HourDuration.Hours() == 0 {
 			fmt.Fprint(&buf, "0H")
 		}

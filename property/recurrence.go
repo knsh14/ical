@@ -113,7 +113,11 @@ type RecurrenceDateTimes struct {
 }
 
 func (rdt *RecurrenceDateTimes) Decode(w io.Writer) error {
-	if _, err := fmt.Fprintf(w, "%s%s:%s", NameRecurrenceDateTimes, rdt.Parameter.String(), rdt.Value); err != nil {
+	var values []string
+	for _, v := range rdt.Values {
+		values = append(values, v.String())
+	}
+	if _, err := fmt.Fprintf(w, "%s%s:%s", NameRecurrenceDateTimes, rdt.Parameter.String(), strings.Join(values, ",")); err != nil {
 		return err
 	}
 	return nil

@@ -97,11 +97,12 @@ type SequenceNumber struct {
 }
 
 func (sn *SequenceNumber) Decode(w io.Writer) error {
-	fmt.Fprintf(w, "%s%s:%s", NameLastModified, lm.Parameter.String(), lm.Value)
+	fmt.Fprintf(w, "%s%s:%d", NameLastModified, sn.Parameter.String(), sn.Value)
 	return nil
 }
 
 func (sn *SequenceNumber) Validate() error {
+	return nil
 }
 
 func (sn *SequenceNumber) SetSequenceNumber(params parameter.Container, value types.Integer) error {
